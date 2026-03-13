@@ -1,5 +1,6 @@
 package com.example.propertymanagement.ui.theme
 
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -23,7 +24,7 @@ val Primary = Color(0xFF7C4DFF)
 val OnPrimary = Color.White
 
 val SurfaceVariant = Color(0xFFE0E0E0)
-val OnSurfaceVariant = Color(0xFF1F1F1F)
+val OnSurfaceVariant = Color(0xFFFFFFFF)
 
 // Цвета конкретно для FilterChip (расширяем твои)
 val FilterChipSelected     = Color(0xFF5C94FF)
@@ -36,4 +37,16 @@ val FilterChipTextUnselected = OnSurfaceVariant
 val FilterChipIconUnselected = OnSurfaceVariant
 
 val TopBarBackground = Color(0xFF242424)
-val DividerColor       = Color(0xFF949494)
+val DividerColor       = Color(0xFF424242)
+
+
+// TextField
+val TextFieldBorderInactive = DividerColor
+val TextFieldBorderFocused = PrimaryBlue
+val TextFieldCursor = PrimaryBlue
+val TextFieldTextColor = OnSurfaceVariant
+val TextFieldLabelColor = UnselectedGray
+val CustomTextSelectionColors = TextSelectionColors(
+    backgroundColor = PrimaryBlue,
+    handleColor = PrimaryBlue
+)

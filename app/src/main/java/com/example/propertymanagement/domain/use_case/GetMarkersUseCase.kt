@@ -1,10 +1,10 @@
 package com.example.propertymanagement.domain.use_case
 
 import com.example.propertymanagement.domain.model.PropertyMarker
-import com.example.propertymanagement.domain.repository.PropertyRepository
+import com.example.propertymanagement.domain.repository.IPropertyRepository
 
 class GetMarkersUseCase(
-    private val propertyRepository: PropertyRepository
+    private val propertyRepository: IPropertyRepository
 ) {
 
     suspend operator fun invoke(): List<PropertyMarker> {

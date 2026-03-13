@@ -9,6 +9,40 @@ enum class PropertyType {
     GARAGE
 }
 
+//добавить в PropertyMarker
+enum class CurrencyType {
+    USD,
+    EUR,
+    BYN
+}
+//добавить в PropertyMarker
+enum class SellerType {
+    OWNER,
+    AGENT_BUILDER
+}
+
+//добавить в PropertyMarker
+enum class SortType {
+    NEWEST,
+    PRICE_ASC,
+    PRICE_DESC
+}
+
+//добавить в PropertyMarker
+enum class DealType {
+    BUY,
+    RENT
+}
+
+//Добавить
+enum class CommercialPropertyType {
+    OFFICE,
+    SHOP,
+    INDUSTRIAL,
+    WAREHOUSE,
+    OTHER
+}
+
 enum class PropertyStatus {
     FOR_RENT,
     FOR_SALE,

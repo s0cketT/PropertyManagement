@@ -175,7 +175,7 @@ private fun FilterBottomSheetContent(
         Spacer(modifier = Modifier.height(SpacerLarge))
 
         Text(
-            text = stringResource(R.string.property_type_section_title),
+            text = stringResource(R.string.category_land),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = PaddingMedium)
         )
@@ -189,12 +189,12 @@ private fun FilterBottomSheetContent(
                 FilterChipCommon(
                     text = stringResource(
                         when (type) {
-                            PropertyType.APARTMENT -> R.string.type_apartment
-                            PropertyType.HOUSE     -> R.string.type_house
-                            PropertyType.COMMERCIAL    -> R.string.type_commercial
-                            PropertyType.GARAGE    -> R.string.type_garage
-                            PropertyType.ROOM -> R.string.type_room
-                            PropertyType.LAND ->R.string.type_garage
+                            PropertyType.APARTMENT -> R.string.category_apartments
+                            PropertyType.HOUSE -> R.string.category_houses
+                            PropertyType.LAND -> R.string.category_land
+                            PropertyType.COMMERCIAL -> R.string.category_commercial
+                            PropertyType.GARAGE -> R.string.category_garages
+                            PropertyType.ROOM -> R.string.category_rooms
                         }
                     ),
                     selected = type in selectedTypes,

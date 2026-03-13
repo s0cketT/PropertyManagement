@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -42,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui)
     // Navigation Compose
     val nav_version = "2.8.0-beta01"
     implementation("androidx.navigation:navigation-compose:$nav_version")
@@ -52,7 +55,6 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:$koin_version")
     testImplementation("io.insert-koin:koin-test:$koin_version")
 
-
     // Retrofit
     val retrofit_version = "2.9.0"
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
@@ -61,6 +63,11 @@ dependencies {
 
     //YandexMaps
     implementation("com.yandex.android:maps.mobile:4.30.0-lite")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
 
     implementation("com.google.android.gms:play-services-location:21.0.1")

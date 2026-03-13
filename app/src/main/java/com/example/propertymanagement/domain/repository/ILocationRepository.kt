@@ -4,6 +4,6 @@ package com.example.propertymanagement.domain.repository
 import android.location.Location
 import kotlinx.coroutines.flow.Flow
 
-interface LocationRepository {
+interface ILocationRepository {
     fun observeLocation(): Flow<Location>
 }

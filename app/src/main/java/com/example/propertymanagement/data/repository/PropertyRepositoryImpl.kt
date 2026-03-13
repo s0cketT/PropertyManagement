@@ -3,9 +3,9 @@ package com.example.propertymanagement.data.repository
 import com.example.propertymanagement.domain.model.PropertyMarker
 import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.domain.model.PropertyType
-import com.example.propertymanagement.domain.repository.PropertyRepository
+import com.example.propertymanagement.domain.repository.IPropertyRepository
 
-class PropertyRepositoryImpl : PropertyRepository {
+class PropertyRepositoryImpl : IPropertyRepository {
 
     override suspend fun getMarkers(): List<PropertyMarker> {
         return listOf(

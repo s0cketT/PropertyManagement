@@ -13,13 +13,21 @@
     <string name="screen_publish">Опубликовать</string>
     <string name="screen_profile">Профиль</string>
 
-    <string name="property_type_section_title">Тип недвижимости</string>
-    <string name="type_apartment">Квартиры</string>
-    <string name="type_house">Дома</string>
-    <string name="type_garage">Гаражи</string>
-    <string name="type_room">Комнаты</string>
-    <string name="type_land">Участки</string>
-    <string name="type_commercial">Коммерческая</string>
+    <!-- Категории -->
+    <string name="category_apartments">Квартиры</string>
+    <string name="category_houses">Дома</string>
+    <string name="category_land">Участки</string>
+    <string name="category_commercial">Коммерческая недвижимость</string>
+    <string name="category_garages">Гаражи и парковки</string>
+    <string name="category_rooms">Комнаты</string>
+
+    <!-- Описания категорий -->
+    <string name="description_apartments">Вторичка и новостройки</string>
+    <string name="description_houses">Коттеджи, таунхаусы, дачи</string>
+    <string name="description_land">Земельные участки под ИЖС и садоводство</string>
+    <string name="description_commercial">Офисы, магазины, склады, помещения</string>
+    <string name="description_garages">Гаражи, машиноместа, стоянки</string>
+    <string name="description_rooms">Комнаты в квартирах и общежитиях</string>
 
     <string name="reset_all_filters">Сбросить все фильтры</string>
 
@@ -27,4 +35,53 @@
     <string name="clear_filters">Очистить</string>
     <string name="category">Категория</string>
     <string name="all_categories">Все категории</string>
+
+    <string name="real_estate">Недвижимость</string>
+
+    <string name="show_properties">Показать объявления</string>
+
+    <string name="price">Цена</string>
+    <string name="price_per_month">Цена за месяц</string>
+    <string name="price_per_meter">Цена за м²</string>
+    <string name="from">От</string>
+    <string name="to">До</string>
+
+    <string name="currency_usd">$</string>
+    <string name="currency_eur">€</string>
+    <string name="currency_byn">Br</string>
+
+    <string name="filter_seller_title">Продавец</string>
+    <string name="filter_seller_title_landlord">Арендодатель</string>
+    <string name="filter_seller_owner">Собственник</string>
+    <string name="filter_seller_agent">Агент / Застройщик</string>
+    <string name="filter_seller_agency">Агенство</string>
+
+    <string name="filter_only_with_photos">Только с фото</string>
+
+    <string name="sorting">Сортировка</string>
+    <string name="sort_newest">По новизне</string>
+    <string name="sort_price_asc">Сначала дешевле</string>
+    <string name="sort_price_desc">Сначала дороже</string>
+
+    <string name="deal_type">Тип сделки</string>
+    <string name="buy">Купить</string>
+    <string name="rent">Снять</string>
+
+    <string name="filter_commercial_type_title">Тип</string>
+    <string name="commercial_type_office">Офисы</string>
+    <string name="commercial_type_shop">Магазины, торговые помещения</string>
+    <string name="commercial_type_industrial">Промышленные помещения</string>
+    <string name="commercial_type_warehouse">Склады</string>
+    <string name="commercial_type_other">Прочая коммерческая</string>
+
+    <string name="area_title">Общая площадь</string>
+    <string name="floor_title">Этаж</string>
+    <string name="floor_house_title">Этажность дома</string>
+    <string name="clear_text">Очистить</string>
+    <string name="apply_text">Применить</string>
+
+    <string name="filter_any">Любой</string>
+    <string name="filter_from">От %1$s</string>
+    <string name="filter_to">До %1$s</string>
+    <string name="filter_from_to">От %1$s до %2$s</string>
 </resources>

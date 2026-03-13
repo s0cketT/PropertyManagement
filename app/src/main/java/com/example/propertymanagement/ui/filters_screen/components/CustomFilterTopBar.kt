@@ -20,8 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
-import com.example.propertymanagement.ui.filters_screen.FiltersIntent
-import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.theme.SmallHorizontalPadding
 import com.example.propertymanagement.ui.theme.SpacerBetweenElements
 import com.example.propertymanagement.ui.theme.TopBarBackground
@@ -29,7 +27,8 @@ import com.example.propertymanagement.ui.theme.TopBarHeight
 
 @Composable
 fun CustomFilterTopBar(
-    onCloseClick: () -> Unit
+    onCloseClick: () -> Unit,
+    onClearClick: () -> Unit,
 ) {
     Column {
         Row(
@@ -40,7 +39,6 @@ fun CustomFilterTopBar(
                 .padding(horizontal = SmallHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Крестик слева
             IconButton(onClick = onCloseClick) {
                 Icon(
                     imageVector = Icons.Default.Close,
@@ -51,7 +49,6 @@ fun CustomFilterTopBar(
 
             Spacer(modifier = Modifier.width(SpacerBetweenElements))
 
-            // Заголовок
             Text(
                 text = stringResource(R.string.filters_title),
                 style = MaterialTheme.typography.titleMedium,
@@ -60,7 +57,7 @@ fun CustomFilterTopBar(
             )
 
             // Очистить справа
-            TextButton(onClick = { /* TODO: очистить все фильтры */ }) {
+            TextButton(onClick = onClearClick) {
                 Text(
                     text = stringResource(R.string.clear_filters),
                     color = MaterialTheme.colorScheme.primary,

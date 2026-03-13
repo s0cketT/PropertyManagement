@@ -3,7 +3,7 @@ package com.example.propertymanagement.data.repository
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Looper
-import com.example.propertymanagement.domain.repository.LocationRepository
+import com.example.propertymanagement.domain.repository.ILocationRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class LocationRepositoryImpl(
     private val fusedLocationClient: FusedLocationProviderClient
-) : LocationRepository {
+) : ILocationRepository {
 
     @SuppressLint("MissingPermission")
     override fun observeLocation(): Flow<Location> = callbackFlow {
