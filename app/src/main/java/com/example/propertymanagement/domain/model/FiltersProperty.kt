@@ -9,6 +9,7 @@ data class FiltersProperty(
     val area: IntRangeFilter,
     val floor: IntRangeFilter,
     val floorHouse: IntRangeFilter,
+    val separateRooms: IntRangeFilter,
 
     val selectedCurrency: CurrencyType,
 
@@ -16,7 +17,9 @@ data class FiltersProperty(
     val onlyWithPhotos: Boolean,
     val sortType: SortType,
     val selectedDealType: DealType?,
-    val selectedCommercialPropertyType: CommercialPropertyType?
+    val selectedCommercialPropertyType: CommercialPropertyType?,
+
+    val commercialAmenities: Set<CommercialAmenity>
 )
 
 

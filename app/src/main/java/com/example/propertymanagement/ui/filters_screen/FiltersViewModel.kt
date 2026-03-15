@@ -59,6 +59,7 @@ class FiltersViewModel(
                         area = filterProperty?.area ?: IntRangeFilter(),
                         floor = filterProperty?.floor ?: IntRangeFilter(),
                         floorHouse = filterProperty?.floorHouse ?: IntRangeFilter(),
+                        separateRooms = filterProperty?.separateRooms ?: IntRangeFilter(),
 
                         selectedCurrency = filterProperty?.selectedCurrency ?: CurrencyType.USD,
 
@@ -66,7 +67,9 @@ class FiltersViewModel(
                         onlyWithPhotos = filterProperty?.onlyWithPhotos ?: false,
                         sortType = filterProperty?.sortType ?: SortType.NEWEST,
                         selectedDealType = filterProperty?.selectedDealType,
-                        selectedCommercialPropertyType = filterProperty?.selectedCommercialPropertyType
+                        selectedCommercialPropertyType = filterProperty?.selectedCommercialPropertyType,
+
+                        commercialAmenities = filterProperty?.commercialAmenities ?: emptySet()
                     )
                 }
             }
@@ -85,7 +88,8 @@ class FiltersViewModel(
                         onlyWithPhotos = false,
                         sortType = SortType.NEWEST,
                         selectedDealType = null,
-                        selectedCommercialPropertyType = null
+                        selectedCommercialPropertyType = null,
+                        commercialAmenities = emptySet(),
                         )
                         .clearPricePerMeter()
                         .clearPrice()
@@ -116,13 +120,16 @@ class FiltersViewModel(
                             area = state.value.area,
                             floor = state.value.floor,
                             floorHouse = state.value.floorHouse,
+                            separateRooms = state.value.separateRooms,
 
                             selectedCurrency = state.value.selectedCurrency,
                             selectedSellerType = state.value.selectedSellerType,
                             onlyWithPhotos = state.value.onlyWithPhotos,
                             sortType = state.value.sortType,
                             selectedDealType = state.value.selectedDealType,
-                            selectedCommercialPropertyType = state.value.selectedCommercialPropertyType
+                            selectedCommercialPropertyType = state.value.selectedCommercialPropertyType,
+
+                            commercialAmenities = state.value.commercialAmenities
                         )
                     )
                     _event.emit(FiltersEvent.NavigateBack)
@@ -168,7 +175,8 @@ class FiltersViewModel(
                     it.copy(
                         selectedPropertyType = null,
                         selectedDealType = null,
-                        selectedCommercialPropertyType = null
+                        selectedCommercialPropertyType = null,
+                        commercialAmenities = emptySet(),
                         )
                         .clearPricePerMeter()
                         .clearIntRanges()
@@ -229,6 +237,21 @@ class FiltersViewModel(
                     it.copy(floorHouse = intent.range)
                 }
             }
+
+            is FiltersIntent.SeparateRoomsChanged -> {
+                _state.update {
+                    it.copy(separateRooms = intent.range)
+                }
+            }
+
+            is FiltersIntent.AmenitiesChanged -> {
+                _state.update {
+                    it.copy(
+                        commercialAmenities = intent.amenities
+                    )
+                }
+            }
+
         }
     }
 }

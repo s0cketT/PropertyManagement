@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.ExpandableFilterSection
@@ -36,12 +37,15 @@ import com.example.propertymanagement.ui.components.areaValues
 import com.example.propertymanagement.ui.components.areaDisplayMapper
 import com.example.propertymanagement.ui.components.floorDisplayMapper
 import com.example.propertymanagement.ui.components.floorValues
+import com.example.propertymanagement.ui.components.separateRoomsDisplayMapper
+import com.example.propertymanagement.ui.components.separateRoomsValues
 import com.example.propertymanagement.ui.extensions.orEmptyValue
 import com.example.propertymanagement.ui.extensions.priceTitle
 import com.example.propertymanagement.ui.filters_screen.FiltersEvent
 import com.example.propertymanagement.ui.filters_screen.FiltersIntent
 import com.example.propertymanagement.ui.filters_screen.FiltersState
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
+import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.BoxGrayHeight
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -73,7 +77,7 @@ fun FilterScreen(navController: NavController) {
     val selectedType = selectedTypeName?.let { name ->
         try {
             PropertyType.valueOf(name)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             null
         }
     }
@@ -196,7 +200,7 @@ private fun UI(
 
                     Spacer(modifier = Modifier.height(PaddingLarge))
 
-                    FilterSectionItem(
+                    RangeFilterItem(
                         titleResId = R.string.area_title,
                         values = areaValues,
                         displayMapper = areaDisplayMapper,
@@ -204,7 +208,7 @@ private fun UI(
                         onApply = { range -> intent(FiltersIntent.AreaChanged(range)) }
                     )
 
-                    FilterSectionItem(
+                    RangeFilterItem(
                         titleResId = R.string.floor_title,
                         values = floorValues,
                         displayMapper = floorDisplayMapper,
@@ -212,13 +216,31 @@ private fun UI(
                         onApply = { range -> intent(FiltersIntent.FloorChanged(range)) }
                     )
 
-                    FilterSectionItem(
+                    RangeFilterItem(
                         titleResId = R.string.floor_house_title,
                         values = floorValues,
                         displayMapper = floorDisplayMapper,
                         range = state.floorHouse,
                         onApply = { range -> intent(FiltersIntent.FloorHouseChanged(range)) }
                     )
+
+                    RangeFilterItem(
+                        titleResId = R.string.separate_rooms_title,
+                        values = separateRoomsValues,
+                        displayMapper = separateRoomsDisplayMapper,
+                        range = state.separateRooms,
+                        onApply = { range -> intent(FiltersIntent.SeparateRoomsChanged(range)) }
+                    )
+
+
+                    AmenitiesFilterItem(
+                        titleResId = R.string.amenities,
+                        items = CommercialAmenity.entries,
+                        selected = state.commercialAmenities,
+                        titleRes = { it.titleRes() },
+                        onApply = { intent(FiltersIntent.AmenitiesChanged(it)) }
+                    )
+
                 }
             }
 
@@ -238,6 +260,8 @@ private fun UI(
                 onSortSelected = { intent(FiltersIntent.SortChanged(it)) }
             )
         }
+
+        Spacer(modifier = Modifier.height(PaddingLarge))
 
         ShowPropertiesButton(
             enabled = state.isFiltersValid,

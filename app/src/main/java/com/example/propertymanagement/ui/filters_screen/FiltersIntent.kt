@@ -1,5 +1,6 @@
 package com.example.propertymanagement.ui.filters_screen
 
+import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CommercialPropertyType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.CurrencyType
@@ -34,4 +35,7 @@ sealed class FiltersIntent {
     data class AreaChanged(val range: IntRangeFilter) : FiltersIntent()
     data class FloorChanged(val range: IntRangeFilter) : FiltersIntent()
     data class FloorHouseChanged(val range: IntRangeFilter) : FiltersIntent()
+    data class SeparateRoomsChanged(val range: IntRangeFilter) : FiltersIntent()
+
+    data class AmenitiesChanged(val amenities: Set<CommercialAmenity>) : FiltersIntent()
 }

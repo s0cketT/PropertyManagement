@@ -25,7 +25,6 @@ import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import com.example.propertymanagement.ui.theme.PrimaryBlue
-import com.example.propertymanagement.ui.theme.SpacerSmall
 
 @Composable
 fun SortingSection(
@@ -36,12 +35,12 @@ fun SortingSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = PaddingLarge)
     ) {
 
         Text(
             text = stringResource(R.string.sorting),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = PaddingLarge)
         )
 
         Spacer(modifier = Modifier.height(PaddingMedium))
@@ -62,8 +61,7 @@ fun SortingSection(
 
             HorizontalDivider(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = SpacerSmall),
+                    .fillMaxWidth().padding(horizontal = PaddingLarge),
                 color = DividerColor,
                 thickness = DividerThickness
             )
@@ -82,7 +80,7 @@ private fun SortingItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = PaddingSmall),
+            .padding(vertical = PaddingSmall, horizontal = PaddingLarge),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

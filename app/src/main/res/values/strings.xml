@@ -77,6 +77,7 @@
     <string name="area_title">Общая площадь</string>
     <string name="floor_title">Этаж</string>
     <string name="floor_house_title">Этажность дома</string>
+    <string name="separate_rooms_title">Количество раздельных помещений</string>
     <string name="clear_text">Очистить</string>
     <string name="apply_text">Применить</string>
 
@@ -84,4 +85,12 @@
     <string name="filter_from">От %1$s</string>
     <string name="filter_to">До %1$s</string>
     <string name="filter_from_to">От %1$s до %2$s</string>
+
+    <string name="amenities">Удобства</string>
+    <string name="amenity_finishing">С отделкой</string>
+    <string name="amenity_private_bathroom">Собственный санузел</string>
+    <string name="amenity_hot_water">Горячая вода</string>
+    <string name="amenity_cold_water">Холодная вода</string>
+    <string name="amenity_heating">Отопление</string>
+    <string name="amenity_separate_entrance">Отдельный вход</string>
 </resources>

@@ -42,13 +42,18 @@ enum class CommercialPropertyType {
     WAREHOUSE,
     OTHER
 }
-
+//добавить в PropertyMarker
+enum class CommercialAmenity {
+    FINISHING,
+    PRIVATE_BATHROOM,
+    HOT_WATER,
+    COLD_WATER,
+    HEATING,
+    SEPARATE_ENTRANCE
+}
 enum class PropertyStatus {
     FOR_RENT,
-    FOR_SALE,
-    SOLD,
-    RENTED,
-    UNAVAILABLE
+    FOR_SALE
 }
 
 data class PropertyMarker(

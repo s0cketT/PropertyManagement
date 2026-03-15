@@ -48,7 +48,6 @@ val appModule = module {
         PropertyRepositoryImpl()
     }
 
-    // UseCase для маркеров
     factory<GetMarkersUseCase> {
         GetMarkersUseCase(
             propertyRepository = get<IPropertyRepository>()

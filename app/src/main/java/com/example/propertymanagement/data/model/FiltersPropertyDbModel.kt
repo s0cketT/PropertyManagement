@@ -2,6 +2,7 @@ package com.example.propertymanagement.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CommercialPropertyType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.CurrencyType
@@ -25,6 +26,8 @@ data class FiltersPropertyDbModel(
     val floorFrom: Int?,
     val floorHouseTo: Int?,
     val floorHouseFrom: Int?,
+    val separateRoomsFrom: Int?,
+    val separateRoomsTo: Int?,
 
     val selectedCurrency: CurrencyType,
 
@@ -32,5 +35,7 @@ data class FiltersPropertyDbModel(
     val onlyWithPhotos: Boolean,
     val sortType: SortType,
     val selectedDealType: DealType?,
-    val selectedCommercialPropertyType: CommercialPropertyType?
+    val selectedCommercialPropertyType: CommercialPropertyType?,
+
+    val commercialAmenities: Set<CommercialAmenity>,
 )

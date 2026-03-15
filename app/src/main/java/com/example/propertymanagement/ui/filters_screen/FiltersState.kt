@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.filters_screen
 
 
+import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CommercialPropertyType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.CurrencyType
@@ -22,19 +23,23 @@ data class FiltersState(
     val selectedSellerType: SellerType? = null,
     val onlyWithPhotos: Boolean = false,
     val sortType: SortType = SortType.NEWEST,
+
     val selectedDealType: DealType? = null,
     val selectedCommercialPropertyType: CommercialPropertyType? = null,
 
     val area: IntRangeFilter = IntRangeFilter(),
     val floor: IntRangeFilter = IntRangeFilter(),
     val floorHouse: IntRangeFilter = IntRangeFilter(),
+    val separateRooms: IntRangeFilter = IntRangeFilter(),
 
-    ) {
+    val commercialAmenities: Set<CommercialAmenity> = emptySet()
+) {
     val isFiltersValid: Boolean
         get() = isRangeValid(price.from?.toIntOrNull(), price.to?.toIntOrNull()) &&
                 isRangeValid(pricePerMeter.from?.toIntOrNull(), pricePerMeter.to?.toIntOrNull()) &&
                 isRangeValid(area.from, area.to) &&
                 isRangeValid(floor.from, floor.to) &&
-                isRangeValid(floorHouse.from, floorHouse.to)
+                isRangeValid(floorHouse.from, floorHouse.to) &&
+                isRangeValid(separateRooms.from, separateRooms.to)
 
 }

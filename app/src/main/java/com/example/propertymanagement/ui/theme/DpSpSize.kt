@@ -30,8 +30,6 @@ val SpacerTiny = 4.dp
 
 // Размеры иконок
 val IconSmall = 18.dp
-val IconMedium = 24.dp
-val IconLarge = 32.dp
 
 // Радиусы
 val ChipCornerRadius = 20.dp
@@ -49,6 +47,7 @@ val DividerThickness = 1.dp
 
 // Новый padding для CategoryItem (16.dp)
 val VerticalPaddingItem = 16.dp
+val VerticalPaddingItemSmall = 8.dp
 
 val HeightOutlinedTextField = 46.dp
 val HeightFilterChip = 46.dp
@@ -66,13 +65,5 @@ val WheelPickerItemHeight = 66.dp
 val WheelPickerVisibleItems = 3
 val WheelPickerLineWidth = 240.dp
 val WheelPickerLineThickness = 1.dp
-val WheelPickerTextSize = 22.sp
 val WheelPickerLetterSpacing = 0.15.sp
-val WheelPickerHorizontalPadding = 32.dp
-val WheelPickerVerticalPadding = 16.dp
-val WheelPickerScaleSelected = 1.1f
-val WheelPickerScaleDefault = 1f
-val WheelPickerAlphaSelected = 1f
-val WheelPickerAlphaDefault = 1f
-val WheelPickerTextOffsetFactor = 0.15f
 

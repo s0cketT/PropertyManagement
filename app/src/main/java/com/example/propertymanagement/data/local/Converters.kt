@@ -1,6 +1,7 @@
 package com.example.propertymanagement.data.local
 
 import androidx.room.TypeConverter
+import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.SellerType
@@ -36,5 +37,24 @@ class Converters {
     @TypeConverter
     fun toSellerType(value: String?): SellerType? {
         return value?.let { SellerType.valueOf(it) }
+    }
+
+    @TypeConverter
+    fun fromCommercialAmenities(value: Set<CommercialAmenity>?): String? {
+        return value?.joinToString(",") { it.name }
+    }
+
+    @TypeConverter
+    fun toCommercialAmenities(value: String?): Set<CommercialAmenity> {
+        return value
+            ?.split(",")
+            ?.mapNotNull { name ->
+                try {
+                    CommercialAmenity.valueOf(name)
+                } catch (_: IllegalArgumentException) {
+                    null
+                }
+            }
+            ?.toSet() ?: emptySet()
     }
 }

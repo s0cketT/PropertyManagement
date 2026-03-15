@@ -34,12 +34,19 @@ fun FiltersPropertyDbModel.toDomain(): FiltersProperty {
             to = floorHouseTo,
         ),
 
+        separateRooms = IntRangeFilter(
+            from = separateRoomsFrom,
+            to = separateRoomsTo,
+        ),
+
         selectedCurrency = selectedCurrency,
         selectedSellerType = selectedSellerType,
         onlyWithPhotos = onlyWithPhotos,
         sortType = sortType,
         selectedDealType = selectedDealType,
-        selectedCommercialPropertyType = selectedCommercialPropertyType
+        selectedCommercialPropertyType = selectedCommercialPropertyType,
+
+        commercialAmenities = commercialAmenities
     )
 }
 
@@ -60,6 +67,9 @@ fun FiltersProperty.toEntity(): FiltersPropertyDbModel {
         floorTo = floor.to,
         floorFrom = floor.from,
 
+        separateRoomsFrom = separateRooms.from,
+        separateRoomsTo = separateRooms.to,
+
         floorHouseFrom = floorHouse.from,
         floorHouseTo = floorHouse.to,
 
@@ -68,6 +78,8 @@ fun FiltersProperty.toEntity(): FiltersPropertyDbModel {
         onlyWithPhotos = onlyWithPhotos,
         sortType = sortType,
         selectedDealType = selectedDealType,
-        selectedCommercialPropertyType = selectedCommercialPropertyType
+        selectedCommercialPropertyType = selectedCommercialPropertyType,
+
+        commercialAmenities = commercialAmenities
     )
 }
