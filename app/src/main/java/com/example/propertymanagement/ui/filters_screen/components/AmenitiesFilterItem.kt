@@ -35,13 +35,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.extensions.toggle
-import com.example.propertymanagement.ui.theme.DividerColor
 import com.example.propertymanagement.ui.theme.DividerThickness
 import com.example.propertymanagement.ui.theme.IconSizeArrow
-import com.example.propertymanagement.ui.theme.OnSurfaceVariant
 import com.example.propertymanagement.ui.theme.PaddingLarge
-import com.example.propertymanagement.ui.theme.PrimaryBlue
-import com.example.propertymanagement.ui.theme.UnselectedGray
 import com.example.propertymanagement.ui.theme.VerticalPaddingItem
 import com.example.propertymanagement.ui.theme.VerticalPaddingItemSmall
 
@@ -91,7 +87,10 @@ fun <T : Enum<T>> AmenitiesFilterItem(
                     }
                 },
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (selected.isEmpty()) UnselectedGray else OnSurfaceVariant,
+                color = if (selected.isEmpty())
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                else
+                    MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
 
@@ -107,15 +106,15 @@ fun <T : Enum<T>> AmenitiesFilterItem(
                     else
                         Icons.Default.Close,
                     contentDescription = null,
-                    tint = UnselectedGray
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(horizontal = PaddingLarge),
-            thickness = DividerThickness,
-            color = DividerColor
+                modifier = Modifier.padding(horizontal = PaddingLarge),
+        thickness = DividerThickness,
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     }
 
@@ -180,7 +179,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
                 Text(
                     text = stringResource(titleResId),
                     style = MaterialTheme.typography.titleLarge,
-                    color = OnSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -188,7 +187,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
                     Icon(
                         Icons.Default.Close,
                         null,
-                        tint = UnselectedGray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -213,7 +212,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
                         Text(
                             text = stringResource(titleRes(item)),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = OnSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.weight(1f)
                         )
 
@@ -224,7 +223,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
                     }
 
                     HorizontalDivider(
-                        color = DividerColor,
+                        color = MaterialTheme.colorScheme.outlineVariant,
                         thickness = DividerThickness
                     )
                 }
@@ -241,7 +240,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
 
                     Text(
                         text = stringResource(R.string.clear_text),
-                        color = UnselectedGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.clickable { onClear() }
                     )
                 }
@@ -250,7 +249,7 @@ private fun <T : Enum<T>> AmenitiesFilterBottomSheet(
 
                 Text(
                     text = stringResource(R.string.apply_text),
-                    color = PrimaryBlue,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable { onApply() }
                 )
             }

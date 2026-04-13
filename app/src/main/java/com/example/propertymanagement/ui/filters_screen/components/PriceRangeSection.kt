@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
@@ -40,23 +41,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyType
-import com.example.propertymanagement.ui.extensions.symbol
+import com.example.propertymanagement.ui.mapper.symbol
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
-import com.example.propertymanagement.ui.theme.CustomTextSelectionColors
 import com.example.propertymanagement.ui.theme.HeightOutlinedTextField
 import com.example.propertymanagement.ui.theme.IconSmall
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import com.example.propertymanagement.ui.theme.SpacerTiny
-import com.example.propertymanagement.ui.theme.TextFieldBorderFocused
-import com.example.propertymanagement.ui.theme.TextFieldBorderInactive
 import com.example.propertymanagement.ui.theme.TextFieldBorderWidth
-import com.example.propertymanagement.ui.theme.TextFieldCursor
 import com.example.propertymanagement.ui.theme.TextFieldHorizontalPadding
-import com.example.propertymanagement.ui.theme.TextFieldLabelColor
 import com.example.propertymanagement.ui.theme.TextFieldPrefixSpacing
-import com.example.propertymanagement.ui.theme.TextFieldTextColor
 import com.example.propertymanagement.ui.theme.TextFieldVerticalPadding
 
 @Composable
@@ -123,12 +118,16 @@ fun NumberOutlinedTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     val borderColor = if (isFocused) {
-        TextFieldBorderFocused
+        MaterialTheme.colorScheme.primary
     } else {
-        TextFieldBorderInactive
+        MaterialTheme.colorScheme.outline
     }
 
-    CompositionLocalProvider(LocalTextSelectionColors provides CustomTextSelectionColors) {
+    CompositionLocalProvider(LocalTextSelectionColors provides TextSelectionColors(
+        handleColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+    )
+    ) {
 
         BasicTextField(
             value = value,
@@ -141,14 +140,14 @@ fun NumberOutlinedTextField(
             interactionSource = interactionSource,
 
             textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = TextFieldTextColor
+                color = MaterialTheme.colorScheme.onSurface
             ),
 
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
 
-            cursorBrush = SolidColor(TextFieldCursor),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
 
             modifier = modifier
                 .fillMaxWidth()
@@ -174,7 +173,11 @@ fun NumberOutlinedTextField(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = if (isFocused) TextFieldTextColor else TextFieldLabelColor
+                        color = if (isFocused) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
 
                     Spacer(modifier = Modifier.width(TextFieldPrefixSpacing))
@@ -195,7 +198,18 @@ fun CurrencySelector(
 
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier.height(HeightOutlinedTextField)) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val borderColor = if (isFocused || expanded) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.outline
+    }
+
+    Box(
+        modifier = modifier.height(HeightOutlinedTextField)
+    ) {
 
         Row(
             modifier = Modifier
@@ -203,17 +217,21 @@ fun CurrencySelector(
                 .clip(RoundedCornerShape(ButtonCornerRadius))
                 .border(
                     width = TextFieldBorderWidth,
-                    color = TextFieldBorderInactive,
+                    color = borderColor,
                     shape = RoundedCornerShape(ButtonCornerRadius)
                 )
-                .clickable { expanded = true }
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) { expanded = true }
                 .padding(horizontal = PaddingMedium, vertical = PaddingSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
             Text(
                 text = selectedCurrency.symbol(),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.width(SpacerTiny))
@@ -221,22 +239,25 @@ fun CurrencySelector(
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(IconSmall)
             )
         }
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.colorScheme.surface
         ) {
 
-            CurrencyType.values().forEach { currency ->
+            CurrencyType.entries.forEach { currency ->
 
                 DropdownMenuItem(
                     text = {
                         Text(
                             text = currency.name,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     onClick = {

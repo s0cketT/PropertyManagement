@@ -12,11 +12,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +44,6 @@ import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.map_screen.MapState
 import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingExtraLarge
-import com.example.propertymanagement.ui.theme.Primary
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -169,11 +169,11 @@ private fun UI(
             modifier = Modifier
                 .padding(PaddingExtraLarge)
                 .align(Alignment.BottomEnd),
-            containerColor = Primary,
+            containerColor = MaterialTheme.colorScheme.primary,
             contentColor = OnPrimary
         ) {
             Icon(
-                imageVector = Icons.Default.Build,
+                imageVector = Icons.Default.Tune,
                 contentDescription = stringResource(R.string.filters_fab_content_description)
             )
         }

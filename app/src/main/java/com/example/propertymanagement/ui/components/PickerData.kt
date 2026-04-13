@@ -19,3 +19,14 @@ val areaDisplayMapper: (Int) -> String = {
 val separateRoomsDisplayMapper: (Int) -> String = {
     if (it == -1) "Любой" else it.toString()
 }
+
+val yearValues = (1900..2026).toList().reversed()
+
+val yearDisplayMapper: (Int) -> String = {
+    it.toString()
+}
+
+val floorSimpleValues = (1..80).toList()
+val floorSimpleDisplayMapper: (Int) -> String = {
+    it.toString()
+}

@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.SellerType
+import com.example.propertymanagement.ui.mapper.asString
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.SpacerMedium
@@ -40,7 +41,8 @@ fun SellerTypeSection(
 
         Text(
             text = stringResource(titleRes),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(SpacerSmall))
@@ -51,20 +53,8 @@ fun SellerTypeSection(
         ) {
 
             SellerType.entries.forEach { type ->
-
-                val textRes = when (type) {
-                    SellerType.OWNER -> R.string.filter_seller_owner
-
-                    SellerType.AGENT_BUILDER -> {
-                        if (dealType == DealType.RENT)
-                            R.string.filter_seller_agency
-                        else
-                            R.string.filter_seller_agent
-                    }
-                }
-
                 SellerFilterChip(
-                    text = stringResource(textRes),
+                    text = type.asString(),
                     selected = selectedType == type,
                     onClick = { onTypeSelected(type.takeIf { selectedType != it }) }
                 )

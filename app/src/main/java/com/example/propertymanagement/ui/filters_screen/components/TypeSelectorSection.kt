@@ -22,15 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.PropertyType
-import com.example.propertymanagement.ui.theme.DividerColor
+import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.DividerThickness
-import com.example.propertymanagement.ui.theme.FilterChipSelected
 import com.example.propertymanagement.ui.theme.HorizontalPadding
 import com.example.propertymanagement.ui.theme.IconSizeArrow
 import com.example.propertymanagement.ui.theme.IconSizeCategory
-import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.SpacerBetweenElements
-import com.example.propertymanagement.ui.theme.UnselectedGray
 import com.example.propertymanagement.ui.theme.VerticalPaddingCategory
 
 @Composable
@@ -41,8 +38,17 @@ fun TypeSelectorSection(
 ) {
     val isSelected = selectedType != null
 
-    val iconTint = if (isSelected) FilterChipSelected else UnselectedGray
-    val textColor = if (isSelected) OnPrimary else UnselectedGray
+    val iconTint = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    val textColor = if (isSelected) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
 
     Column(modifier = Modifier.clickable { onClick() }) {
         Row(
@@ -63,27 +69,13 @@ fun TypeSelectorSection(
             )
 
             Text(
-                text = if (isSelected) {
-                    stringResource(
-                        when (selectedType) {
-                            PropertyType.APARTMENT -> R.string.category_apartments
-                            PropertyType.HOUSE -> R.string.category_houses
-                            PropertyType.LAND -> R.string.category_land
-                            PropertyType.COMMERCIAL -> R.string.category_commercial
-                            PropertyType.GARAGE -> R.string.category_garages
-                            PropertyType.ROOM -> R.string.category_rooms
-                            null -> R.string.category
-                        }
-                    )
-                } else {
-                    stringResource(R.string.category)
-                },
+                text = selectedType
+                    ?.let { stringResource(it.titleRes()) }
+                    ?: stringResource(R.string.category),
                 style = MaterialTheme.typography.titleMedium,
                 color = textColor,
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             )
-
 
             if (isSelected) {
                 IconButton(
@@ -92,15 +84,15 @@ fun TypeSelectorSection(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Сбросить категорию",
-                        tint = FilterChipSelected,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             } else {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = UnselectedGray,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(IconSizeArrow)
                 )
             }
@@ -111,7 +103,7 @@ fun TypeSelectorSection(
                 .fillMaxWidth()
                 .padding(horizontal = HorizontalPadding),
             thickness = DividerThickness,
-            color = DividerColor
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     }
 }

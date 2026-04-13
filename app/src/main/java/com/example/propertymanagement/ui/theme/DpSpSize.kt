@@ -25,11 +25,13 @@ val SpacerMedium = 16.dp
 val SpacerLarge = 24.dp
 val SpacerExtraLarge = 32.dp
 
+
 // Новый Spacer для мелких промежутков (4.dp в CategoryItem)
 val SpacerTiny = 4.dp
 
 // Размеры иконок
 val IconSmall = 18.dp
+val IconMedium = 26.dp
 
 // Радиусы
 val ChipCornerRadius = 20.dp
@@ -59,6 +61,7 @@ val TextFieldBorderWidth = 1.dp
 val TextFieldPrefixSpacing = 4.dp
 
 val BoxGrayHeight = 24.dp
+val BoxGrayHeightSettings = 44.dp
 
 // WheelPicker
 val WheelPickerItemHeight = 66.dp
@@ -66,4 +69,27 @@ val WheelPickerVisibleItems = 3
 val WheelPickerLineWidth = 240.dp
 val WheelPickerLineThickness = 1.dp
 val WheelPickerLetterSpacing = 0.15.sp
+
+
+val ImagePickerHeight = 200.dp
+val IndicatorSize = 6.dp
+val IndicatorSizeActive = 8.dp
+val IconPassword = 20.dp
+
+val TextLarge = 18.sp
+val TextMedium = 16.sp
+val TextRegular = 14.sp
+val TextSmall = 12.sp
+
+val AvatarSize = 64.dp
+val IconSizeArrowLarge = 32.dp
+val IconSizeProfile = 24.dp
+
+val imageItem = 100.dp
+
+val AvatarLargeSize = 90.dp
+val AvatarLargeIconSize = 48.dp
+
+val FavoriteIconSize = 50.dp
+
 

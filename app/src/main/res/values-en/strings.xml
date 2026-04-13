@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="filter_repair_type_title">Repair</string>
+    <string name="repair_office_finish">Office finish</string>
+    <string name="repair_requires_capital">Requires major renovation</string>
+    <string name="repair_requires_cosmetic">Requires cosmetic repair</string>
+
+    <string name="rooms_1">1</string>
+    <string name="rooms_2">2</string>
+    <string name="rooms_3">3</string>
+    <string name="rooms_4">4</string>
+    <string name="rooms_5">5</string>
+    <string name="rooms_5_plus">More than 5</string>
+
+    <string name="is_walkthrough_room">Walk-through room available</string>
+
+    <string name="living_area_title">Living area</string>
+    <string name="kitchen_area_title">Kitchen area</string>
+
+    <string name="balcony_title">Balcony</string>
+    <string name="balcony_none">None</string>
+    <string name="balcony_balcony">Balcony</string>
+    <string name="balcony_loggia">Loggia</string>
+    <string name="balcony_two_plus">Two</string>
+
+    <string name="bathroom_title">Bathroom</string>
+    <string name="bathroom_separate">Separate</string>
+    <string name="bathroom_combined">Combined</string>
+    <string name="bathroom_two">Two</string>
+    <string name="bathroom_three_plus">3+</string>
+
+    <string name="repair_title">Repair</string>
+    <string name="repair_cosmetic">Cosmetic</string>
+    <string name="repair_euro">Euro renovation</string>
+    <string name="repair_designer">Designer renovation</string>
+    <string name="repair_rough">Rough finish</string>
+    <string name="repair_needs">Needs repair</string>
+    <string name="repair_emergency">Emergency condition</string>
+
+    <string name="ceiling_title">Ceiling height</string>
+    <string name="ceiling_2_5">from 2.5 m</string>
+    <string name="ceiling_2_7">from 2.7 m</string>
+    <string name="ceiling_3_0">from 3 m</string>
+    <string name="ceiling_3_5">from 3.5 m</string>
+    <string name="ceiling_4_0">from 4 m</string>
+
+    <string name="wall_material_title">Wall material</string>
+    <string name="wall_panel">Panel</string>
+    <string name="wall_monolith">Monolithic</string>
+    <string name="wall_brick">Brick</string>
+
+    <string name="year_built">Year built</string>
+    <string name="rooms_title">Number of rooms</string>
+
+    <string name="building_amenities_title">Building amenities</string>
+    <string name="amenity_elevator">Elevator</string>
+    <string name="amenity_trash_chute">Trash chute</string>
+    <string name="amenity_gated_area">Gated area</string>
+    <string name="amenity_intercom">Intercom</string>
+    <string name="amenity_basement">Basement</string>
+
+    <string name="rooms_for_sale_title">Rooms for sale</string>
+
+    <string name="roof_type_title">Roof type</string>
+    <string name="roof_flat">Flat</string>
+    <string name="roof_single_slope">Single slope</string>
+    <string name="roof_double_slope">Double slope</string>
+    <string name="roof_other">Other</string>
+
+    <string name="heating_type_title">Heating</string>
+    <string name="heating_gas">Gas</string>
+    <string name="heating_central">Central</string>
+    <string name="heating_electric">Electric</string>
+    <string name="heating_stove">Stove</string>
+    <string name="heating_none">None</string>
+
+    <string name="water_type_title">Water supply</string>
+    <string name="water_well">Well</string>
+    <string name="water_well_shaft">Shaft well</string>
+    <string name="water_central">Central</string>
+    <string name="water_none">None</string>
+
+    <string name="gas_type_title">Gas</string>
+    <string name="gas_in_house">In house</string>
+    <string name="gas_nearby">Nearby</string>
+    <string name="gas_none">None</string>
+
+    <string name="house_amenities">House amenities</string>
+    <string name="house_amenity_fireplace">Fireplace</string>
+    <string name="house_amenity_furniture">Furniture</string>
+    <string name="house_amenity_jacuzzi">Jacuzzi</string>
+    <string name="house_amenity_parking">Parking</string>
+    <string name="house_amenity_garage">Garage</string>
+    <string name="house_amenity_security">Security</string>
+
+    <string name="house_type_title">House type</string>
+    <string name="house_type_house">House</string>
+    <string name="house_type_cottage">Cottage</string>
+    <string name="house_type_dacha">Dacha</string>
+    <string name="house_type_other">Other</string>
+
+    <string name="parking_type_title">Parking type</string>
+    <string name="parking_roof">Covered</string>
+    <string name="parking_underground">Underground</string>
+    <string name="parking_ground">Ground</string>
+    <string name="parking_open">Open</string>
+
+    <string name="app_name">PropertyManagement</string>
+
+    <string name="filters_title">Filters</string>
+    <string name="status_section_title">Property Status</string>
+    <string name="sale_chip">For Sale</string>
+    <string name="rent_chip">For Rent</string>
+    <string name="filters_fab_content_description">Filters</string>
+
+    <string name="screen_advertisements">Listings</string>
+    <string name="screen_favorites">Favorites</string>
+    <string name="screen_map">Map</string>
+    <string name="screen_publish">Publish</string>
+    <string name="screen_profile">Profile</string>
+
+    <string name="category_apartments">Apartments</string>
+    <string name="category_houses">Houses</string>
+    <string name="category_commercial">Commercial</string>
+    <string name="category_garages">Garages &amp; Parking</string>
+    <string name="category_rooms">Rooms</string>
+
+    <string name="description_apartments">Secondary market and new buildings</string>
+    <string name="description_houses">Cottages, townhouses, summer houses</string>
+    <string name="description_land">Land plots for construction and gardening</string>
+    <string name="description_commercial">Offices, shops, warehouses, premises</string>
+    <string name="description_garages">Garages, parking spaces</string>
+    <string name="description_rooms">Rooms in apartments and dormitories</string>
+
+    <string name="reset_all_filters">Reset all filters</string>
+
+    <string name="close">Close</string>
+    <string name="clear_filters">Clear</string>
+    <string name="category">Category</string>
+    <string name="all_categories">All categories</string>
+
+    <string name="real_estate">Real Estate</string>
+
+    <string name="show_properties">Show listings</string>
+
+    <string name="price">Price</string>
+    <string name="price_per_month">Price per month</string>
+    <string name="price_per_meter">Price per m²</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+
+    <string name="currency_usd">$</string>
+    <string name="currency_eur">€</string>
+    <string name="currency_byn">Br</string>
+
+    <string name="filter_seller_title">Seller</string>
+    <string name="filter_seller_title_landlord">Landlord</string>
+    <string name="filter_seller_owner">Owner</string>
+    <string name="filter_seller_agent">Agent / Developer</string>
+    <string name="filter_seller_agency">Agency</string>
+
+    <string name="filter_only_with_photos">Only with photos</string>
+
+    <string name="sorting">Sorting</string>
+    <string name="sort_newest">Newest first</string>
+    <string name="sort_price_asc">Cheapest first</string>
+    <string name="sort_price_desc">Most expensive first</string>
+
+    <string name="deal_type">Deal type</string>
+    <string name="buy">Buy</string>
+    <string name="rent">Rent</string>
+    <string name="sell">Sale</string>
+    <string name="rent_out">Rent out</string>
+
+    <string name="filter_commercial_type_title">Type</string>
+    <string name="commercial_type_office">Offices</string>
+    <string name="commercial_type_shop">Shops</string>
+    <string name="commercial_type_industrial">Industrial</string>
+    <string name="commercial_type_warehouse">Warehouses</string>
+    <string name="commercial_type_other">Other</string>
+
+    <string name="area_title">Total area m²</string>
+    <string name="sale_area">Rental area m²</string>
+    <string name="land_area">Land area</string>
+    <string name="floor_title">Floor</string>
+    <string name="floor_house_title">Total floors</string>
+
+    <string name="clear_text">Clear</string>
+    <string name="apply_text">Apply</string>
+
+    <string name="filter_any">Any</string>
+    <string name="filter_from">From %1$s</string>
+    <string name="filter_to">To %1$s</string>
+    <string name="filter_from_to">From %1$s to %2$s</string>
+
+    <string name="amenities">Amenities</string>
+    <string name="amenity_finishing">Finishing</string>
+    <string name="amenity_private_bathroom">Private bathroom</string>
+    <string name="amenity_hot_water">Hot water</string>
+    <string name="amenity_cold_water">Cold water</string>
+    <string name="amenity_heating">Heating</string>
+    <string name="amenity_separate_entrance">Separate entrance</string>
+
+    <string name="no_address">No address</string>
+    <string name="area_value">Area: %1$.0f m²</string>
+    <string name="rooms_value">Rooms: %1$s</string>
+    <string name="floor_value">Floor: %1$s / %2$s</string>
+
+    <string name="error_default">Error</string>
+
+    <string name="new_ad_title">New listing</string>
+    <string name="cd_back">Back</string>
+    <string name="property_title_placeholder">Enter title</string>
+    <string name="publish_button">Publish</string>
+
+    <string name="add_photo">Add photo</string>
+    <string name="photos_count">%1$d photos</string>
+
+    <string name="not_specified">-</string>
+
+    <string name="register">Register</string>
+    <string name="first_name">First name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_email_in_use">Email already in use</string>
+    <string name="error_password_empty">Enter password</string>
+    <string name="error_password_short">Minimum 6 characters</string>
+    <string name="error_confirm_password_empty">Confirm password</string>
+    <string name="error_passwords_not_match">Passwords do not match</string>
+    <string name="error_unknown">Try again later</string>
+    <string name="error_empty_field">Field cannot be empty</string>
+    <string name="error_invalid_otp">Invalid verification code</string>
+    <string name="invalid_otp">Invalid code</string>
+
+    <string name="user_exists">User already exists</string>
+
+    <string name="enter_code_from_email">Enter the code sent to email</string>
+    <string name="code">Code</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="login">Login</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login_with_password">Login with password</string>
+    <string name="get_code">Get code</string>
+    <string name="no_account">Don\'t have an account?</string>
+
+    <string name="registration_success">Registration successful</string>
+    <string name="auth_required">Authorization required</string>
+    <string name="continue_as_guest">Continue as guest</string>
+
+    <string name="apply_request">Submit listing</string>
+    <string name="my_ads">My listings</string>
+    <string name="logout">Logout</string>
+
+    <string name="settings_app">App settings</string>
+    <string name="rate_app">Rate app</string>
+
+    <string name="select_seller_type">Select type</string>
+
+    <string name="language">Language</string>
+    <string name="app_theme">App theme</string>
+
+    <string name="system_theme">System</string>
+    <string name="dark_theme">Dark</string>
+    <string name="light_theme">Light</string>
+
+    <string name="language_russian">Russian</string>
+    <string name="language_english">English</string>
+
+    <string name="personal_info_title">Personal Info</string>
+
+    <string name="save">Save</string>
+    <string name="search">Search…</string>
+
+    <string name="favorite_title">Favorite</string>
+</resources>

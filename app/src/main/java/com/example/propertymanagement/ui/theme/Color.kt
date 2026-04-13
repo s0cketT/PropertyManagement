@@ -43,10 +43,26 @@ val DividerColor       = Color(0xFF424242)
 // TextField
 val TextFieldBorderInactive = DividerColor
 val TextFieldBorderFocused = PrimaryBlue
+val TextFieldBorderError = Color.Red
 val TextFieldCursor = PrimaryBlue
-val TextFieldTextColor = OnSurfaceVariant
 val TextFieldLabelColor = UnselectedGray
+val TextFieldBackground = Color(0xFF2C2C2C)
+val TextFieldTextColor = Color(0xFFE6E1E5)
+val TextFieldHintColor = Color(0xFF9E9E9E)
+val TextFieldCursorColor = Color(0xFF82B1FF)
+val TextFieldBorder = Color(0xFF444444)
+val TextFieldFocusedBorder = Color(0xFF82B1FF)
+
+// Light
+val TextFieldBackgroundLight = Color(0xFFF3F0F4)
+val TextFieldTextColorLight = Color(0xFF1C1B1F)
+val TextFieldHintColorLight = Color(0xFF9E9E9E)
+val TextFieldCursorColorLight = Color(0xFF2962FF)
+val TextFieldBorderLight = Color(0xFFCAC4D0)
+val TextFieldFocusedBorderLight = Color(0xFF2962FF)
 val CustomTextSelectionColors = TextSelectionColors(
     backgroundColor = PrimaryBlue,
     handleColor = PrimaryBlue
 )
+
+val SurfaceVariantDark = Color(0xFF4F4F4F)

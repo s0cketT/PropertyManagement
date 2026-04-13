@@ -19,21 +19,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.theme.SmallHorizontalPadding
 import com.example.propertymanagement.ui.theme.SpacerBetweenElements
-import com.example.propertymanagement.ui.theme.TopBarBackground
 import com.example.propertymanagement.ui.theme.TopBarHeight
 
+@Preview
 @Composable
 fun CustomFilterTopBar(
-    onCloseClick: () -> Unit,
-    onClearClick: () -> Unit,
+    onCloseClick: () -> Unit = {},
+    onClearClick: () -> Unit = {},
 ) {
     Column {
         Row(
             modifier = Modifier
-                .background(TopBarBackground)
+                .background(MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
                 .height(TopBarHeight)
                 .padding(horizontal = SmallHorizontalPadding),
@@ -56,7 +57,6 @@ fun CustomFilterTopBar(
                 modifier = Modifier.weight(1f)
             )
 
-            // Очистить справа
             TextButton(onClick = onClearClick) {
                 Text(
                     text = stringResource(R.string.clear_filters),

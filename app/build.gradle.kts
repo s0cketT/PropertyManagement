@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     id("com.google.devtools.ksp")
+
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 android {
@@ -45,6 +48,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.foundation)
     // Navigation Compose
     val nav_version = "2.8.0-beta01"
     implementation("androidx.navigation:navigation-compose:$nav_version")
@@ -74,6 +78,22 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
 
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.3.0"))
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    //implementation("io.github.jan-tennert.supabase:auth-kt")
+
+    // Ktor engine (ОБЯЗАТЕЛЬНО)
+    implementation("io.ktor:ktor-client-android:2.3.7")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

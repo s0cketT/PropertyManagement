@@ -1,11 +1,14 @@
 package com.example.propertymanagement.ui.map
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.propertymanagement.domain.model.PropertyMarker
+import com.example.propertymanagement.domain.common.Resource
+import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.PropertyStatus
+import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.UserLocation
-import com.example.propertymanagement.domain.use_case.GetMarkersUseCase
+import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import com.example.propertymanagement.ui.map_screen.MapEvent
@@ -15,12 +18,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.example.propertymanagement.domain.model.PropertyStatus
-import com.example.propertymanagement.domain.model.PropertyType
 
 class MapViewModel(
     private val observeLocationUseCase: ObserveLocationUseCase,
-    private val getMarkersUseCase: GetMarkersUseCase
+    private val getPropertiesUseCase: GetPropertiesUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MapState())
@@ -30,7 +32,7 @@ class MapViewModel(
     val event = _event.flow
 
     init {
-        loadMarkers()
+        loadProperties()
     }
 
     fun processIntent(intent: MapIntent) {
@@ -47,29 +49,23 @@ class MapViewModel(
 
             is MapIntent.ApplyStatusFilter -> {
                 _state.update { current ->
-                    val newSelected = when (intent.status) {
-                        // если null → полный сброс
-                        null -> emptySet()
 
-                        // если уже выбран → убираем (toggle)
+                    val newSelected = when (intent.status) {
+                        null -> emptySet()
                         else -> if (intent.status in current.selectedStatuses) {
                             current.selectedStatuses - intent.status
                         } else {
-                            // добавляем к уже выбранным
                             current.selectedStatuses + intent.status
                         }
                     }
 
-                    val filtered = if (newSelected.isEmpty()) {
-                        current.markers  // ничего не выбрано → все метки
-                    } else {
-                        current.markers.filter { it.status in newSelected }
-                    }
-                    Log.d("!!!", newSelected.toString())
-                    Log.d("!!!", filtered.size.toString())
                     current.copy(
                         selectedStatuses = newSelected,
-                        filteredMarkers = filtered
+                        filteredMarkers = computeFilteredMarkers(
+                            markers = current.markers,
+                            selectedStatuses = newSelected,
+                            selectedTypes = current.selectedTypes
+                        )
                     )
                 }
             }
@@ -120,26 +116,46 @@ class MapViewModel(
             }
         }
     }
-    private fun loadMarkers() {
 
+    private fun loadProperties() {
         viewModelScope.launch {
-
-            val markers = getMarkersUseCase()
-
+            val userId = getCurrentUserUseCase()?.id
             _state.update {
                 it.copy(
-                    markers = markers,
-                    filteredMarkers = markers
+                    currentUserId = userId,
+                    isLoading = true
                 )
+            }
+
+            when (val result = getPropertiesUseCase(userId)) {
+
+                is Resource.Success -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            markers = result.data,
+                            filteredMarkers = result.data
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = result.exception
+                        )
+                    }
+                }
             }
         }
     }
 
     private fun computeFilteredMarkers(
-        markers: List<PropertyMarker>,
+        markers: List<Property>,
         selectedStatuses: Set<PropertyStatus>,
         selectedTypes: Set<PropertyType>
-    ): List<PropertyMarker> {
+    ): List<Property> {
         return markers.filter { marker ->
             val statusMatch = selectedStatuses.isEmpty() || marker.status in selectedStatuses
             val typeMatch = selectedTypes.isEmpty() || marker.type in selectedTypes

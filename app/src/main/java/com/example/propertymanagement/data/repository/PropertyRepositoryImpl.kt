@@ -1,236 +1,65 @@
 package com.example.propertymanagement.data.repository
 
-import com.example.propertymanagement.domain.model.PropertyMarker
-import com.example.propertymanagement.domain.model.PropertyStatus
-import com.example.propertymanagement.domain.model.PropertyType
+import com.example.propertymanagement.data.mapper.toDomain
+import com.example.propertymanagement.data.mapper.toFullDto
+import com.example.propertymanagement.data.model.CreateImageRequestDto
+import com.example.propertymanagement.data.remote.ISupabaseApi
+import com.example.propertymanagement.domain.model.CreateProperty
+import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.repository.IPropertyRepository
+import com.example.propertymanagement.domain.repository.IStorageRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
-class PropertyRepositoryImpl : IPropertyRepository {
+class PropertyRepositoryImpl(
+    private val supabaseApi: ISupabaseApi,
+    private val storageRepository: IStorageRepository
+) : IPropertyRepository {
 
-    override suspend fun getMarkers(): List<PropertyMarker> {
-        return listOf(
-            PropertyMarker(
-                id = "1",
-                lat = 53.9007,
-                lon = 30.3314,
-                type = PropertyType.COMMERCIAL,
-                squareMeters = 120.5,
-                rooms = 4,
-                bedrooms = null,
-                bathrooms = 2,
-                price = 450000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Советская, 12, офис 305",
-                description = "Современный офис в центре с панорамными окнами",
-                photos = listOf("https://example.com/photo1.jpg"),
-                floor = 3,
-                totalFloors = 7,
-                yearBuilt = 2018,
-                ownerId = "user_101",
-                isFavorite = false,
-                amenities = listOf("WiFi", "Парковка", "Кондиционер")
-            ),
-            PropertyMarker(
-                id = "2",
-                lat = 53.9012,
-                lon = 30.3320,
-                type = PropertyType.APARTMENT,
-                squareMeters = 68.0,
-                rooms = 3,
-                bedrooms = 2,
-                bathrooms = 1,
-                price = 1200.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_RENT,
-                address = "пр. Победы, 45, кв. 12",
-                description = "Уютная 3-комнатная квартира с ремонтом",
-                photos = listOf("https://example.com/apart1.jpg", "https://example.com/apart2.jpg"),
-                floor = 5,
-                totalFloors = 9,
-                yearBuilt = 2015,
-                ownerId = "user_202",
-                isFavorite = true,
-                amenities = listOf("Балкон", "Лифт", "Детская площадка")
-            ),
-            PropertyMarker(
-                id = "3",
-                lat = 53.9018,
-                lon = 30.3330,
-                type = PropertyType.HOUSE,
-                squareMeters = 180.0,
-                rooms = 5,
-                bedrooms = 4,
-                bathrooms = 2,
-                price = 320000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Лесная, 8",
-                description = "Просторный дом с участком 12 соток",
-                photos = emptyList(),
-                floor = null,
-                totalFloors = 2,
-                yearBuilt = 2008,
-                ownerId = "user_303",
-                isFavorite = false,
-                amenities = listOf("Гараж", "Баня", "Сад")
-            ),
-            PropertyMarker(
-                id = "4",
-                lat = 53.9025,
-                lon = 30.3340,
-                type = PropertyType.GARAGE,
-                squareMeters = 24.0,
-                rooms = null,
-                bedrooms = null,
-                bathrooms = null,
-                price = 18000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "Гаражный кооператив 'Северный', бокс 45",
-                description = "Капитальный гараж с электричеством и смотровой ямой",
-                photos = listOf("https://example.com/garage.jpg"),
-                floor = null,
-                totalFloors = null,
-                yearBuilt = 2010,
-                ownerId = "user_404",
-                isFavorite = false,
-                amenities = listOf("Смотровая яма", "Электричество")
-            ),
-            // Добавь ещё 5–6 объектов по аналогии, если нужно больше тестовых данных
-            PropertyMarker(
-                id = "5",
-                lat = 53.8999,
-                lon = 30.3300,
-                type = PropertyType.COMMERCIAL,
-                squareMeters = 85.0,
-                rooms = null,
-                bedrooms = null,
-                bathrooms = 1,
-                price = 280000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Кирова, 22, этаж 4",
-                description = "Офисное помещение под ключ",
-                photos = emptyList(),
-                floor = 4,
-                totalFloors = 6,
-                yearBuilt = 2020,
-                ownerId = "user_505",
-                isFavorite = false,
-                amenities = listOf("Охрана", "Видеонаблюдение")
-            ),
+    override suspend fun getProperties(userId: String?): List<Property> {
+        return supabaseApi.getProperties(userId).map { it.toDomain() }
+    }
 
-            PropertyMarker(
-                id = "11",
-                lat = 53.9189,
-                lon = 30.3030,
-                type = PropertyType.APARTMENT,
-                squareMeters = 55.0,
-                rooms = 2,
-                bedrooms = 1,
-                bathrooms = 1,
-                price = 800.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_RENT,
-                address = "ул. Якубовского, 10, кв. 45",
-                description = "Двушка в хорошем состоянии, рядом парк",
-                photos = listOf("https://example.com/yakub1.jpg"),
-                floor = 7,
-                totalFloors = 9,
-                yearBuilt = 2012,
-                ownerId = "user_111",
-                isFavorite = false,
-                amenities = listOf("Лифт", "Парковка", "Интернет")
-            ),
-            PropertyMarker(
-                id = "12",
-                lat = 53.9175,
-                lon = 30.3080,
-                type = PropertyType.COMMERCIAL,
-                squareMeters = 95.0,
-                rooms = null,
-                bedrooms = null,
-                bathrooms = 1,
-                price = 150000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Якубовского, 20, офис 3",
-                description = "Офис в новом бизнес-центре",
-                photos = emptyList(),
-                floor = 2,
-                totalFloors = 5,
-                yearBuilt = 2022,
-                ownerId = "user_222",
-                isFavorite = true,
-                amenities = listOf("Охрана", "Конференц-зал", "WiFi")
-            ),
-            PropertyMarker(
-                id = "13",
-                lat = 53.9191,
-                lon = 30.3070,
-                type = PropertyType.APARTMENT,
-                squareMeters = 78.0,
-                rooms = 3,
-                bedrooms = 2,
-                bathrooms = 1,
-                price = 950.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_RENT,
-                address = "ул. Якубовского, 51, кв. 18",
-                description = "Трёшка с балконом и видом на двор",
-                photos = listOf("https://example.com/yakub2.jpg"),
-                floor = 4,
-                totalFloors = 10,
-                yearBuilt = 2010,
-                ownerId = "user_333",
-                isFavorite = false,
-                amenities = listOf("Детская площадка", "Парковка")
-            ),
-            PropertyMarker(
-                id = "14",
-                lat = 53.9164,
-                lon = 30.3165,
-                type = PropertyType.HOUSE,
-                squareMeters = 140.0,
-                rooms = 4,
-                bedrooms = 3,
-                bathrooms = 2,
-                price = 220000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Якубовского, 14/7",
-                description = "Частный дом с участком и гаражом",
-                photos = listOf("https://example.com/yakub_house.jpg"),
-                floor = null,
-                totalFloors = 2,
-                yearBuilt = 2005,
-                ownerId = "user_444",
-                isFavorite = false,
-                amenities = listOf("Гараж", "Сад", "Баня")
-            ),
-            PropertyMarker(
-                id = "15",
-                lat = 53.9186,
-                lon = 30.2980,
-                type = PropertyType.GARAGE,
-                squareMeters = 28.0,
-                rooms = null,
-                bedrooms = null,
-                bathrooms = null,
-                price = 22000.0,
-                currency = "BYN",
-                status = PropertyStatus.FOR_SALE,
-                address = "ул. Якубовского, 40, бокс 12",
-                description = "Металлический гараж в кооперативе",
-                photos = emptyList(),
-                floor = null,
-                totalFloors = null,
-                yearBuilt = 2019,
-                ownerId = "user_555",
-                isFavorite = false,
-                amenities = listOf("Электричество")
-            )
+    override suspend fun createProperty(
+        request: CreateProperty
+    ): Int {
+        return supabaseApi.createFullProperty(
+            request.toFullDto()
         )
+    }
+
+    override suspend fun saveImages(
+        propertyId: Int,
+        imageUrls: List<String>
+    ) = coroutineScope {
+
+        imageUrls.map { url ->
+            async {
+                supabaseApi.createImage(
+                    CreateImageRequestDto(
+                        property_id = propertyId,
+                        url = url
+                    )
+                )
+            }
+        }.awaitAll()
+
+        Unit
+    }
+
+    override suspend fun deleteProperty(propertyId: Int) = coroutineScope {
+
+        val images = supabaseApi.getImagesByPropertyId("eq.$propertyId")
+
+        images.map { image ->
+            async {
+                runCatching {
+                    storageRepository.deleteImage(image.url)
+                }
+            }
+        }.awaitAll()
+
+        supabaseApi.deleteProperty("eq.$propertyId")
     }
 }

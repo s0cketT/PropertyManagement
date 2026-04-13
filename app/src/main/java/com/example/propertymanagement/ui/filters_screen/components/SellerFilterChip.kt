@@ -9,20 +9,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
-import com.example.propertymanagement.ui.theme.DividerColor
-import com.example.propertymanagement.ui.theme.FilterChipIconSelected
-import com.example.propertymanagement.ui.theme.FilterChipSelected
-import com.example.propertymanagement.ui.theme.FilterChipTextSelected
-import com.example.propertymanagement.ui.theme.FilterChipTextUnselected
 import com.example.propertymanagement.ui.theme.HeightFilterChip
 
+@Preview
 @Composable
 fun SellerFilterChip(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit
+    text: String = "",
+    selected: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     FilterChip(
         selected = selected,
@@ -30,20 +27,21 @@ fun SellerFilterChip(
         label = {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (selected) FilterChipTextSelected else FilterChipTextUnselected
+                style = MaterialTheme.typography.bodyMedium
             )
         },
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.Transparent,
-            selectedContainerColor = FilterChipSelected,
-            labelColor = FilterChipTextUnselected,
-            selectedLabelColor = FilterChipTextSelected,
-            selectedLeadingIconColor = FilterChipIconSelected
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
+            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+
+            selectedLeadingIconColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         border = FilterChipDefaults.filterChipBorder(
             borderWidth = if (selected) 0.dp else 1.dp,
-            borderColor = DividerColor,
+            borderColor = MaterialTheme.colorScheme.outline,
             selected = selected,
             enabled = true
         ),

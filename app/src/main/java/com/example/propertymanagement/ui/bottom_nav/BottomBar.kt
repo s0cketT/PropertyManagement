@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,13 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.propertymanagement.ui.theme.BottomBarBackground
 import com.example.propertymanagement.ui.theme.BottomBarIconSize
 import com.example.propertymanagement.ui.theme.BottomBarTextLineHeight
 import com.example.propertymanagement.ui.theme.BottomBarTextSize
 import com.example.propertymanagement.ui.theme.BottomBarVerticalPadding
-import com.example.propertymanagement.ui.theme.PrimaryBlue
-import com.example.propertymanagement.ui.theme.UnselectedGray
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -47,7 +45,7 @@ fun BottomBar(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(BottomBarBackground)
+            .background(MaterialTheme.colorScheme.surface)
             .navigationBarsPadding()
             .padding(vertical = BottomBarVerticalPadding),
         horizontalArrangement = Arrangement.SpaceAround,
@@ -66,7 +64,6 @@ fun BottomBar(navController: NavController) {
                     }
                 }
             )
-
         }
     }
 }
@@ -84,7 +81,11 @@ private fun BottomBarItem(
     )
 
     val color by animateColorAsState(
-        targetValue = if (selected) PrimaryBlue else UnselectedGray,
+        targetValue = if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
         label = "color"
     )
 

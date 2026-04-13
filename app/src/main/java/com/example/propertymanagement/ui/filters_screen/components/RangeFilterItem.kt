@@ -31,16 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.IntRangeFilter
+import com.example.propertymanagement.ui.components.WheelPicker
 import com.example.propertymanagement.ui.theme.BottomBarTextLineHeight
-import com.example.propertymanagement.ui.theme.DividerColor
 import com.example.propertymanagement.ui.theme.DividerThickness
 import com.example.propertymanagement.ui.theme.IconSizeArrow
-import com.example.propertymanagement.ui.theme.OnSurfaceVariant
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
-import com.example.propertymanagement.ui.theme.PrimaryBlue
 import com.example.propertymanagement.ui.theme.SpacerMedium
-import com.example.propertymanagement.ui.theme.UnselectedGray
 import com.example.propertymanagement.ui.theme.VerticalPaddingItem
 import com.example.propertymanagement.ui.theme.VerticalPaddingItemSmall
 
@@ -55,6 +52,8 @@ fun RangeFilterItem(
 ) {
     var isSheetOpen by remember { mutableStateOf(false) }
 
+    val isSelected = range?.from != null || range?.to != null
+
     val displayText = range?.let {
         when {
             it.from != null && it.to != null -> stringResource(
@@ -68,53 +67,61 @@ fun RangeFilterItem(
         }
     } ?: stringResource(id = titleResId)
 
-    Column(modifier = Modifier) {
+    Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { isSheetOpen = true }
-                .padding(vertical =
-                    if (range?.from != null || range?.to != null) VerticalPaddingItemSmall else VerticalPaddingItem,
+                .padding(
+                    vertical = if (isSelected) VerticalPaddingItemSmall else VerticalPaddingItem,
                     horizontal = PaddingLarge
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                if (range?.from != null || range?.to != null) {
+
+                if (isSelected) {
                     Text(
                         text = stringResource(id = titleResId),
                         style = MaterialTheme.typography.labelSmall,
-                        color = UnselectedGray,
-
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
                 Text(
                     text = displayText,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if (range?.from != null || range?.to != null) OnSurfaceVariant else UnselectedGray,
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
             }
 
-            if (range?.from != null || range?.to != null) {
+            if (isSelected) {
                 IconButton(onClick = { onApply(IntRangeFilter()) }) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(id = R.string.clear_text),
-                        tint = UnselectedGray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = UnselectedGray,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(IconSizeArrow)
                 )
             }
         }
 
-        HorizontalDivider(color = DividerColor, thickness = DividerThickness, modifier = Modifier.padding(horizontal = PaddingLarge))
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = DividerThickness,
+            modifier = Modifier.padding(horizontal = PaddingLarge)
+        )
     }
 
     if (isSheetOpen) {
@@ -148,20 +155,17 @@ private fun RangeFilterBottomSheet(
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
-        confirmValueChange = { newValue ->
-            newValue != SheetValue.Hidden
-        }
+        confirmValueChange = { newValue -> newValue != SheetValue.Hidden }
     )
 
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = {},
         dragHandle = null,
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
 
             Row(
                 modifier = Modifier
@@ -174,14 +178,14 @@ private fun RangeFilterBottomSheet(
                 Text(
                     text = stringResource(id = titleResId),
                     style = MaterialTheme.typography.titleMedium,
-                    color = OnSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 IconButton(onClick = { onClose() }) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(id = R.string.close),
-                        tint = UnselectedGray,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(IconSizeArrow)
                     )
                 }
@@ -215,7 +219,7 @@ private fun RangeFilterBottomSheet(
             }
 
             HorizontalDivider(
-                color = DividerColor,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 thickness = DividerThickness
             )
 
@@ -234,7 +238,7 @@ private fun RangeFilterBottomSheet(
 
                 Text(
                     text = stringResource(id = R.string.clear_text),
-                    color = UnselectedGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         lineHeight = BottomBarTextLineHeight
                     ),
@@ -242,7 +246,6 @@ private fun RangeFilterBottomSheet(
                         .clickable {
                             fromValue = null
                             toValue = null
-
                             resetTrigger++
                         }
                         .padding(PaddingMedium)
@@ -250,7 +253,7 @@ private fun RangeFilterBottomSheet(
 
                 Text(
                     text = stringResource(id = R.string.apply_text),
-                    color = PrimaryBlue,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         lineHeight = BottomBarTextLineHeight
                     ),

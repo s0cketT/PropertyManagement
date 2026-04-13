@@ -3,17 +3,13 @@ package com.example.propertymanagement.ui.filters_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
-import com.example.propertymanagement.domain.model.SortType
-import com.example.propertymanagement.domain.model.StringRangeFilter
-import com.example.propertymanagement.domain.use_case.GetSelectedPropertyMarkerUseCase
+import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.SaveSelectedFiltersMarkerUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
-import com.example.propertymanagement.ui.extensions.clearIntRanges
-import com.example.propertymanagement.ui.extensions.clearPrice
 import com.example.propertymanagement.ui.extensions.clearPricePerMeter
+import com.example.propertymanagement.ui.mapper.toState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class FiltersViewModel(
-    private val getSelectedPropertyMarkerUseCase: GetSelectedPropertyMarkerUseCase,
+    private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
     private val saveSelectedFiltersMarkerUseCase: SaveSelectedFiltersMarkerUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(FiltersState())
@@ -38,39 +34,12 @@ class FiltersViewModel(
     }
 
     private fun loadSelectedMarker() {
-        getSelectedPropertyMarkerUseCase()
+        getFilterPropertyUseCase()
             .distinctUntilChanged()
             .onEach { filterProperty ->
                 Log.d("!!!", filterProperty.toString())
                 _state.update {
-                    it.copy(
-                        selectedPropertyType = filterProperty?.type,
-
-                        price = StringRangeFilter(
-                            from = filterProperty?.price?.from?.toString(),
-                            to = filterProperty?.price?.to?.toString()
-                        ),
-
-                        pricePerMeter = StringRangeFilter(
-                            from = filterProperty?.pricePerMeter?.from?.toString(),
-                            to = filterProperty?.pricePerMeter?.to?.toString()
-                        ),
-
-                        area = filterProperty?.area ?: IntRangeFilter(),
-                        floor = filterProperty?.floor ?: IntRangeFilter(),
-                        floorHouse = filterProperty?.floorHouse ?: IntRangeFilter(),
-                        separateRooms = filterProperty?.separateRooms ?: IntRangeFilter(),
-
-                        selectedCurrency = filterProperty?.selectedCurrency ?: CurrencyType.USD,
-
-                        selectedSellerType = filterProperty?.selectedSellerType,
-                        onlyWithPhotos = filterProperty?.onlyWithPhotos ?: false,
-                        sortType = filterProperty?.sortType ?: SortType.NEWEST,
-                        selectedDealType = filterProperty?.selectedDealType,
-                        selectedCommercialPropertyType = filterProperty?.selectedCommercialPropertyType,
-
-                        commercialAmenities = filterProperty?.commercialAmenities ?: emptySet()
-                    )
+                    filterProperty?.toState() ?: FiltersState()
                 }
             }
             .launchIn(viewModelScope)
@@ -81,19 +50,7 @@ class FiltersViewModel(
 
             is FiltersIntent.ClearFilters -> {
                 _state.update {
-                    it.copy(
-                        selectedPropertyType = null,
-
-                        selectedSellerType = null,
-                        onlyWithPhotos = false,
-                        sortType = SortType.NEWEST,
-                        selectedDealType = null,
-                        selectedCommercialPropertyType = null,
-                        commercialAmenities = emptySet(),
-                        )
-                        .clearPricePerMeter()
-                        .clearPrice()
-                        .clearIntRanges()
+                    FiltersState()
                 }
             }
 
@@ -103,18 +60,12 @@ class FiltersViewModel(
                         FiltersProperty(
                             type = state.value.selectedPropertyType,
 
-                            price = state.value.price.let { range ->
-                                IntRangeFilter(
-                                    from = range.from?.toIntOrNull(),
-                                    to = range.to?.toIntOrNull()
-                                )
+                            price = state.value.price.let {
+                                IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
                             },
 
-                            pricePerMeter = state.value.pricePerMeter.let { range ->
-                                IntRangeFilter(
-                                    from = range.from?.toIntOrNull(),
-                                    to = range.to?.toIntOrNull()
-                                )
+                            pricePerMeter = state.value.pricePerMeter.let {
+                                IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
                             },
 
                             area = state.value.area,
@@ -123,13 +74,39 @@ class FiltersViewModel(
                             separateRooms = state.value.separateRooms,
 
                             selectedCurrency = state.value.selectedCurrency,
-                            selectedSellerType = state.value.selectedSellerType,
+                            selectedSellerType = state.value.sellerType,
                             onlyWithPhotos = state.value.onlyWithPhotos,
                             sortType = state.value.sortType,
-                            selectedDealType = state.value.selectedDealType,
-                            selectedCommercialPropertyType = state.value.selectedCommercialPropertyType,
+                            selectedDealType = state.value.dealType,
+                            selectedCommercialPropertyType = state.value.commercialPropertyType,
 
-                            commercialAmenities = state.value.commercialAmenities
+                            commercialAmenities = state.value.commercialAmenities,
+                            commercialRepairType = state.value.commercialRepairType,
+
+                            roomsForSale = state.value.roomsForSale,
+                            saleArea = state.value.saleArea,
+
+                            roomsType = state.value.roomsType,
+                            isWalkthroughRoom = state.value.isWalkthroughRoom,
+                            livingArea = state.value.livingArea,
+                            kitchenArea = state.value.kitchenArea,
+                            bathroomType = state.value.bathroomType,
+                            balconyType = state.value.balconyType,
+                            ceilingHeight = state.value.ceilingHeight,
+                            repairType = state.value.repairType,
+                            wallMaterial = state.value.wallMaterial,
+                            yearBuilt = state.value.yearBuilt,
+                            buildingAmenities = state.value.buildingAmenities,
+
+                            houseType = state.value.houseType,
+                            landArea = state.value.landArea,
+                            roofType = state.value.roofType,
+                            heatingType = state.value.heatingType,
+                            waterType = state.value.waterType,
+                            gasType = state.value.gasType,
+                            houseAmenities = state.value.houseAmenities,
+
+                            parkingType = state.value.parkingType
                         )
                     )
                     _event.emit(FiltersEvent.NavigateBack)
@@ -153,40 +130,31 @@ class FiltersViewModel(
             }
 
             is FiltersIntent.CurrencyChanged -> {
-                _state.update {
-                    it.copy(selectedCurrency = intent.currency)
-                }
+                _state.update { it.copy(selectedCurrency = intent.currency) }
             }
 
             is FiltersIntent.PriceChanged -> {
-                _state.update {
-                    it.copy(price = intent.range)
-                }
+                _state.update { it.copy(price = intent.range) }
             }
 
             is FiltersIntent.PricePerMeterChanged -> {
-                _state.update {
-                    it.copy(pricePerMeter = intent.range)
-                }
+                _state.update { it.copy(pricePerMeter = intent.range) }
             }
 
             is FiltersIntent.ClearPropertyType -> {
                 _state.update {
-                    it.copy(
-                        selectedPropertyType = null,
-                        selectedDealType = null,
-                        selectedCommercialPropertyType = null,
-                        commercialAmenities = emptySet(),
-                        )
-                        .clearPricePerMeter()
-                        .clearIntRanges()
+                    FiltersState(
+                        selectedCurrency = it.selectedCurrency,
+                        price = it.price,
+                        sellerType = it.sellerType,
+                        onlyWithPhotos = it.onlyWithPhotos,
+                        sortType = it.sortType
+                    )
                 }
             }
 
             is FiltersIntent.SellerTypeChanged -> {
-                _state.update {
-                    it.copy(selectedSellerType = intent.type)
-                }
+                _state.update { it.copy(sellerType = intent.type) }
             }
 
             is FiltersIntent.OnlyWithPhotosChanged -> {
@@ -194,18 +162,16 @@ class FiltersViewModel(
             }
 
             is FiltersIntent.SortChanged -> {
-                _state.update {
-                    it.copy(sortType = intent.type)
-                }
+                _state.update { it.copy(sortType = intent.type) }
             }
 
             is FiltersIntent.CommercialDealTypeChanged -> {
                 _state.update { state ->
-                    val updated = state.copy(selectedDealType = intent.type)
+                    val updated = state.copy(dealType = intent.type)
 
                     if (intent.type == null) {
                         updated.copy(
-                            selectedCommercialPropertyType = null
+                            commercialPropertyType = null
                         ).clearPricePerMeter()
                     } else {
                         updated
@@ -214,44 +180,117 @@ class FiltersViewModel(
             }
 
             is FiltersIntent.CommercialPropertyTypeChanged -> {
-                _state.update {
-                    it.copy(selectedCommercialPropertyType = intent.type)
-                }
+                _state.update { it.copy(commercialPropertyType = intent.type) }
             }
 
 
             is FiltersIntent.AreaChanged -> {
-                _state.update {
-                    it.copy(area = intent.range)
-                }
+                _state.update { it.copy(area = intent.range) }
             }
 
             is FiltersIntent.FloorChanged -> {
-                _state.update {
-                    it.copy(floor = intent.range)
-                }
+                _state.update { it.copy(floor = intent.range) }
             }
 
             is FiltersIntent.FloorHouseChanged -> {
-                _state.update {
-                    it.copy(floorHouse = intent.range)
-                }
+                _state.update { it.copy(floorHouse = intent.range) }
             }
 
             is FiltersIntent.SeparateRoomsChanged -> {
-                _state.update {
-                    it.copy(separateRooms = intent.range)
-                }
+                _state.update { it.copy(separateRooms = intent.range) }
             }
 
             is FiltersIntent.AmenitiesChanged -> {
-                _state.update {
-                    it.copy(
-                        commercialAmenities = intent.amenities
-                    )
-                }
+                _state.update { it.copy(commercialAmenities = intent.amenities) }
             }
 
+            is FiltersIntent.RoomsTypeChanged -> {
+                _state.update { it.copy(roomsType = intent.type) }
+            }
+
+            is FiltersIntent.WalkthroughChanged -> {
+                _state.update { it.copy(isWalkthroughRoom = intent.value) }
+            }
+
+            is FiltersIntent.LivingAreaChanged -> {
+                _state.update { it.copy(livingArea = intent.range) }
+            }
+
+            is FiltersIntent.KitchenAreaChanged -> {
+                _state.update { it.copy(kitchenArea = intent.range) }
+            }
+
+            is FiltersIntent.BathroomTypeChanged -> {
+                _state.update { it.copy(bathroomType = intent.type) }
+            }
+
+            is FiltersIntent.BalconyTypeChanged -> {
+                _state.update { it.copy(balconyType = intent.type) }
+            }
+
+            is FiltersIntent.CeilingHeightChanged -> {
+                _state.update { it.copy(ceilingHeight = intent.type) }
+            }
+
+            is FiltersIntent.RepairTypeChanged -> {
+                _state.update { it.copy(repairType = intent.type) }
+            }
+
+            is FiltersIntent.WallMaterialChanged -> {
+                _state.update { it.copy(wallMaterial = intent.type) }
+            }
+
+            is FiltersIntent.YearBuiltChanged -> {
+                _state.update { it.copy(yearBuilt = intent.year) }
+            }
+
+            is FiltersIntent.BuildingAmenitiesChanged -> {
+                _state.update { it.copy(buildingAmenities = intent.amenities) }
+            }
+
+            is FiltersIntent.CommercialRepairTypeChanged -> {
+                _state.update { it.copy(commercialRepairType = intent.type) }
+            }
+
+            is FiltersIntent.RoomsForSaleChanged -> {
+                _state.update { it.copy(roomsForSale = intent.type) }
+            }
+
+            is FiltersIntent.SaleAreaChanged -> {
+                _state.update { it.copy(saleArea = intent.range) }
+            }
+
+            is FiltersIntent.HouseTypeChanged -> {
+                _state.update { it.copy(houseType = intent.type) }
+            }
+
+            is FiltersIntent.LandAreaChanged -> {
+                _state.update { it.copy(landArea = intent.range) }
+            }
+
+            is FiltersIntent.RoofTypeChanged -> {
+                _state.update { it.copy(roofType = intent.type) }
+            }
+
+            is FiltersIntent.HeatingTypeChanged -> {
+                _state.update { it.copy(heatingType = intent.type) }
+            }
+
+            is FiltersIntent.WaterTypeChanged -> {
+                _state.update { it.copy(waterType = intent.type) }
+            }
+
+            is FiltersIntent.GasTypeChanged -> {
+                _state.update { it.copy(gasType = intent.type) }
+            }
+
+            is FiltersIntent.HouseAmenitiesChanged -> {
+                _state.update { it.copy(houseAmenities = intent.amenities) }
+            }
+
+            is FiltersIntent.ParkingTypeChanged -> {
+                _state.update { it.copy(parkingType = intent.type) }
+            }
         }
     }
 }

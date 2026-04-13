@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">PropertyManagement</string>
 
     <string name="filters_title">Фильтры</string>
@@ -16,7 +16,6 @@
     <!-- Категории -->
     <string name="category_apartments">Квартиры</string>
     <string name="category_houses">Дома</string>
-    <string name="category_land">Участки</string>
     <string name="category_commercial">Коммерческая недвижимость</string>
     <string name="category_garages">Гаражи и парковки</string>
     <string name="category_rooms">Комнаты</string>
@@ -66,6 +65,8 @@
     <string name="deal_type">Тип сделки</string>
     <string name="buy">Купить</string>
     <string name="rent">Снять</string>
+    <string name="sell">Продажа</string>
+    <string name="rent_out">Сдача</string>
 
     <string name="filter_commercial_type_title">Тип</string>
     <string name="commercial_type_office">Офисы</string>
@@ -74,10 +75,11 @@
     <string name="commercial_type_warehouse">Склады</string>
     <string name="commercial_type_other">Прочая коммерческая</string>
 
-    <string name="area_title">Общая площадь</string>
+    <string name="area_title">Общая площадь м²</string>
+    <string name="sale_area">Площадь для сдачи м²</string>
+    <string name="land_area">Площадь участка</string>
     <string name="floor_title">Этаж</string>
     <string name="floor_house_title">Этажность дома</string>
-    <string name="separate_rooms_title">Количество раздельных помещений</string>
     <string name="clear_text">Очистить</string>
     <string name="apply_text">Применить</string>
 
@@ -93,4 +95,193 @@
     <string name="amenity_cold_water">Холодная вода</string>
     <string name="amenity_heating">Отопление</string>
     <string name="amenity_separate_entrance">Отдельный вход</string>
+
+    <string name="no_address">Без адреса</string>
+    <string name="area_value">Площадь: %1$.0f м²</string>
+    <string name="rooms_value">Комнаты: %1$s</string>
+    <string name="floor_value">Этаж: %1$s / %2$s</string>
+
+    <string name="error_default">Ошибка</string>
+
+    <string name="new_ad_title">Новое объявление</string>
+    <string name="cd_back">Назад</string>
+    <string name="property_title_placeholder">Введите название</string>
+    <string name="publish_button">Опубликовать</string>
+
+    <string name="add_photo">Добавить фото</string>
+    <string name="photos_count">%1$d фото</string>
+
+    <string name="filter_repair_type_title">Ремонт</string>
+    <string name="repair_office_finish">Офисная отделка</string>
+    <string name="repair_requires_capital">Требуется капитальный ремонт</string>
+    <string name="repair_requires_cosmetic">Требуется косметический ремонт</string>
+
+    <string name="rooms_1">1</string>
+    <string name="rooms_2">2</string>
+    <string name="rooms_3">3</string>
+    <string name="rooms_4">4</string>
+    <string name="rooms_5">5</string>
+    <string name="rooms_5_plus">Больше 5</string>
+
+    <string name="is_walkthrough_room">Есть проходная комната</string>
+
+    <string name="living_area_title">Жилая площадь</string>
+    <string name="kitchen_area_title">Площадь кухни</string>
+
+    <string name="balcony_title">Балкон</string>
+    <string name="balcony_none">Нет</string>
+    <string name="balcony_balcony">Балкон</string>
+    <string name="balcony_loggia">Лоджия</string>
+    <string name="balcony_two_plus">Два</string>
+
+    <string name="bathroom_title">Санузел</string>
+    <string name="bathroom_separate">Раздельный</string>
+    <string name="bathroom_combined">Совмещённый</string>
+    <string name="bathroom_two">Два</string>
+    <string name="bathroom_three_plus">3+</string>
+
+    <string name="repair_title">Ремонт</string>
+    <string name="repair_cosmetic">Косметический</string>
+    <string name="repair_euro">Евроремонт</string>
+    <string name="repair_designer">Дизайнерский</string>
+    <string name="repair_rough">Черновая отделка</string>
+    <string name="repair_needs">Требует ремонта</string>
+    <string name="repair_emergency">Аварийное</string>
+
+    <string name="ceiling_title">Высота потолков</string>
+    <string name="ceiling_2_5">от 2.5 м</string>
+    <string name="ceiling_2_7">от 2.7 м</string>
+    <string name="ceiling_3_0">от 3 м</string>
+    <string name="ceiling_3_5">от 3.5 м</string>
+    <string name="ceiling_4_0">от 4 м</string>
+
+    <string name="wall_material_title">Материал стен</string>
+    <string name="wall_panel">Панельный</string>
+    <string name="wall_monolith">Монолитный</string>
+    <string name="wall_brick">Кирпичный</string>
+
+    <string name="year_built">Год постройки</string>
+    <string name="rooms_title">Количество комнат</string>
+
+    <string name="building_amenities_title">Удобства дома</string>
+    <string name="amenity_elevator">Лифт</string>
+    <string name="amenity_trash_chute">Мусоропровод</string>
+    <string name="amenity_gated_area">Закрытая территория</string>
+    <string name="amenity_intercom">Домофон</string>
+    <string name="amenity_basement">Подвал</string>
+
+    <string name="rooms_for_sale_title">Кол-во предлагаемых комнат</string>
+
+    <string name="roof_type_title">Тип крыши</string>
+    <string name="roof_flat">Плоская</string>
+    <string name="roof_single_slope">Односкатная</string>
+    <string name="roof_double_slope">Двускатная</string>
+    <string name="roof_other">Другое</string>
+
+    <string name="heating_type_title">Отопление</string>
+    <string name="heating_gas">Газовое</string>
+    <string name="heating_central">Центральное</string>
+    <string name="heating_electric">Электрическое</string>
+    <string name="heating_stove">Печное</string>
+    <string name="heating_none">Нет</string>
+
+    <string name="water_type_title">Водоснабжение</string>
+    <string name="water_well">Скважина</string>
+    <string name="water_well_shaft">Колодец</string>
+    <string name="water_central">Центральное</string>
+    <string name="water_none">Нет</string>
+
+    <string name="gas_type_title">Газ</string>
+    <string name="gas_in_house">В доме</string>
+    <string name="gas_nearby">Рядом</string>
+    <string name="gas_none">Нет</string>
+
+    <string name="house_amenities">Удобства дома</string>
+    <string name="house_amenity_fireplace">Камин</string>
+    <string name="house_amenity_furniture">Мебель</string>
+    <string name="house_amenity_jacuzzi">Джакузи</string>
+    <string name="house_amenity_parking">Парковка</string>
+    <string name="house_amenity_garage">Гараж</string>
+    <string name="house_amenity_security">Охрана</string>
+
+    <string name="house_type_title">Тип дома</string>
+    <string name="house_type_house">Дом</string>
+    <string name="house_type_cottage">Коттедж</string>
+    <string name="house_type_dacha">Дача</string>
+    <string name="house_type_other">Другое</string>
+
+    <string name="parking_type_title">Тип парковки</string>
+    <string name="parking_roof">Крытая</string>
+    <string name="parking_underground">Подземная</string>
+    <string name="parking_ground">Наземная</string>
+    <string name="parking_open">Открытая</string>
+
+    <string name="not_specified">-</string>
+
+
+    <string name="register">Регистрация</string>
+    <!-- Поля -->
+    <string name="first_name">Имя</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <!-- Ошибки -->
+    <string name="error_invalid_email">Неверный формат почты</string>
+    <string name="error_email_in_use">Почта уже используется</string>
+    <string name="error_password_empty">Введите пароль</string>
+    <string name="error_password_short">Минимум 6 символов</string>
+    <string name="error_confirm_password_empty">Подтвердите пароль</string>
+    <string name="error_passwords_not_match">Пароли не совпадают</string>
+    <string name="error_unknown">Повторите попытку позже</string>
+    <string name="error_empty_field">Поле не может быть пустым</string>
+    <string name="error_invalid_otp">Неверный код подтверждения</string>
+    <string name="invalid_otp">Неверный код</string>
+    <!-- Инфо -->
+    <string name="user_exists">Пользователь существует</string>
+
+
+    <string name="enter_code_from_email">Введите код отправленный на почту</string>
+    <string name="code">Код</string>
+    <string name="confirm">Подтвердить</string>
+
+    <string name="login">Войти</string>
+    <string name="already_have_account">Уже есть аккаунт?</string>
+
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="login_with_password">Вход по паролю</string>
+    <string name="get_code">Получить код</string>
+    <string name="no_account">Нет аккаунта?</string>
+
+    <string name="registration_success">Регистрация прошла успешно</string>
+    <string name="auth_required">Вам необходимо авторизоваться</string>
+    <string name="continue_as_guest">Войти как гость</string>
+
+    <string name="apply_request">Подать объявление</string>
+    <string name="my_ads">Мои объявления</string>
+    <string name="logout">Выйти</string>
+
+    <string name="settings_app">Настройки приложения</string>
+    <string name="rate_app">Оценить</string>
+
+    <string name="select_seller_type">Выберите тип</string>
+
+    <string name="language">Язык</string>
+    <string name="app_theme">Тема приложения</string>
+
+    <string name="system_theme">Системная тема</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="light_theme">Светлая тема</string>
+
+    <string name="language_russian">Русский</string>
+    <string name="language_english">Английский</string>
+
+    <string name="personal_info_title">Персональные данные</string>
+
+    <string name="profile_email" translatable="false" tools:ignore="DuplicateDefinition">E-mail</string>
+
+    <string name="save">Сохранить</string>
+    <string name="search">Поиск…</string>
+
+    <string name="favorite_title">Избранное</string>
+
 </resources>

@@ -27,12 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.PropertyType
-import com.example.propertymanagement.ui.theme.DividerColor
+import com.example.propertymanagement.ui.mapper.descriptionRes
+import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.HorizontalPadding
 import com.example.propertymanagement.ui.theme.SmallHorizontalPadding
 import com.example.propertymanagement.ui.theme.SpacerBetweenElements
 import com.example.propertymanagement.ui.theme.SpacerTiny
-import com.example.propertymanagement.ui.theme.TopBarBackground
 import com.example.propertymanagement.ui.theme.TopBarHeight
 import com.example.propertymanagement.ui.theme.VerticalPaddingItem
 
@@ -84,7 +84,7 @@ private fun CustomCategoryTopBar(
     Column {
         Row(
             modifier = Modifier
-                .background(TopBarBackground)
+                .background(MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
                 .height(TopBarHeight)
                 .padding(horizontal = SmallHorizontalPadding),
@@ -129,16 +129,7 @@ private fun CategoryItem(
 
             ) {
             Text(
-                text = stringResource(
-                    when (type) {
-                        PropertyType.APARTMENT -> R.string.category_apartments
-                        PropertyType.HOUSE -> R.string.category_houses
-                        PropertyType.LAND -> R.string.category_land
-                        PropertyType.COMMERCIAL -> R.string.category_commercial
-                        PropertyType.GARAGE -> R.string.category_garages
-                        PropertyType.ROOM -> R.string.category_rooms
-                    }
-                ),
+                text = stringResource(type.titleRes()),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -146,16 +137,7 @@ private fun CategoryItem(
             Spacer(modifier = Modifier.height(SpacerTiny))
 
             Text(
-                text = stringResource(
-                    when (type) {
-                        PropertyType.APARTMENT -> R.string.description_apartments
-                        PropertyType.HOUSE -> R.string.description_houses
-                        PropertyType.LAND -> R.string.description_land
-                        PropertyType.COMMERCIAL -> R.string.description_commercial
-                        PropertyType.GARAGE -> R.string.description_garages
-                        PropertyType.ROOM -> R.string.description_rooms
-                    }
-                ),
+                text = stringResource(type.descriptionRes()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -164,7 +146,7 @@ private fun CategoryItem(
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth(),
-            color = DividerColor
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     }
 }

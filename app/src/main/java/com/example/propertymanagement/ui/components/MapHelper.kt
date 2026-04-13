@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
-import android.util.Log
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import com.example.propertymanagement.R
-import com.example.propertymanagement.domain.model.PropertyMarker
+import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.UserLocation
 import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.yandex.mapkit.Animation
@@ -60,7 +59,7 @@ class MapHelper {
 
     fun showPropertyMarkers(
         mapView: MapView,
-        markers: List<PropertyMarker>
+        markers: List<Property>
     ) {
         val context = mapView.context
         val mapObjects = mapView.mapWindow.map.mapObjects
@@ -71,7 +70,7 @@ class MapHelper {
 
         markers.forEach { marker ->
             val placemark = clusterCollection!!.addPlacemark(
-                Point(marker.lat, marker.lon),
+                Point(marker.latitude, marker.longitude),
                 icon
             )
             propertyPlacemarks.add(placemark)

@@ -1,5 +1,6 @@
 package com.example.propertymanagement.ui.bottom_nav
 
+import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
@@ -10,6 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.UserProfile
+import com.example.propertymanagement.ui.auth_screen.AuthCheck
+import com.example.propertymanagement.ui.extensions.toJson
+
 sealed class Screens(
     val route: String,
     val titleResId: Int? = null,
@@ -51,4 +56,36 @@ sealed class Screens(
     object Filters : Screens("filters")
 
     object CategorySelection : Screens("category_selection")
+
+    object AuthRegister : Screens("auth_register")
+
+    object AuthOtpScreen : Screens("auth_otp?email={email}&check={check}") {
+
+        fun createRoute(email: String, check: AuthCheck): String {
+            return "auth_otp?email=$email&check=${check.name}"
+        }
+    }
+
+    object AuthLoginScreen : Screens("auth_login")
+
+    object SplashScreen : Screens("splash")
+
+    object SettingsScreen : Screens("settings")
+    object MyAdsScreen : Screens("my_ads")
+    object PersonalInfoScreen : Screens("personal_info?user={user}") {
+
+        fun createRoute(user: UserProfile): String {
+            val json = Uri.encode(user.toJson())
+            return "personal_info?user=$json"
+        }
+    }
+
+    object PropertyDetailScreen : Screens("property_detail?propertyId={propertyId}&userId={userId}") {
+
+        fun createRoute(propertyId: Int, userId: String): String {
+            return "property_detail?propertyId=$propertyId&userId=$userId"
+        }
+    }
 }
+
+

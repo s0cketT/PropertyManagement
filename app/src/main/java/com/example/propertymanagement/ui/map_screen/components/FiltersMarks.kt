@@ -39,30 +39,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.propertymanagement.domain.model.PropertyStatus
-import com.example.propertymanagement.ui.map_screen.MapIntent
-import com.example.propertymanagement.ui.theme.PaddingExtraLarge
-import com.example.propertymanagement.ui.theme.Primary
-import kotlinx.coroutines.launch
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.domain.model.PropertyType
+import com.example.propertymanagement.ui.map_screen.MapIntent
+import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
-import com.example.propertymanagement.ui.theme.FilterChipIconSelected
-import com.example.propertymanagement.ui.theme.FilterChipIconUnselected
-import com.example.propertymanagement.ui.theme.FilterChipSelected
-import com.example.propertymanagement.ui.theme.FilterChipTextSelected
-import com.example.propertymanagement.ui.theme.FilterChipTextUnselected
-import com.example.propertymanagement.ui.theme.FilterChipUnselected
 import com.example.propertymanagement.ui.theme.IconSmall
-import com.example.propertymanagement.ui.theme.OnPrimary
+import com.example.propertymanagement.ui.theme.PaddingExtraLarge
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import com.example.propertymanagement.ui.theme.SpacerExtraLarge
 import com.example.propertymanagement.ui.theme.SpacerLarge
 import com.example.propertymanagement.ui.theme.SpacerMedium
-import com.example.propertymanagement.ui.theme.SurfaceVariant
+import kotlinx.coroutines.launch
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,8 +78,8 @@ fun FiltersMarks(
             modifier = Modifier
                 .padding(PaddingExtraLarge)
                 .align(Alignment.BottomEnd),
-            containerColor = Primary,
-            contentColor = OnPrimary
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(
                 imageVector = Icons.Default.Build,
@@ -102,7 +94,13 @@ fun FiltersMarks(
                     coroutineScope.launch { sheetState.hide() }
                 },
                 sheetState = sheetState,
-                dragHandle = { BottomSheetDefaults.DragHandle() }
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                dragHandle = {
+                    BottomSheetDefaults.DragHandle(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             ) {
                 FilterBottomSheetContent(
                     selectedStatuses = selectedStatuses,
@@ -116,8 +114,6 @@ fun FiltersMarks(
                     onResetAll = {
                         intent(MapIntent.ApplyStatusFilter(null))
                         intent(MapIntent.ApplyTypeFilter(null))
-                        // можно закрыть шит после сброса
-                        // coroutineScope.launch { sheetState.hide() }
                     }
                 )
             }
@@ -125,12 +121,13 @@ fun FiltersMarks(
     }
 }
 
+@Preview
 @Composable
 private fun FilterBottomSheetContent(
     selectedStatuses: Set<PropertyStatus> = emptySet(),
     selectedTypes: Set<PropertyType> = emptySet(),
-    onStatusSelected: (PropertyStatus?) -> Unit,
-    onTypeSelected: (PropertyType?) -> Unit,
+    onStatusSelected: (PropertyStatus?) -> Unit = {},
+    onTypeSelected: (PropertyType?) -> Unit = {},
     onResetAll: () -> Unit = {}
 ) {
     Column(
@@ -145,12 +142,14 @@ private fun FilterBottomSheetContent(
         Text(
             text = stringResource(R.string.filters_title),
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = SpacerLarge)
         )
 
         Text(
             text = stringResource(R.string.status_section_title),
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = PaddingMedium)
         )
 
@@ -162,7 +161,6 @@ private fun FilterBottomSheetContent(
             listOf(
                 PropertyStatus.FOR_SALE to R.string.sale_chip,
                 PropertyStatus.FOR_RENT to R.string.rent_chip,
-                // Добавляй сюда SOLD, RENTED и т.д. при необходимости
             ).forEach { (status, stringRes) ->
                 FilterChipCommon(
                     text = stringResource(stringRes),
@@ -175,8 +173,9 @@ private fun FilterBottomSheetContent(
         Spacer(modifier = Modifier.height(SpacerLarge))
 
         Text(
-            text = stringResource(R.string.category_land),
+            text = "@@@@",
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = PaddingMedium)
         )
 
@@ -187,16 +186,7 @@ private fun FilterBottomSheetContent(
         ) {
             PropertyType.entries.forEach { type ->
                 FilterChipCommon(
-                    text = stringResource(
-                        when (type) {
-                            PropertyType.APARTMENT -> R.string.category_apartments
-                            PropertyType.HOUSE -> R.string.category_houses
-                            PropertyType.LAND -> R.string.category_land
-                            PropertyType.COMMERCIAL -> R.string.category_commercial
-                            PropertyType.GARAGE -> R.string.category_garages
-                            PropertyType.ROOM -> R.string.category_rooms
-                        }
-                    ),
+                    text = stringResource(type.titleRes()),
                     selected = type in selectedTypes,
                     onClick = { onTypeSelected(type) }
                 )
@@ -212,8 +202,8 @@ private fun FilterBottomSheetContent(
                     .fillMaxWidth()
                     .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Primary,
-                    contentColor = OnPrimary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 shape = RoundedCornerShape(ButtonCornerRadius)
             ) {
@@ -250,29 +240,33 @@ fun FilterChipCommon(
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = null,
-                    modifier = Modifier.size(IconSmall)
+                    modifier = Modifier.size(IconSmall),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         } else null,
         colors = FilterChipDefaults.filterChipColors(
-            containerColor     = FilterChipUnselected,
-            labelColor         = FilterChipTextUnselected,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
 
-            selectedContainerColor     = FilterChipSelected,
-            selectedLabelColor         = FilterChipTextSelected,
-            selectedLeadingIconColor   = FilterChipIconSelected,
+            selectedContainerColor = MaterialTheme.colorScheme.primary,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
 
-            disabledContainerColor     = FilterChipUnselected.copy(alpha = 0.38f),
-            disabledLabelColor         = FilterChipTextUnselected.copy(alpha = 0.38f),
-            disabledLeadingIconColor   = FilterChipIconUnselected.copy(alpha = 0.38f),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f),
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
 
-            disabledSelectedContainerColor = FilterChipSelected.copy(alpha = 0.38f)
+            disabledSelectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
         ),
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
             borderWidth = 1.dp,
-            borderColor = if (selected) Primary else SurfaceVariant
+            borderColor = if (selected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.outlineVariant
         ),
         shape = RoundedCornerShape(ChipCornerRadius)
     )
