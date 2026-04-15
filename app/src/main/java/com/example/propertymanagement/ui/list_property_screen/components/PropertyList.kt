@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -24,9 +25,10 @@ import com.example.propertymanagement.ui.theme.PaddingSmall
 @Composable
 fun PropertyList(
     list: List<Property>,
+    currencyRates: Map<String, CurrencyRate>,
     onFavoriteClick: (Int) -> Unit,
     onItemClick: (Property) -> Unit
-    ) {
+) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -35,9 +37,10 @@ fun PropertyList(
         items(list) { property ->
             PropertyCard(
                 property = property,
+                currencyRates = currencyRates,
                 onFavoriteClick = onFavoriteClick,
                 onClick = { onItemClick(property) }
-                )
+            )
         }
     }
 }
@@ -45,6 +48,7 @@ fun PropertyList(
 @Composable
 private fun PropertyCard(
     property: Property,
+    currencyRates: Map<String, CurrencyRate>,
     onFavoriteClick: (Int) -> Unit,
     onClick: () -> Unit
 ) {
@@ -66,8 +70,7 @@ private fun PropertyCard(
                 onFavoriteClick = { onFavoriteClick(property.id) }
             )
 
-            PropertyContent(property)
+            PropertyContent(property = property, currencyRates = currencyRates)
         }
     }
 }
-

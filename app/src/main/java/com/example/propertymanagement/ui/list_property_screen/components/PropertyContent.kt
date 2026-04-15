@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetails
+import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
+import com.example.propertymanagement.ui.common.PropertyMultiCurrencyPriceColumn
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -22,8 +26,10 @@ import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.SpacerTiny
 
 @Composable
-fun PropertyContent(property: Property) {
-
+fun PropertyContent(
+    property: Property,
+    currencyRates: Map<String, CurrencyRate>
+) {
     val details = property.details
 
     val rooms = property.rooms
@@ -42,6 +48,11 @@ fun PropertyContent(property: Property) {
         property.house
     ).joinToString(", ")
 
+    val priceUseCase = remember { GetPropertyDetailPricesUseCase() }
+    val convertedPrices = remember(property.id, property.price, property.currency, currencyRates) {
+        priceUseCase(property, currencyRates)
+    }
+
     Column(
         modifier = Modifier.padding(PaddingLarge)
     ) {
@@ -55,10 +66,11 @@ fun PropertyContent(property: Property) {
 
         Spacer(modifier = Modifier.height(SpacerTiny))
 
-        Text(
-            text = "${property.price} ${property.currency}",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary
+        PropertyMultiCurrencyPriceColumn(
+            property = property,
+            convertedPrices = convertedPrices,
+            compact = true,
+            primaryBold = false
         )
 
         Row(

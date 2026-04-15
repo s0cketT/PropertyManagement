@@ -1,6 +1,5 @@
 package com.example.propertymanagement.ui.property
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
@@ -37,30 +36,6 @@ class ListPropertyViewModel(
 
     init {
         initUser()
-        //loadCurrencyRates()
-    }
-
-    fun loadCurrencyRates() {
-        viewModelScope.launch {
-            when (val result = getTodayRatesUseCase()) {
-
-                is Resource.Success -> {
-                    _state.update {
-                        it.copy(
-                            currencyRates = result.data
-                        )
-                    }
-                }
-                is Resource.Error -> {
-                    _state.update {
-                        it.copy(
-                            error = result.exception.message
-                        )
-                    }
-                    Log.d("!!!", "F - ${result.exception.message}")
-                }
-            }
-        }
     }
 
     private fun loadSelectedMarker() {
@@ -124,13 +99,7 @@ class ListPropertyViewModel(
         }
     }
     private fun onPropertyClick(property: Property) {
-        val userId = _state.value.currentUserId
-        if (userId == null) {
-            viewModelScope.launch {
-                _event.emit(ListPropertyEvent.ShowAuthRequired)
-            }
-            return
-        }
+        val userId = _state.value.currentUserId.orEmpty()
         viewModelScope.launch {
             _event.emit(ListPropertyEvent.NavigateToDetail(property = property, userId = userId))
         }
@@ -150,12 +119,14 @@ class ListPropertyViewModel(
                 toggleFavoriteUseCase(userId, propertyId)
             }.onSuccess {
                 _state.update { current ->
+                    val flip: (Property) -> Property = { property ->
+                        if (property.id == propertyId) {
+                            property.copy(isFavorite = !property.isFavorite)
+                        } else property
+                    }
                     current.copy(
-                        propertiesFilter = current.propertiesFilter.map { property ->
-                            if (property.id == propertyId) {
-                                property.copy(isFavorite = !property.isFavorite)
-                            } else property
-                        }
+                        properties = current.properties.map(flip),
+                        propertiesFilter = current.propertiesFilter.map(flip)
                     )
                 }
             }.onFailure {
@@ -171,6 +142,11 @@ class ListPropertyViewModel(
 
             val userId = _state.value.currentUserId
 
+            val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                is Resource.Success -> ratesResult.data
+                else -> emptyMap()
+            }
+
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
@@ -178,10 +154,10 @@ class ListPropertyViewModel(
                         it.copy(
                             isLoading = false,
                             properties = result.data,
-                            propertiesFilter = result.data
+                            propertiesFilter = result.data,
+                            currencyRates = rates
                         )
                     }
-
                 }
                 is Resource.Error -> {
                     _state.update {

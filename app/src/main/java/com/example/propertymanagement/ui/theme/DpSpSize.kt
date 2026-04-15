@@ -72,6 +72,19 @@ val WheelPickerLetterSpacing = 0.15.sp
 
 
 val ImagePickerHeight = 200.dp
+
+/** Превью карты на экране объекта (высота прямоугольника) */
+val PropertyDetailMapPreviewHeight = ImagePickerHeight
+
+/** Скругление превью карты */
+val PropertyDetailMapCornerRadius = 16.dp
+
+/** Соотношение сторон галереи фото на экране объекта */
+const val PropertyDetailHeroAspectRatio = 4f / 3f
+
+/** Elevation для Surface (превью карты и др.) */
+val CardElevationLow = 2.dp
+
 val IndicatorSize = 6.dp
 val IndicatorSizeActive = 8.dp
 val IconPassword = 20.dp
@@ -80,6 +93,12 @@ val TextLarge = 18.sp
 val TextMedium = 16.sp
 val TextRegular = 14.sp
 val TextSmall = 12.sp
+
+/** Строки параметров на экране объекта (чуть крупнее стандартного body) */
+val PropertyDetailInfoLabelFontSize = 15.sp
+val PropertyDetailInfoLabelLineHeight = 20.sp
+val PropertyDetailInfoValueFontSize = 17.sp
+val PropertyDetailInfoValueLineHeight = 22.sp
 
 val AvatarSize = 64.dp
 val IconSizeArrowLarge = 32.dp

@@ -35,6 +35,9 @@ fun FavoritesScreen(navController: NavController) {
         event.collect { event ->
             when (event) {
                 is FavoriteEvent.NavigateBack -> { navController.popBackStack() }
+                FavoriteEvent.NavigateToLogin -> {
+                    navController.navigate(Screens.AuthLoginScreen.route)
+                }
                 is FavoriteEvent.NavigateToDetail -> {
                     navController.navigate(
                         Screens.PropertyDetailScreen.createRoute(
@@ -74,8 +77,14 @@ private fun UI(
         when {
             state.isLoading -> LoadingState()
             state.error != null -> ErrorState(state.error)
+            state.currentUserId == null -> {
+                FavoritesGuestLoginPrompt(
+                    onLoginClick = { intent(FavoriteIntent.NavigateToLogin) }
+                )
+            }
             else -> PropertyList(
                 list = state.properties,
+                currencyRates = state.currencyRates,
                 onFavoriteClick = { intent(FavoriteIntent.ToggleFavorite(it)) },
                 onItemClick = { intent(FavoriteIntent.OnPropertyClick(it)) }
             )

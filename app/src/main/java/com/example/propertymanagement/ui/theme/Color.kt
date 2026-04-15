@@ -66,3 +66,8 @@ val CustomTextSelectionColors = TextSelectionColors(
 )
 
 val SurfaceVariantDark = Color(0xFF4F4F4F)
+
+// Карточка объекта — превью карты (градиент и кнопки поверх тёмного фона)
+val MapPreviewGradientEnd = Color(0x80000000)
+val MapFullscreenControlScrim = Color(0x73000000)
+val MapControlsIconOnDark = Color.White

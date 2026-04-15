@@ -89,7 +89,6 @@ private fun UI(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
             .imePadding()
     ) {
         CustomFilterTopBar(

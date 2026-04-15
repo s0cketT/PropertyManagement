@@ -69,7 +69,7 @@ fun PropertyResponseDto.toDomain(): Property {
 
     return Property(
         id = id,
-        ownerId = owner_id,
+        ownerId = owner_id.orEmpty(),
 
         type = propertyType,
         dealType = dealType,

@@ -9,21 +9,23 @@ import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import okhttp3.OkHttpClient
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val networkModule = module {
 
-    single<Retrofit> {
-
+    single(named("nbrb")) {
         Retrofit.Builder()
             .baseUrl("https://api.nbrb.by/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    single<INbrbApi> { get<Retrofit>().create(INbrbApi::class.java) }
+    single<INbrbApi> {
+        get<Retrofit>(named("nbrb")).create(INbrbApi::class.java)
+    }
 
     single {
         OkHttpClient.Builder()
@@ -38,16 +40,16 @@ val networkModule = module {
             .build()
     }
 
-    single {
+    single(named("supabase")) {
         Retrofit.Builder()
             .baseUrl("$BASE_URL_SUPABASE/rest/v1/")
-            .client(get<OkHttpClient>())
+            .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
     single<ISupabaseApi> {
-        get<Retrofit>().create(ISupabaseApi::class.java)
+        get<Retrofit>(named("supabase")).create(ISupabaseApi::class.java)
     }
 
     single {

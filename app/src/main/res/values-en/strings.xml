@@ -279,4 +279,43 @@
     <string name="search">Search…</string>
 
     <string name="favorite_title">Favorite</string>
+    <string name="favorite_login_prompt">Sign in to save listings to favorites and view them here.</string>
+
+    <string name="property_detail_price_approx">≈ %1$s %2$s</string>
+    <string name="property_detail_title">Listing</string>
+    <string name="property_detail_not_found">Listing not found</string>
+
+    <string name="property_detail_section_main">Overview</string>
+    <string name="property_detail_section_area">Area and layout</string>
+    <string name="property_detail_section_details">Details</string>
+    <string name="property_detail_section_amenities">Amenities</string>
+    <string name="property_detail_section_description">Description</string>
+    <string name="property_detail_section_location">Location</string>
+
+    <string name="property_detail_listing_id">Listing ID</string>
+    <string name="property_detail_owner_id">Owner ID</string>
+    <string name="property_detail_property_type">Property type</string>
+    <string name="property_detail_deal_type">Deal type</string>
+    <string name="property_detail_status">Status</string>
+    <string name="property_detail_favorite">In favorites</string>
+    <string name="property_detail_favorite_add_cd">Add to favorites</string>
+    <string name="property_detail_favorite_remove_cd">Remove from favorites</string>
+    <string name="property_detail_coordinates">Coordinates</string>
+    <string name="property_detail_coordinates_value">%1$s, %2$s</string>
+    <string name="property_detail_country">Country</string>
+    <string name="property_detail_region">Region</string>
+    <string name="property_detail_city">City</string>
+    <string name="property_detail_street">Street</string>
+    <string name="property_detail_house">Building</string>
+    <string name="property_detail_area">Area, m²</string>
+    <string name="property_detail_walkthrough">Open layout</string>
+    <string name="property_detail_kitchen_area">Kitchen area, m²</string>
+    <string name="property_detail_land_area">Land area, m²</string>
+    <string name="property_detail_floors">Floors in building</string>
+    <string name="answer_yes">Yes</string>
+    <string name="answer_no">No</string>
+
+    <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
+    <string name="property_detail_submit_request">Submit request</string>
+    <string name="property_detail_request_requires_registration">You need to sign up to submit a request</string>
 </resources>

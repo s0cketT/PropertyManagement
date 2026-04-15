@@ -1,6 +1,5 @@
 package com.example.propertymanagement.ui.list_property_screen.components
 
-import android.util.Log
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -12,6 +11,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -50,7 +50,6 @@ fun PropertyImageSection(
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit
 ) {
-    Log.d("!!!", "Screen - $isFavorite")
     Box {
 
         PropertyImages(photos)
@@ -68,12 +67,27 @@ fun PropertyImageSection(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PropertyImages(photos: List<String>) {
+    PropertyImagePager(
+        photos = photos,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ImagePickerHeight)
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PropertyImagePager(
+    photos: List<String>,
+    modifier: Modifier = Modifier
+        .fillMaxWidth()
+        .height(ImagePickerHeight),
+    onPhotoClick: ((pageIndex: Int) -> Unit)? = null
+) {
 
     if (photos.isEmpty()) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(ImagePickerHeight)
+            modifier = modifier
                 .background(MaterialTheme.colorScheme.outlineVariant)
         )
         return
@@ -83,9 +97,14 @@ private fun PropertyImages(photos: List<String>) {
         AsyncImage(
             model = photos.first(),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(ImagePickerHeight),
+            modifier = modifier
+                .then(
+                    if (onPhotoClick != null) {
+                        Modifier.clickable { onPhotoClick(0) }
+                    } else {
+                        Modifier
+                    }
+                ),
             contentScale = ContentScale.Crop
         )
         return
@@ -93,18 +112,24 @@ private fun PropertyImages(photos: List<String>) {
 
     val pagerState = rememberPagerState(pageCount = { photos.size })
 
-    Box {
+    Box(modifier = modifier) {
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(ImagePickerHeight)
+            modifier = Modifier.fillMaxSize()
         ) { page ->
             AsyncImage(
                 model = photos[page],
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(
+                        if (onPhotoClick != null) {
+                            Modifier.clickable { onPhotoClick(page) }
+                        } else {
+                            Modifier
+                        }
+                    ),
                 contentScale = ContentScale.Crop
             )
         }
@@ -139,8 +164,31 @@ private fun PropertyImages(photos: List<String>) {
 fun FavoriteButton(
     isFavorite: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    animated: Boolean = true,
+    contentDescription: String? = null
 ) {
+    if (!animated) {
+        IconButton(
+            onClick = onClick,
+            modifier = modifier.size(FavoriteIconSize)
+        ) {
+            Icon(
+                imageVector = if (isFavorite) {
+                    Icons.Filled.Favorite
+                } else {
+                    Icons.Outlined.FavoriteBorder
+                },
+                contentDescription = contentDescription,
+                tint = if (isFavorite) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+            )
+        }
+        return
+    }
 
     val infiniteTransition = rememberInfiniteTransition(label = "favorite")
 
@@ -171,6 +219,12 @@ fun FavoriteButton(
         label = "color"
     )
 
+    val tint = when {
+        !isFavorite -> MaterialTheme.colorScheme.onSurfaceVariant
+        else -> animatedColor
+    }
+    val scale = if (isFavorite) animatedScale else 1f
+
     IconButton(
         onClick = onClick,
         modifier = modifier.size(FavoriteIconSize)
@@ -180,9 +234,9 @@ fun FavoriteButton(
                 Icons.Filled.Favorite
             else
                 Icons.Outlined.FavoriteBorder,
-            contentDescription = null,
-            tint = if (isFavorite) animatedColor else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.scale(if (isFavorite) animatedScale else 1f)
+            contentDescription = contentDescription,
+            tint = tint,
+            modifier = Modifier.scale(scale)
         )
     }
 }

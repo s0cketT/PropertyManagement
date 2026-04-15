@@ -51,7 +51,6 @@ private fun UI(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
     ) {
         CustomCategoryTopBar(
             onBackClick = { navController.popBackStack() }

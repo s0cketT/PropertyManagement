@@ -12,3 +12,8 @@ fun DealType.titleResPublish(): Int = when (this) {
     DealType.BUY -> R.string.sell
     DealType.RENT -> R.string.rent_out
 }
+
+/**
+ * Текст «типа сделки» на экране объявления для просмотра: «Продажа» / «Сдача» (не «Купить»).
+ */
+fun DealType.titleResListingDetail(): Int = titleResPublish()

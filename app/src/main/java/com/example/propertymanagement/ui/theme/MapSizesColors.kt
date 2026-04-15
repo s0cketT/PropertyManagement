@@ -39,6 +39,9 @@ object MapSizesColors {
     // Начальный зум при первом позиционировании пользователя
     const val INITIAL_USER_LOCATION_ZOOM = 16f
 
+    /** Зум при показе одного объекта на карте (превью и детальный экран) */
+    const val PROPERTY_DETAIL_MAP_ZOOM = 16f
+
     // Длительность анимации перемещения камеры (в секундах)
     const val CAMERA_MOVE_ANIMATION_DURATION_SEC = 1f
 

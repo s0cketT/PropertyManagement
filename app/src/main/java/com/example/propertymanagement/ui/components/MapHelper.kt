@@ -36,6 +36,8 @@ class MapHelper {
     private var clusterCollection: ClusterizedPlacemarkCollection? = null
     private var zoomListener: CameraListener? = null
 
+    private var detailPlacemark: PlacemarkMapObject? = null
+
     fun updateUserLocation(
         mapView: MapView,
         location: UserLocation
@@ -98,7 +100,41 @@ class MapHelper {
         propertyPlacemarks.clear()
     }
 
+    /**
+     * Одна метка объекта + плавное позиционирование камеры (без кластеризации).
+     * Для превью и полноэкранной карты в карточке объекта.
+     */
+    fun showSinglePropertyMarker(mapView: MapView, property: Property) {
+        clearSinglePropertyMarker(mapView)
+        clearMarkers()
+
+        val icon = createMarkerIcon(mapView.context)
+        detailPlacemark = mapView.map.mapObjects.addPlacemark(
+            Point(property.latitude, property.longitude),
+            icon
+        )
+
+        mapView.map.move(
+            CameraPosition(
+                Point(property.latitude, property.longitude),
+                MapSizesColors.PROPERTY_DETAIL_MAP_ZOOM,
+                0f,
+                0f
+            ),
+            Animation(Animation.Type.SMOOTH, MapSizesColors.CAMERA_MOVE_ANIMATION_DURATION_SEC),
+            null
+        )
+    }
+
+    fun clearSinglePropertyMarker(mapView: MapView) {
+        detailPlacemark?.let { placemark ->
+            mapView.map.mapObjects.remove(placemark)
+            detailPlacemark = null
+        }
+    }
+
     fun release(mapView: MapView) {
+        clearSinglePropertyMarker(mapView)
         zoomListener?.let {
             mapView.map.removeCameraListener(it)
             zoomListener = null

@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ class FavoriteViewModel(
     private val getPropertiesUseCase: GetPropertiesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val getTodayRatesUseCase: GetTodayRatesUseCase
 ): ViewModel()
 {
 
@@ -35,6 +37,9 @@ class FavoriteViewModel(
             is FavoriteIntent.NavigateBack -> {
                 viewModelScope.launch { _event.emit(FavoriteEvent.NavigateBack) }
             }
+            is FavoriteIntent.NavigateToLogin -> {
+                viewModelScope.launch { _event.emit(FavoriteEvent.NavigateToLogin) }
+            }
             is FavoriteIntent.ToggleFavorite -> toggleFavorite(propertyId = intent.propertyId)
             is FavoriteIntent.OnPropertyClick -> onPropertyClick(property = intent.property)
         }
@@ -45,7 +50,18 @@ class FavoriteViewModel(
         viewModelScope.launch {
             val userId = getCurrentUserUseCase()?.id
             _state.update { it.copy(currentUserId = userId) }
-            loadProperties()
+            if (userId == null) {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        properties = emptyList(),
+                        currencyRates = emptyMap(),
+                        error = null
+                    )
+                }
+            } else {
+                loadProperties()
+            }
         }
     }
 
@@ -56,6 +72,11 @@ class FavoriteViewModel(
 
             val userId = _state.value.currentUserId
 
+            val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                is Resource.Success -> ratesResult.data
+                else -> emptyMap()
+            }
+
             when (val result = getPropertiesUseCase(userId)) {
                 is Resource.Success -> {
 
@@ -65,7 +86,8 @@ class FavoriteViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            properties = filtered
+                            properties = filtered,
+                            currencyRates = rates
                         )
                     }
                 }

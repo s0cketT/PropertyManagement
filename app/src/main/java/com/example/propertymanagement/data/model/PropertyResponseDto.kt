@@ -2,7 +2,7 @@ package com.example.propertymanagement.data.model
 
 data class PropertyResponseDto(
     val id: Int,
-    val owner_id: String,
+    val owner_id: String?,
 
     val title: String,
     val price: Double,

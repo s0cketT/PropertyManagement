@@ -81,6 +81,7 @@ private fun UI(
             state.error != null -> ErrorState(state.error)
             else -> PropertyList(
                 list = state.propertiesFilter,
+                currencyRates = state.currencyRates,
                 onFavoriteClick = { intent(ListPropertyIntent.ToggleFavorite(it)) },
                 onItemClick = { intent(ListPropertyIntent.OnPropertyClick(it)) }
                 )

@@ -17,6 +17,7 @@ import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
@@ -94,4 +95,6 @@ val domainModule = module {
     factory { FilterPropertiesUseCase() }
 
     factory { GetTodayRatesUseCase(currencyRepository = get<ICurrencyRepository>()) }
+
+    factory { GetPropertyDetailPricesUseCase() }
 }

@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
@@ -28,6 +29,7 @@ import com.example.propertymanagement.ui.map.MapViewModel
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
 import com.example.propertymanagement.ui.profile_screen.ProfileViewModel
 import com.example.propertymanagement.ui.property.ListPropertyViewModel
+import com.example.propertymanagement.ui.property_detail_screen.PropertyDetailViewModel
 import com.example.propertymanagement.ui.publish_screen.PublishViewModel
 import com.example.propertymanagement.ui.settings_screen.SettingsViewModel
 import com.example.propertymanagement.ui.splash_screen.SplashViewModel
@@ -110,6 +112,19 @@ val uiModule = module {
     viewModel {
         FavoriteViewModel(
             getPropertiesUseCase = get<GetPropertiesUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+        )
+    }
+
+    viewModel { (propertyId: Int, userId: String) ->
+        PropertyDetailViewModel(
+            propertyId = propertyId,
+            userId = userId,
+            getPropertiesUseCase = get<GetPropertiesUseCase>(),
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+            getPropertyDetailPricesUseCase = get<GetPropertyDetailPricesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             toggleFavoriteUseCase = get<ToggleFavoriteUseCase>()
         )
