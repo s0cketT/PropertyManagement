@@ -21,3 +21,7 @@ internal fun formatDouble(value: Double): String =
         String.format(Locale.US, "%.1f", value)
     }
 
+internal fun buildPropertyDetailAddressLine(property: Property): String =
+    sequenceOf(property.country, property.region, property.city, property.street, property.house)
+        .mapNotNull { part -> part?.trim()?.takeIf { it.isNotEmpty() } }
+        .joinToString(", ")

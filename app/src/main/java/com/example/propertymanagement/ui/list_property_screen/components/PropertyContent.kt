@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyRate
@@ -19,6 +20,7 @@ import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetails
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.ui.common.PropertyMultiCurrencyPriceColumn
+import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -53,6 +55,11 @@ fun PropertyContent(
         priceUseCase(property, currencyRates)
     }
 
+    val locale = LocalConfiguration.current.locales[0]
+    val publishedAt = remember(property.createdAt, locale) {
+        formatPropertyPublicationTime(property.createdAt, locale)
+    }
+
     Column(
         modifier = Modifier.padding(PaddingLarge)
     ) {
@@ -63,6 +70,15 @@ fun PropertyContent(
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2
         )
+
+        publishedAt?.let {
+            Spacer(modifier = Modifier.height(SpacerTiny))
+            Text(
+                text = stringResource(R.string.list_property_published_at, it),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
         Spacer(modifier = Modifier.height(SpacerTiny))
 

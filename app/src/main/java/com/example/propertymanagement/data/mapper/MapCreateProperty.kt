@@ -13,7 +13,10 @@ fun CreateProperty.toFullDto(): CreateFullPropertyDto {
         p_owner_id = ownerId,
 
         p_country = country,
+        p_region = region.takeIf { it.isNotBlank() },
         p_city = city,
+        p_street = street.takeIf { it.isNotBlank() },
+        p_house = house.takeIf { it.isNotBlank() },
         p_lat = latitude,
         p_lng = longitude,
 

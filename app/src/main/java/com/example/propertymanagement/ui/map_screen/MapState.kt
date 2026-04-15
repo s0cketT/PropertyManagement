@@ -1,5 +1,7 @@
 package com.example.propertymanagement.ui.map_screen
 
+import com.example.propertymanagement.domain.model.CurrencyRate
+import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.domain.model.PropertyType
@@ -14,8 +16,15 @@ data class MapState(
 
     val userLocation: UserLocation? = null,
 
+    val currencyRates: Map<String, CurrencyRate> = emptyMap(),
+    /** Сохранённые фильтры (тот же источник, что и список объявлений). */
+    val filtersProperty: FiltersProperty? = null,
+
     val markers: List<Property> = emptyList(),
     val filteredMarkers: List<Property> = emptyList(),
+
+    /** Выбранная метка: показываем bottom sheet. */
+    val selectedMarkerProperty: Property? = null,
 
     val selectedStatuses: Set<PropertyStatus> = emptySet(),
     val selectedTypes: Set<PropertyType> = emptySet()

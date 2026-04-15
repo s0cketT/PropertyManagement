@@ -1,7 +1,7 @@
 package com.example.propertymanagement
 
 import android.app.Application
-import com.example.propertymanagement.data.common.Constants.API_KEY
+import com.example.propertymanagement.data.common.Constants.API_KEY_MAPKIT
 import com.example.propertymanagement.di.coreModule
 import com.example.propertymanagement.di.dataModule
 import com.example.propertymanagement.di.databaseModule
@@ -15,7 +15,7 @@ import org.koin.core.context.GlobalContext.startKoin
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        MapKitFactory.setApiKey(API_KEY)
+        MapKitFactory.setApiKey(API_KEY_MAPKIT)
         startKoin {
             androidContext(this@App)
             modules(databaseModule, networkModule, dataModule, domainModule, uiModule, coreModule)

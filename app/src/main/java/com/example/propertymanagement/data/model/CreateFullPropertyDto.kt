@@ -9,7 +9,10 @@ data class CreateFullPropertyDto(
     val p_owner_id: String,
 
     val p_country: String,
+    val p_region: String? = null,
     val p_city: String,
+    val p_street: String? = null,
+    val p_house: String? = null,
     val p_lat: Double,
     val p_lng: Double,
 

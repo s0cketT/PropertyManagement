@@ -13,12 +13,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,10 +37,14 @@ import com.example.propertymanagement.ui.publish_screen.PublishEvent
 import com.example.propertymanagement.ui.publish_screen.PublishIntent
 import com.example.propertymanagement.ui.publish_screen.PublishState
 import com.example.propertymanagement.ui.publish_screen.PublishViewModel
+import com.example.propertymanagement.ui.publish_screen.buildAddressQueryString
+import com.example.propertymanagement.ui.publish_screen.geocodeAddressQuery
+import com.example.propertymanagement.ui.publish_screen.reverseGeocodeCoordinates
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerMedium
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,6 +57,7 @@ fun PublishScreen(navController: NavController) {
 
     val context = LocalContext.current
     val message = stringResource(R.string.auth_required)
+    val validationLocationMessage = stringResource(R.string.publish_validation_location)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
@@ -94,7 +102,7 @@ fun PublishScreen(navController: NavController) {
 
                 is PublishEvent.OpenGallery -> { launcher.launch("image/*") }
 
-                is PublishEvent.NavigateBack -> { navController.popBackStack() }
+                is PublishEvent.NavigateBack -> { navController.navigate(Screens.Advertisements.route) }
 
                 is PublishEvent.ShowAuthRequired -> {
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -107,11 +115,19 @@ fun PublishScreen(navController: NavController) {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                is PublishEvent.ShowValidationErrorRes -> {
+                    Toast.makeText(
+                        context,
+                        validationLocationMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
 
-    UI(state, intent)
+    UI(state = state, intent = intent)
 }
 
 @Preview
@@ -120,6 +136,7 @@ private fun UI(
     state: PublishState = PublishState(),
     intent: (PublishIntent) -> Unit = {}
 ) {
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -144,6 +161,13 @@ private fun UI(
                 isError = state.isTitleError,
                 onValueChange = { intent(PublishIntent.SetTitle(it)) },
                 modifier = Modifier.padding(horizontal = PaddingLarge)
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PublishLocationCard(
+                state = state,
+                onOpenAddressSheet = { intent(PublishIntent.SetAddressBottomSheetOpen(true)) }
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))
@@ -274,13 +298,64 @@ private fun UI(
         }
 
         Button(
-            onClick =  { intent(PublishIntent.Submit) },
+            onClick = { intent(PublishIntent.Submit) },
+            enabled = !state.isPublishing,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(PaddingLarge),
-            shape = RoundedCornerShape(ButtonCornerRadius)
+            shape = RoundedCornerShape(ButtonCornerRadius),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         ) {
             Text(stringResource(R.string.publish_button))
+        }
+
+        if (state.isAddressBottomSheetOpen) {
+            PublishAddressBottomSheet(
+                state = state,
+                intent = intent,
+                onDismiss = { intent(PublishIntent.SetAddressBottomSheetOpen(false)) },
+                onConfirmAddress = {
+                    scope.launch {
+                        val query = state.buildAddressQueryString()
+                        if (query.isBlank()) {
+                            intent(PublishIntent.AddressSheetDone(null, null))
+                            return@launch
+                        }
+                        val coords = geocodeAddressQuery(query)
+                        intent(
+                            PublishIntent.AddressSheetDone(
+                                latitude = coords?.first,
+                                longitude = coords?.second
+                            )
+                        )
+                    }
+                }
+            )
+        }
+
+        if (state.isMapPickerOpen) {
+            PublishMapPickerDialog(
+                initialLatitude = state.latitude,
+                initialLongitude = state.longitude,
+                onDismiss = { intent(PublishIntent.SetMapPickerOpen(false)) },
+                onConfirm = { lat, lon ->
+                    scope.launch {
+                        val parts = reverseGeocodeCoordinates(lat, lon)
+                        intent(
+                            PublishIntent.ConfirmMapLocation(
+                                latitude = lat,
+                                longitude = lon,
+                                geocoded = parts
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 }

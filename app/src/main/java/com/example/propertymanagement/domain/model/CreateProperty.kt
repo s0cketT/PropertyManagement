@@ -11,7 +11,10 @@ data class CreateProperty(
     val title: String,
 
     val country: String,
+    val region: String,
     val city: String,
+    val street: String,
+    val house: String,
     val latitude: Double,
     val longitude: Double,
 

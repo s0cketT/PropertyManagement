@@ -1,15 +1,15 @@
 package com.example.propertymanagement.ui.publish_screen
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.model.CreateProperty
+import com.example.propertymanagement.domain.model.GeocodedAddressParts
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
-import com.example.propertymanagement.ui.SingleFlowEvent
-import com.example.propertymanagement.ui.splash_screen.SplashEvent
 import com.example.propertymanagement.R
-import kotlinx.coroutines.delay
+import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +19,11 @@ class PublishViewModel(
     private val createFullPropertyUseCase: CreateFullPropertyUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
+
+    private sealed interface ValidationItem {
+        data class Text(val text: String) : ValidationItem
+        data class Res(@StringRes val id: Int) : ValidationItem
+    }
 
     private val _state = MutableStateFlow(PublishState())
     val state = _state.asStateFlow()
@@ -30,23 +35,11 @@ class PublishViewModel(
         when (intent) {
 
             is PublishIntent.ClearPropertyType -> {
-                val images = _state.value.imageBytes
-                val title = _state.value.title
-
-                _state.value = PublishState(
-                    imageBytes = images,
-                    title = title
-                )
+                _state.update { preserveImagesTitleAndLocation(it).copy(propertyType = null) }
             }
 
             is PublishIntent.OpenCategorySelection -> {
-                val images = _state.value.imageBytes
-                val title = _state.value.title
-
-                _state.value = PublishState(
-                    imageBytes = images,
-                    title = title
-                )
+                _state.update { preserveImagesTitleAndLocation(it) }
 
                 viewModelScope.launch { _event.emit(PublishEvent.NavigateToCategorySelection) }
             }
@@ -203,6 +196,91 @@ class PublishViewModel(
             is PublishIntent.SetParkingType -> {
                 _state.update { it.copy(parkingType = intent.type) }
             }
+
+            is PublishIntent.SetAddressBottomSheetOpen -> {
+                _state.update { it.copy(isAddressBottomSheetOpen = intent.open) }
+            }
+
+            is PublishIntent.SetMapPickerOpen -> {
+                _state.update { it.copy(isMapPickerOpen = intent.open) }
+            }
+
+            is PublishIntent.SetAddressCountry -> {
+                _state.update { it.copy(addressCountry = intent.value) }
+            }
+
+            is PublishIntent.SetAddressRegion -> {
+                _state.update { it.copy(addressRegion = intent.value) }
+            }
+
+            is PublishIntent.SetAddressCity -> {
+                _state.update { it.copy(addressCity = intent.value) }
+            }
+
+            is PublishIntent.SetAddressStreet -> {
+                _state.update { it.copy(addressStreet = intent.value) }
+            }
+
+            is PublishIntent.SetAddressHouse -> {
+                _state.update { it.copy(addressHouse = intent.value) }
+            }
+
+            is PublishIntent.AddressSheetDone -> applyAddressSheetDone(
+                latitude = intent.latitude,
+                longitude = intent.longitude
+            )
+
+            is PublishIntent.ConfirmMapLocation -> confirmMapLocation(
+                latitude = intent.latitude,
+                longitude = intent.longitude,
+                geocoded = intent.geocoded
+            )
+        }
+    }
+
+    private fun preserveImagesTitleAndLocation(current: PublishState): PublishState {
+        return PublishState(
+            imageBytes = current.imageBytes,
+            title = current.title,
+            addressCountry = current.addressCountry,
+            addressRegion = current.addressRegion,
+            addressCity = current.addressCity,
+            addressStreet = current.addressStreet,
+            addressHouse = current.addressHouse,
+            latitude = current.latitude,
+            longitude = current.longitude,
+            isPublishing = current.isPublishing
+        )
+    }
+
+    private fun applyAddressSheetDone(latitude: Double?, longitude: Double?) {
+        _state.update {
+            it.copy(
+                isAddressBottomSheetOpen = false,
+                latitude = latitude ?: it.latitude,
+                longitude = longitude ?: it.longitude,
+                isLocationError = if (latitude != null && longitude != null) false else it.isLocationError
+            )
+        }
+    }
+
+    private fun confirmMapLocation(
+        latitude: Double,
+        longitude: Double,
+        geocoded: GeocodedAddressParts
+    ) {
+        _state.update {
+            it.copy(
+                latitude = latitude,
+                longitude = longitude,
+                addressCountry = geocoded.country.ifBlank { it.addressCountry },
+                addressRegion = geocoded.region.ifBlank { it.addressRegion },
+                addressCity = geocoded.city.ifBlank { it.addressCity },
+                addressStreet = geocoded.street.ifBlank { it.addressStreet },
+                addressHouse = geocoded.house.ifBlank { it.addressHouse },
+                isMapPickerOpen = false,
+                isLocationError = false
+            )
         }
     }
 
@@ -210,6 +288,8 @@ class PublishViewModel(
         viewModelScope.launch {
 
             val stateValue = _state.value
+
+            if (stateValue.isPublishing) return@launch
 
             val user = getCurrentUserUseCase()
 
@@ -225,8 +305,9 @@ class PublishViewModel(
             val title = stateValue.title.trim()
             val price = stateValue.price.toDoubleOrNull()!!
 
-            runCatching {
-
+            _state.update { it.copy(isPublishing = true) }
+            try {
+                runCatching {
                 val request = CreateProperty(
                     ownerId = user.id,
 
@@ -237,10 +318,13 @@ class PublishViewModel(
 
                     title = title,
 
-                    country = "Belarus",
-                    city = "Minsk",
-                    latitude = 0.0,
-                    longitude = 0.0,
+                    country = stateValue.addressCountry.ifBlank { DEFAULT_COUNTRY },
+                    region = stateValue.addressRegion.trim(),
+                    city = stateValue.addressCity.trim(),
+                    street = stateValue.addressStreet.trim(),
+                    house = stateValue.addressHouse.trim(),
+                    latitude = stateValue.latitude!!,
+                    longitude = stateValue.longitude!!,
 
                     area = stateValue.area!!.toDouble(),
 
@@ -279,67 +363,82 @@ class PublishViewModel(
                     parkingType = stateValue.parkingType
                 )
 
-                createFullPropertyUseCase(
-                    request = request,
-                    imageBytes = stateValue.imageBytes
-                )
+                    createFullPropertyUseCase(
+                        request = request,
+                        imageBytes = stateValue.imageBytes
+                    )
+                }
+                    .onSuccess {
+                        _event.emit(PublishEvent.NavigateBack)
+                    }
+                    .onFailure { e ->
+                        Log.e("UPLOAD", "Upload failed: ${e.message}", e)
+                    }
+            } finally {
+                _state.update { it.copy(isPublishing = false) }
             }
-                .onSuccess {
-                    _event.emit(PublishEvent.NavigateBack)
-                }
-                .onFailure { e ->
-                    Log.e("UPLOAD", "Upload failed: ${e.message}", e)
-                }
         }
     }
 
+    private companion object {
+
+        private const val DEFAULT_COUNTRY = "Belarus"
+    }
 
     private fun validateState(state: PublishState): Boolean {
 
-        val errors = mutableListOf<String>()
+        val errors = mutableListOf<ValidationItem>()
 
         if (state.title.trim().isEmpty()) {
             _state.update { it.copy(isTitleError = true) }
-            errors.add("Введите название")
+            errors.add(ValidationItem.Text("Введите название"))
         } else {
             _state.update { it.copy(isTitleError = false) }
         }
 
         if (state.price.toDoubleOrNull() == null) {
             _state.update { it.copy(isPriceError = true) }
-            errors.add("Введите корректную цену")
+            errors.add(ValidationItem.Text("Введите корректную цену"))
         } else {
             _state.update { it.copy(isPriceError = false) }
         }
 
         if (state.dealType == null) {
             _state.update { it.copy(isDealTypeError = true) }
-            errors.add("Выберите тип сделки")
+            errors.add(ValidationItem.Text("Выберите тип сделки"))
         } else {
             _state.update { it.copy(isDealTypeError = false) }
         }
 
         if (state.propertyType == null) {
             _state.update { it.copy(isPropertyTypeError = true) }
-            errors.add("Выберите тип недвижимости")
+            errors.add(ValidationItem.Text("Выберите тип недвижимости"))
         } else {
             _state.update { it.copy(isPropertyTypeError = false) }
         }
 
         if (state.area == null) {
             _state.update { it.copy(isAreaError = true) }
-            errors.add("Укажите площадь")
+            errors.add(ValidationItem.Text("Укажите площадь"))
         } else {
             _state.update { it.copy(isAreaError = false) }
         }
 
+        if (state.latitude == null || state.longitude == null) {
+            _state.update { it.copy(isLocationError = true) }
+            errors.add(ValidationItem.Res(R.string.publish_validation_location))
+        } else {
+            _state.update { it.copy(isLocationError = false) }
+        }
+
         return if (errors.isNotEmpty()) {
             viewModelScope.launch {
-                _event.emit(
-                    PublishEvent.ShowValidationError(
-                        errors.first()
-                    )
-                )
+                when (val first = errors.first()) {
+                    is ValidationItem.Text ->
+                        _event.emit(PublishEvent.ShowValidationError(first.text))
+                    is ValidationItem.Res ->
+                        _event.emit(PublishEvent.ShowValidationErrorRes(first.id))
+                }
             }
             false
         } else {

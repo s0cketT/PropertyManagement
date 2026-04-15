@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.list_property_screen.components
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ fun ListPropertyScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         event.collect { event ->
             when (event) {
+                is ListPropertyEvent.NavigateBack -> navController.popBackStack()
                 is ListPropertyEvent.NavigateToDetail -> {
                     navController.navigate(
                         Screens.PropertyDetailScreen.createRoute(
@@ -51,6 +53,10 @@ fun ListPropertyScreen(navController: NavController) {
                 }
             }
         }
+    }
+
+    BackHandler {
+        intent(ListPropertyIntent.NavigateBack)
     }
 
     UI(

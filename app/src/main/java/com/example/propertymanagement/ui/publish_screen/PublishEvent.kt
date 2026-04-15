@@ -1,5 +1,7 @@
 package com.example.propertymanagement.ui.publish_screen
 
+import androidx.annotation.StringRes
+
 sealed class PublishEvent {
     object NavigateBack : PublishEvent()
     object NavigateToCategorySelection : PublishEvent()
@@ -9,4 +11,6 @@ sealed class PublishEvent {
     object ShowAuthRequired : PublishEvent()
 
     data class ShowValidationError(val message: String) : PublishEvent()
+
+    data class ShowValidationErrorRes(@StringRes val messageRes: Int) : PublishEvent()
 }

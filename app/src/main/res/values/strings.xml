@@ -99,6 +99,8 @@
     <string name="no_address">Без адреса</string>
     <string name="area_value">Площадь: %1$.0f м²</string>
     <string name="rooms_value">Комнаты: %1$s</string>
+    <string name="list_property_published_at">Опубликовано: %1$s</string>
+    <string name="property_detail_published_at">Опубликовано %1$s</string>
     <string name="floor_value">Этаж: %1$s / %2$s</string>
 
     <string name="error_default">Ошибка</string>
@@ -282,6 +284,10 @@
     <string name="save">Сохранить</string>
     <string name="search">Поиск…</string>
 
+    <string name="map_marker_sheet_details">Подробнее</string>
+    <string name="map_marker_sheet_image_cd">Фото объявления</string>
+    <string name="map_marker_sheet_meta">%1$s · %2$s</string>
+
     <string name="favorite_title">Избранное</string>
     <string name="favorite_login_prompt">Войдите в аккаунт, чтобы сохранять объявления в избранном и просматривать их здесь.</string>
 
@@ -322,5 +328,20 @@
     <string name="property_detail_map_fullscreen_cd">Открыть карту на весь экран</string>
     <string name="property_detail_submit_request">Оставить заявку</string>
     <string name="property_detail_request_requires_registration">Чтобы оставить заявку, необходимо зарегистрироваться</string>
+
+    <string name="publish_location_section_title">Местоположение</string>
+    <string name="publish_location_not_set">Нажмите, чтобы указать адрес</string>
+    <string name="publish_address_sheet_title">Адрес объекта</string>
+    <string name="publish_address_country">Страна (необязательно)</string>
+    <string name="publish_address_region">Область / регион (необязательно)</string>
+    <string name="publish_address_city">Населённый пункт</string>
+    <string name="publish_address_street">Улица</string>
+    <string name="publish_address_house">Дом / корпус</string>
+    <string name="publish_pick_on_map">Указать на карте</string>
+    <string name="publish_address_done">Готово</string>
+    <string name="publish_map_title">Точка на карте</string>
+    <string name="publish_map_done">Сохранить</string>
+    <string name="publish_map_cancel">Отмена</string>
+    <string name="publish_validation_location">Укажите местоположение на карте или введите адрес вручную</string>
 
 </resources>

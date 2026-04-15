@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.settings_screen.components
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import com.example.propertymanagement.ui.components.EnumRadioSection
 import com.example.propertymanagement.ui.components.PrimaryActionButton
 import com.example.propertymanagement.ui.core.locale.LocaleManager
 import com.example.propertymanagement.ui.mapper.titleRes
+import com.example.propertymanagement.ui.profile_screen.ProfileIntent
 import com.example.propertymanagement.ui.profile_screen.components.ProfileActionItem
 import com.example.propertymanagement.ui.settings_screen.SettingsEvent
 import com.example.propertymanagement.ui.settings_screen.SettingsIntent
@@ -76,6 +78,10 @@ fun SettingsScreen(navController: NavController) {
                 }
             }
         }
+    }
+
+    BackHandler {
+        intent(SettingsIntent.NavigateBack)
     }
 
     UI(

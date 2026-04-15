@@ -28,6 +28,11 @@ class ProfileViewModel(
 
     fun processIntent(intent: ProfileIntent) {
         when (intent) {
+            ProfileIntent.NavigateBack -> {
+                viewModelScope.launch {
+                    _event.emit(ProfileEvent.NavigateBack)
+                }
+            }
             ProfileIntent.LoginClick -> login()
             ProfileIntent.NavToPublish -> {
                 viewModelScope.launch {

@@ -2,6 +2,7 @@ package com.example.propertymanagement.ui.map_screen.components
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -18,6 +19,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -87,7 +90,23 @@ fun MapScreen(
             when (event) {
                 is MapEvent.NavigateBack -> navController.popBackStack()
                 is MapEvent.NavigateFilterScreen -> navController.navigate(Screens.Filters.route)
+                is MapEvent.NavigateToPropertyDetail -> {
+                    navController.navigate(
+                        Screens.PropertyDetailScreen.createRoute(
+                            propertyId = event.propertyId,
+                            userId = event.userId
+                        )
+                    )
+                }
             }
+        }
+    }
+
+    BackHandler {
+        if (state.selectedMarkerProperty != null) {
+            intent(MapIntent.DismissMarkerBottomSheet)
+        } else {
+            intent(MapIntent.NavigateBack)
         }
     }
 
@@ -123,20 +142,12 @@ private fun UI(
         }
     }
 
-    LaunchedEffect(state.filteredMarkers) {
-        mapHelper.clearMarkers()
-
-        if (state.filteredMarkers.isEmpty()) {
-            mapHelper.clearMarkers()
-            return@LaunchedEffect
+    // Оба ключа: геолокация рисуется под метками (низкий z-index); объявления — сверху и получают тапы.
+    LaunchedEffect(state.filteredMarkers, state.userLocation) {
+        state.userLocation?.let { mapHelper.updateUserLocation(mapView, it) }
+        mapHelper.showPropertyMarkers(mapView, state.filteredMarkers) { property ->
+            intent(MapIntent.MarkerTapped(property))
         }
-
-        mapHelper.showPropertyMarkers(mapView, state.filteredMarkers)
-    }
-
-    LaunchedEffect(state.userLocation) {
-        val location = state.userLocation ?: return@LaunchedEffect
-        mapHelper.updateUserLocation(mapView, location)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -148,7 +159,13 @@ private fun UI(
 
         // Кнопка "Назад"
         IconButton(
-            onClick = { intent(MapIntent.NavigateBack) },
+            onClick = {
+                if (state.selectedMarkerProperty != null) {
+                    intent(MapIntent.DismissMarkerBottomSheet)
+                } else {
+                    intent(MapIntent.NavigateBack)
+                }
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .size(40.dp)
@@ -176,6 +193,20 @@ private fun UI(
                 imageVector = Icons.Default.Tune,
                 contentDescription = stringResource(R.string.filters_fab_content_description)
             )
+        }
+
+        state.selectedMarkerProperty?.let { property ->
+            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            ModalBottomSheet(
+                onDismissRequest = { intent(MapIntent.DismissMarkerBottomSheet) },
+                sheetState = sheetState
+            ) {
+                MapMarkerBottomSheetContent(
+                    property = property,
+                    currencyRates = state.currencyRates,
+                    onDetailsClick = { intent(MapIntent.NavigateToSelectedPropertyDetail) }
+                )
+            }
         }
     }
 }

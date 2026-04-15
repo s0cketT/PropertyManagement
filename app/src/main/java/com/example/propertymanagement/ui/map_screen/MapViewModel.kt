@@ -3,12 +3,14 @@ package com.example.propertymanagement.ui.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
-import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.UserLocation
+import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import com.example.propertymanagement.ui.map_screen.MapEvent
@@ -16,6 +18,9 @@ import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.map_screen.MapState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,6 +28,9 @@ class MapViewModel(
     private val observeLocationUseCase: ObserveLocationUseCase,
     private val getPropertiesUseCase: GetPropertiesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
+    private val filterPropertiesUseCase: FilterPropertiesUseCase,
+    private val getTodayRatesUseCase: GetTodayRatesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MapState())
@@ -33,6 +41,7 @@ class MapViewModel(
 
     init {
         loadProperties()
+        subscribeSavedFilters()
     }
 
     fun processIntent(intent: MapIntent) {
@@ -59,15 +68,9 @@ class MapViewModel(
                         }
                     }
 
-                    current.copy(
-                        selectedStatuses = newSelected,
-                        filteredMarkers = computeFilteredMarkers(
-                            markers = current.markers,
-                            selectedStatuses = newSelected,
-                            selectedTypes = current.selectedTypes
-                        )
-                    )
+                    current.copy(selectedStatuses = newSelected)
                 }
+                recomputeFilteredMarkers()
             }
 
             is MapIntent.ApplyTypeFilter -> {
@@ -83,18 +86,63 @@ class MapViewModel(
 
                     current.copy(
                         selectedTypes = newSelectedTypes,
-                        filteredMarkers = computeFilteredMarkers(
-                            markers = current.markers,
-                            selectedStatuses = current.selectedStatuses,
-                            selectedTypes = newSelectedTypes
-                        )
+                        selectedMarkerProperty = null
                     )
                 }
+                recomputeFilteredMarkers()
             }
 
             is MapIntent.NavigateFilterScreen -> {
                 _event.emit(MapEvent.NavigateFilterScreen)
             }
+
+            is MapIntent.MarkerTapped -> {
+                _state.update { it.copy(selectedMarkerProperty = intent.property) }
+            }
+
+            is MapIntent.DismissMarkerBottomSheet -> {
+                _state.update { it.copy(selectedMarkerProperty = null) }
+            }
+
+            is MapIntent.NavigateToSelectedPropertyDetail -> {
+                val property = _state.value.selectedMarkerProperty ?: return
+                val userId = _state.value.currentUserId.orEmpty()
+                _state.update { it.copy(selectedMarkerProperty = null) }
+                _event.emit(MapEvent.NavigateToPropertyDetail(property.id, userId))
+            }
+        }
+    }
+
+    private fun subscribeSavedFilters() {
+        getFilterPropertyUseCase()
+            .distinctUntilChanged()
+            .onEach { filters ->
+                _state.update { it.copy(filtersProperty = filters) }
+                recomputeFilteredMarkers()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun recomputeFilteredMarkers() {
+        _state.update { current ->
+            val rates = current.currencyRates
+            val base = current.filtersProperty?.let { f ->
+                filterPropertiesUseCase(
+                    properties = current.markers,
+                    filters = f,
+                    rates = rates
+                )
+            } ?: current.markers
+
+            val filtered = base.filter { marker ->
+                val statusMatch =
+                    current.selectedStatuses.isEmpty() || marker.status in current.selectedStatuses
+                val typeMatch =
+                    current.selectedTypes.isEmpty() || marker.type in current.selectedTypes
+                statusMatch && typeMatch
+            }
+
+            current.copy(filteredMarkers = filtered)
         }
     }
 
@@ -127,6 +175,11 @@ class MapViewModel(
                 )
             }
 
+            val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                is Resource.Success -> ratesResult.data
+                else -> emptyMap()
+            }
+
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
@@ -134,9 +187,10 @@ class MapViewModel(
                         it.copy(
                             isLoading = false,
                             markers = result.data,
-                            filteredMarkers = result.data
+                            currencyRates = rates
                         )
                     }
+                    recomputeFilteredMarkers()
                 }
 
                 is Resource.Error -> {
@@ -150,17 +204,4 @@ class MapViewModel(
             }
         }
     }
-
-    private fun computeFilteredMarkers(
-        markers: List<Property>,
-        selectedStatuses: Set<PropertyStatus>,
-        selectedTypes: Set<PropertyType>
-    ): List<Property> {
-        return markers.filter { marker ->
-            val statusMatch = selectedStatuses.isEmpty() || marker.status in selectedStatuses
-            val typeMatch = selectedTypes.isEmpty() || marker.type in selectedTypes
-            statusMatch && typeMatch
-        }
-    }
 }
-

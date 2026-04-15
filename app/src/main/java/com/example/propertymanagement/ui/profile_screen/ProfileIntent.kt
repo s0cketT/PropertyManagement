@@ -8,4 +8,6 @@ sealed class ProfileIntent {
     object Settings : ProfileIntent()
 
     object PersonalInfo : ProfileIntent()
+
+    object NavigateBack : ProfileIntent()
 }

@@ -20,6 +20,27 @@ import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.WallMaterialType
 import com.example.propertymanagement.domain.model.WaterType
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
+private fun String?.parseCreatedAt(): Instant? {
+    if (isNullOrBlank()) return null
+    val s = trim()
+    runCatching { Instant.parse(s) }.getOrNull()?.let { return it }
+    runCatching {
+        OffsetDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant()
+    }.getOrNull()?.let { return it }
+    runCatching {
+        OffsetDateTime.parse(s, DateTimeFormatter.ISO_ZONED_DATE_TIME).toInstant()
+    }.getOrNull()?.let { return it }
+    val normalized = if ('T' in s) s else s.replaceFirst(" ", "T")
+    return runCatching {
+        LocalDateTime.parse(normalized, DateTimeFormatter.ISO_LOCAL_DATE_TIME).toInstant(ZoneOffset.UTC)
+    }.getOrNull()
+}
 
 fun PropertyResponseDto.toDomain(): Property {
 
@@ -70,6 +91,7 @@ fun PropertyResponseDto.toDomain(): Property {
     return Property(
         id = id,
         ownerId = owner_id.orEmpty(),
+        createdAt = created_at.parseCreatedAt(),
 
         type = propertyType,
         dealType = dealType,

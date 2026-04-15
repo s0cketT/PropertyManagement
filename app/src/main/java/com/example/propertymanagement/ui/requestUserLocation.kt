@@ -12,6 +12,48 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
 
+/**
+ * Один раз подстраивает камеру под координаты пользователя, не добавляет метки и не очищает объекты карты.
+ */
+@SuppressLint("MissingPermission")
+fun moveMapCameraToUserLocationOnce(
+    fusedLocationClient: FusedLocationProviderClient,
+    mapView: MapView,
+    zoom: Float = 16f
+) {
+    val locationRequest = LocationRequest.Builder(
+        Priority.PRIORITY_HIGH_ACCURACY,
+        2000L
+    )
+        .setMinUpdateIntervalMillis(1000L)
+        .setMaxUpdates(1)
+        .build()
+
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val location = locationResult.lastLocation ?: return
+            val userPoint = Point(location.latitude, location.longitude)
+            mapView.map.move(
+                CameraPosition(
+                    userPoint,
+                    zoom,
+                    0f,
+                    0f
+                ),
+                Animation(Animation.Type.SMOOTH, 1f),
+                null
+            )
+            fusedLocationClient.removeLocationUpdates(this)
+        }
+    }
+
+    fusedLocationClient.requestLocationUpdates(
+        locationRequest,
+        locationCallback,
+        Looper.getMainLooper()
+    )
+}
+
 @SuppressLint("MissingPermission")
 fun requestUserLocation(
     fusedLocationClient: FusedLocationProviderClient,

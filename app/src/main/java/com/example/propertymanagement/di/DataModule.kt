@@ -90,4 +90,5 @@ val dataModule = module {
     single<IFavoriteRepository> {
         FavoriteRepositoryImpl(supabaseApi = get<ISupabaseApi>())
     }
+
 }

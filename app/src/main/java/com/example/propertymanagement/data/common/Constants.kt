@@ -2,7 +2,14 @@ package com.example.propertymanagement.data.common
 
 object Constants {
 
-    const val API_KEY = "e8dadba5-8abb-4655-b3a1-eb10a5085a55"
+    const val API_KEY_MAPKIT = "e8dadba5-8abb-4655-b3a1-eb10a5085a55"
+    const val API_KEY_GEOCODER = "84851e39-9a79-4d16-99d2-0f0ed0f6049f"
+
+    /** Запасная точка карты (Минск), если нет геолокации. */
+    const val MAP_PICKER_FALLBACK_LAT = 53.902284
+    const val MAP_PICKER_FALLBACK_LON = 27.561831
+    const val MAP_PICKER_INITIAL_ZOOM = 11f
+    const val MAP_PICKER_SAVED_POINT_ZOOM = 16f
 
     const val BASE_URL_SUPABASE = "https://igpxiyulvaqgivpgfmnf.supabase.co"
     const val API_KEY_SUPABASE = "sb_publishable_27WAdWKydkds6dekAJO_GQ_GIBjKXQW"

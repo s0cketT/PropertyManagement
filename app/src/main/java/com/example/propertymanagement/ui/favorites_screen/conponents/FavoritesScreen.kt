@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.favorites_screen.conponents
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +56,10 @@ fun FavoritesScreen(navController: NavController) {
                 }
             }
         }
+    }
+
+    BackHandler {
+        intent(FavoriteIntent.NavigateBack)
     }
 
     UI(

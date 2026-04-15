@@ -1,8 +1,14 @@
 package com.example.propertymanagement.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class PropertyResponseDto(
     val id: Int,
     val owner_id: String?,
+
+    /** ISO / Postgres timestamp из `properties.created_at`. */
+    @field:SerializedName(value = "created_at", alternate = ["createdAt"])
+    val created_at: String? = null,
 
     val title: String,
     val price: Double,

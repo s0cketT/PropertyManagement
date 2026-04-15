@@ -97,4 +97,5 @@ val domainModule = module {
     factory { GetTodayRatesUseCase(currencyRepository = get<ICurrencyRepository>()) }
 
     factory { GetPropertyDetailPricesUseCase() }
+
 }

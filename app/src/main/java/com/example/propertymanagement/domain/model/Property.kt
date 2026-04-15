@@ -1,8 +1,13 @@
 package com.example.propertymanagement.domain.model
 
+import java.time.Instant
+
 data class Property(
     val id: Int,
     val ownerId: String,
+
+    /** Дата создания объявления в БД (`properties.created_at`). */
+    val createdAt: Instant?,
 
     val type: PropertyType,
     val dealType: DealType,

@@ -16,11 +16,11 @@ import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraListener
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
-import com.yandex.mapkit.map.ClusterizedPlacemarkCollection
+import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
@@ -28,26 +28,32 @@ import android.graphics.Color as AndroidColor
 
 class MapHelper {
 
+    companion object {
+        /** Метки объявлений должны быть выше слоя геолокации (круг ~30 м перекрывает экран). */
+        private const val USER_LAYER_Z_INDEX = 0f
+        private const val PROPERTY_MARKERS_Z_INDEX = 5f
+    }
+
     private var userPlacemark: PlacemarkMapObject? = null
     private var userCircle: CircleMapObject? = null
     private var cameraMoved: Boolean = false
-    private val propertyPlacemarks = mutableListOf<PlacemarkMapObject>()
 
-    private var clusterCollection: ClusterizedPlacemarkCollection? = null
-    private var zoomListener: CameraListener? = null
+    /** Отдельный слой объявлений (без кластеризации), целиком снимается с карты при очистке. */
+    private var propertyMarkersLayer: MapObjectCollection? = null
 
     private var detailPlacemark: PlacemarkMapObject? = null
 
     fun updateUserLocation(
         mapView: MapView,
-        location: UserLocation
+        location: UserLocation,
+        moveCameraOnFirstFix: Boolean = true
     ) {
         val point = Point(location.lat, location.lon)
 
         if (userPlacemark == null || userCircle == null) {
             val objects = createUserMapObjects(mapView, point)
-            userPlacemark = objects.first
-            userCircle = objects.second
+            userPlacemark = objects.first.apply { zIndex = USER_LAYER_Z_INDEX }
+            userCircle = objects.second.apply { zIndex = USER_LAYER_Z_INDEX }
         }
 
         cameraMoved = updateUserLocationOnMap(
@@ -55,58 +61,64 @@ class MapHelper {
             location,
             cameraMoved,
             userCircle,
-            userPlacemark
+            userPlacemark,
+            moveCameraOnFirstFix
         )
     }
 
     fun showPropertyMarkers(
         mapView: MapView,
-        markers: List<Property>
+        markers: List<Property>,
+        onMarkerTap: (Property) -> Unit
     ) {
-        val context = mapView.context
-        val mapObjects = mapView.mapWindow.map.mapObjects
+        clearPropertyMarkersLayer(mapView)
+        if (markers.isEmpty()) return
 
-        initClusterCollection(mapObjects)
+        val layer = mapView.map.mapObjects.addCollection()
+        propertyMarkersLayer = layer
+        // Выше круга/метки геолокации, иначе большой круг перехватывает все тапы по карте.
+        layer.zIndex = PROPERTY_MARKERS_Z_INDEX
 
-        val icon = createMarkerIcon(context)
+        val icon = createMarkerIcon(mapView.context)
 
         markers.forEach { marker ->
-            val placemark = clusterCollection!!.addPlacemark(
+            val placemark = layer.addPlacemark(
                 Point(marker.latitude, marker.longitude),
                 icon
             )
-            propertyPlacemarks.add(placemark)
+            placemark.zIndex = PROPERTY_MARKERS_Z_INDEX
+            placemark.userData = marker
+            placemark.addTapListener(
+                object : MapObjectTapListener {
+                    override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
+                        mapView.post {
+                            onMarkerTap(marker)
+                        }
+                        return true
+                    }
+                }
+            )
         }
-
-
-        updateVisibilityByZoom(mapView)
-
-        zoomListener?.let { mapView.map.removeCameraListener(it) }
-
-        zoomListener = CameraListener { _, _, _, _ ->
-            updateVisibilityByZoom(mapView)
-        }
-        mapView.map.addCameraListener(zoomListener!!)
-
-        clusterCollection!!.clusterPlacemarks(
-            MapSizesColors.CLUSTER_RADIUS_METERS,
-            MapSizesColors.CLUSTER_MIN_ZOOM
-        )
     }
 
-    //Очист
-    fun clearMarkers() {
-        clusterCollection?.clear()
-        propertyPlacemarks.clear()
+    fun clearMarkers(mapView: MapView) {
+        clearPropertyMarkersLayer(mapView)
+    }
+
+    private fun clearPropertyMarkersLayer(mapView: MapView) {
+        propertyMarkersLayer?.let { layer ->
+            mapView.map.mapObjects.remove(layer)
+            propertyMarkersLayer = null
+        }
     }
 
     /**
-     * Одна метка объекта + плавное позиционирование камеры (без кластеризации).
+     * Одна метка объекта + плавное позиционирование камеры.
      * Для превью и полноэкранной карты в карточке объекта.
      */
     fun showSinglePropertyMarker(mapView: MapView, property: Property) {
         clearSinglePropertyMarker(mapView)
-        clearMarkers()
+        clearPropertyMarkersLayer(mapView)
 
         val icon = createMarkerIcon(mapView.context)
         detailPlacemark = mapView.map.mapObjects.addPlacemark(
@@ -135,51 +147,11 @@ class MapHelper {
 
     fun release(mapView: MapView) {
         clearSinglePropertyMarker(mapView)
-        zoomListener?.let {
-            mapView.map.removeCameraListener(it)
-            zoomListener = null
-        }
+        clearPropertyMarkersLayer(mapView)
     }
 
-    private fun updateVisibilityByZoom(mapView: MapView) {
-        val zoom = mapView.mapWindow.map.cameraPosition.zoom
-        val shouldBeVisible = zoom > MapSizesColors.VISIBILITY_THRESHOLD_ZOOM
-
-        clusterCollection?.setVisible(shouldBeVisible)
-    }
-
-    //Работа с кластером
-    private fun initClusterCollection(mapObjects: MapObjectCollection) {
-
-        clusterCollection = mapObjects.addClusterizedPlacemarkCollection { cluster ->
-
-            val size = MapSizesColors.CLUSTER_BITMAP_SIZE_PX
-            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-
-            val paint = Paint().apply {
-                color = Color.parseColor(MapSizesColors.CLUSTER_BACKGROUND_COLOR)
-                isAntiAlias = true
-            }
-
-            val textPaint = Paint().apply {
-                color = Color.parseColor(MapSizesColors.CLUSTER_TEXT_COLOR)
-                textSize = MapSizesColors.CLUSTER_TEXT_SIZE_SP.toFloat()
-                textAlign = Paint.Align.CENTER
-                isAntiAlias = true
-                typeface = MapSizesColors.CLUSTER_TEXT_TYPEFACE
-            }
-
-            val radius = size * MapSizesColors.CLUSTER_CIRCLE_RADIUS_FACTOR
-            canvas.drawCircle(radius, radius, radius, paint)
-
-            val text = cluster.size.toString()
-            val yPos = radius - (textPaint.descent() + textPaint.ascent()) / 2
-            canvas.drawText(text, radius, yPos, textPaint)
-
-            cluster.appearance.setIcon(ImageProvider.fromBitmap(bitmap))
-        }
-    }
+    /** Иконка метки `point` для одиночных пинов (карта выбора адреса и т.п.). */
+    fun propertyMarkerIcon(context: Context): ImageProvider = createMarkerIcon(context)
 
     private fun createMarkerIcon(context: Context): ImageProvider {
         val sizeInSp = MapSizesColors.MARKER_ICON_SIZE_SP
@@ -204,7 +176,8 @@ class MapHelper {
         location: UserLocation,
         cameraMoved: Boolean,
         userCircle: CircleMapObject?,
-        userPlacemark: PlacemarkMapObject?
+        userPlacemark: PlacemarkMapObject?,
+        moveCameraOnFirstFix: Boolean = true
     ): Boolean {
 
         val point = Point(location.lat, location.lon)
@@ -212,16 +185,18 @@ class MapHelper {
         var cameraWasMoved = cameraMoved
 
         if (!cameraWasMoved) {
-            mapView.map.move(
-                CameraPosition(
-                    point,
-                    MapSizesColors.INITIAL_USER_LOCATION_ZOOM,
-                    0f,
-                    0f
-                ),
-                Animation(Animation.Type.SMOOTH, MapSizesColors.CAMERA_MOVE_ANIMATION_DURATION_SEC),
-                null
-            )
+            if (moveCameraOnFirstFix) {
+                mapView.map.move(
+                    CameraPosition(
+                        point,
+                        MapSizesColors.INITIAL_USER_LOCATION_ZOOM,
+                        0f,
+                        0f
+                    ),
+                    Animation(Animation.Type.SMOOTH, MapSizesColors.CAMERA_MOVE_ANIMATION_DURATION_SEC),
+                    null
+                )
+            }
             cameraWasMoved = true
         }
 
@@ -285,20 +260,16 @@ class MapHelper {
             isAntiAlias = true
         }
 
-        // Белая обводка
         canvas.drawCircle(cx, cy, MapSizesColors.USER_MARKER_WHITE_CIRCLE_RADIUS, whitePaint)
 
-        // Синий круг
         canvas.drawCircle(cx, cy, MapSizesColors.USER_MARKER_BLUE_CIRCLE_RADIUS, bluePaint)
 
-        // Треугольный «клюв»
         val path = Path()
         path.moveTo(cx, cy - MapSizesColors.USER_MARKER_ARROW_TOP_OFFSET)
         path.lineTo(cx - MapSizesColors.USER_MARKER_ARROW_SIDE_OFFSET, cy - 12f)
         path.lineTo(cx + MapSizesColors.USER_MARKER_ARROW_SIDE_OFFSET, cy - 12f)
         path.close()
 
-        // Поворачиваем по bearing
         val matrix = Matrix()
         matrix.postRotate(bearing, cx, cy)
         path.transform(matrix)

@@ -13,4 +13,6 @@ sealed class ListPropertyIntent {
     data class OnPropertyClick(val property: Property) : ListPropertyIntent()
 
     object OnFilterClick : ListPropertyIntent()
+
+    object NavigateBack : ListPropertyIntent()
 }

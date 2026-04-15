@@ -72,11 +72,18 @@ class ListPropertyViewModel(
 
     fun processIntent(intent: ListPropertyIntent) {
         when (intent) {
+            is ListPropertyIntent.NavigateBack -> navigateBack()
             is ListPropertyIntent.LoadProperties -> loadProperties()
             is ListPropertyIntent.ToggleFavorite -> toggleFavorite(propertyId = intent.propertyId)
             is ListPropertyIntent.OnSearchChanged -> { onSearchChanged(query = intent.query) }
             is ListPropertyIntent.OnPropertyClick -> onPropertyClick(property = intent.property)
             is ListPropertyIntent.OnFilterClick -> { viewModelScope.launch { _event.emit(ListPropertyEvent.NavigateToFilterScreen) } }
+        }
+    }
+
+    private fun navigateBack() {
+        viewModelScope.launch {
+            _event.emit(ListPropertyEvent.NavigateBack)
         }
     }
 

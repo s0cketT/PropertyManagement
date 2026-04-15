@@ -1,5 +1,6 @@
 package com.example.propertymanagement.ui.publish_screen
 
+import com.example.propertymanagement.domain.model.GeocodedAddressParts
 import com.example.propertymanagement.domain.model.ApartmentRepairType
 import com.example.propertymanagement.domain.model.BalconyType
 import com.example.propertymanagement.domain.model.BathroomType
@@ -72,4 +73,27 @@ sealed class PublishIntent {
     data class SetGasType(val type: GasType?) : PublishIntent()
     data class SetHouseType(val type: HouseType?) : PublishIntent()
     data class SetParkingType(val type: ParkingType?) : PublishIntent()
+
+    data class SetAddressBottomSheetOpen(val open: Boolean) : PublishIntent()
+    data class SetMapPickerOpen(val open: Boolean) : PublishIntent()
+    data class SetAddressCountry(val value: String) : PublishIntent()
+    data class SetAddressRegion(val value: String) : PublishIntent()
+    data class SetAddressCity(val value: String) : PublishIntent()
+    data class SetAddressStreet(val value: String) : PublishIntent()
+    data class SetAddressHouse(val value: String) : PublishIntent()
+
+    /**
+     * Закрыть лист адреса после геокодирования в UI.
+     * [latitude]/[longitude] — null, если строка пуста или геокод не удался (координаты не меняем).
+     */
+    data class AddressSheetDone(
+        val latitude: Double?,
+        val longitude: Double?
+    ) : PublishIntent()
+
+    data class ConfirmMapLocation(
+        val latitude: Double,
+        val longitude: Double,
+        val geocoded: GeocodedAddressParts
+    ) : PublishIntent()
 }

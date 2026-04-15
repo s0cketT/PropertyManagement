@@ -7,6 +7,7 @@ import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.SortType
 import com.example.propertymanagement.ui.mapper.toCode
+import java.time.Instant
 
 class FilterPropertiesUseCase {
 
@@ -29,7 +30,8 @@ class FilterPropertiesUseCase {
     ): Comparator<Property> {
 
         return when (sortType) {
-            SortType.NEWEST -> compareByDescending { it.id }
+            SortType.NEWEST -> compareByDescending<Property> { it.createdAt ?: Instant.EPOCH }
+                .thenByDescending { it.id }
             SortType.PRICE_ASC -> compareBy { toBYN(it.price, it.currency, rates) }
             SortType.PRICE_DESC -> compareByDescending { toBYN(it.price, it.currency, rates) }
         }

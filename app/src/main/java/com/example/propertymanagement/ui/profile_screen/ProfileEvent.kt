@@ -8,4 +8,6 @@ sealed class ProfileEvent {
     object RateApp : ProfileEvent()
 
     object NavigateToPersonalInfo : ProfileEvent()
+
+    object NavigateBack : ProfileEvent()
 }

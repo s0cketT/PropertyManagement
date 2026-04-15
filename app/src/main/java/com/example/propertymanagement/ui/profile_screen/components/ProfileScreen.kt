@@ -1,5 +1,6 @@
 package com.example.propertymanagement.ui.profile_screen.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -35,6 +36,7 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         event.collect { event ->
             when (event) {
+                is ProfileEvent.NavigateBack -> navController.popBackStack()
                 is ProfileEvent.NavigateToAuth -> {
                     navController.navigate(Screens.AuthLoginScreen.route) {
                         popUpTo(0)
@@ -55,6 +57,10 @@ fun ProfileScreen(
                 is ProfileEvent.RateApp -> TODO()
             }
         }
+    }
+
+    BackHandler {
+        intent(ProfileIntent.NavigateBack)
     }
 
     UI(state = state, intent = intent)

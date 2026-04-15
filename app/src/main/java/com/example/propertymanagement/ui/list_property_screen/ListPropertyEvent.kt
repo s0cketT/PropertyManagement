@@ -8,4 +8,6 @@ sealed class ListPropertyEvent {
     data class NavigateToDetail(val property: Property, val userId: String) : ListPropertyEvent()
 
     object NavigateToFilterScreen : ListPropertyEvent()
+
+    object NavigateBack : ListPropertyEvent()
 }

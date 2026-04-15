@@ -173,7 +173,7 @@ private fun FilterBottomSheetContent(
         Spacer(modifier = Modifier.height(SpacerLarge))
 
         Text(
-            text = "@@@@",
+            text = stringResource(R.string.property_detail_property_type),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = PaddingMedium)

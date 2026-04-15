@@ -10,13 +10,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.domain.model.PropertyStatus
+import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.mapper.titleResListingDetail
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
@@ -46,19 +49,26 @@ fun PropertyDetailInfoSections(
             fontWeight = FontWeight.SemiBold
         )
 
-        val address = listOfNotNull(
-            property.region,
-            property.city,
-            property.street,
-            property.house
-        ).joinToString(", ")
-
-        if (address.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(SpacerSmall))
+        val addressLine = buildPropertyDetailAddressLine(property)
+        if (addressLine.isNotBlank()) {
             Text(
-                text = address,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = addressLine,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = SpacerTiny)
+            )
+        }
+
+        val locale = LocalConfiguration.current.locales[0]
+        val publishedFormatted = remember(property.createdAt, locale) {
+            formatPropertyPublicationTime(property.createdAt, locale)
+        }
+        publishedFormatted?.let {
+            Text(
+                text = stringResource(R.string.property_detail_published_at, it),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
+                modifier = Modifier.padding(top = SpacerTiny)
             )
         }
 

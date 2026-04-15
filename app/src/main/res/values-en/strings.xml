@@ -205,6 +205,8 @@
     <string name="no_address">No address</string>
     <string name="area_value">Area: %1$.0f m²</string>
     <string name="rooms_value">Rooms: %1$s</string>
+    <string name="list_property_published_at">Published: %1$s</string>
+    <string name="property_detail_published_at">Published %1$s</string>
     <string name="floor_value">Floor: %1$s / %2$s</string>
 
     <string name="error_default">Error</string>
@@ -278,6 +280,10 @@
     <string name="save">Save</string>
     <string name="search">Search…</string>
 
+    <string name="map_marker_sheet_details">Details</string>
+    <string name="map_marker_sheet_image_cd">Listing photo</string>
+    <string name="map_marker_sheet_meta">%1$s · %2$s</string>
+
     <string name="favorite_title">Favorite</string>
     <string name="favorite_login_prompt">Sign in to save listings to favorites and view them here.</string>
 
@@ -318,4 +324,19 @@
     <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
     <string name="property_detail_submit_request">Submit request</string>
     <string name="property_detail_request_requires_registration">You need to sign up to submit a request</string>
+
+    <string name="publish_location_section_title">Location</string>
+    <string name="publish_location_not_set">Tap to set address</string>
+    <string name="publish_address_sheet_title">Property address</string>
+    <string name="publish_address_country">Country (optional)</string>
+    <string name="publish_address_region">Region (optional)</string>
+    <string name="publish_address_city">City / locality</string>
+    <string name="publish_address_street">Street</string>
+    <string name="publish_address_house">Building</string>
+    <string name="publish_pick_on_map">Pick on map</string>
+    <string name="publish_address_done">Done</string>
+    <string name="publish_map_title">Location on map</string>
+    <string name="publish_map_done">Save</string>
+    <string name="publish_map_cancel">Cancel</string>
+    <string name="publish_validation_location">Set the location on the map or enter the address manually</string>
 </resources>

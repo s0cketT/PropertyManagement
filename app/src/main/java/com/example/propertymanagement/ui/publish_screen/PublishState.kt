@@ -29,10 +29,25 @@ data class PublishState(
     val isDealTypeError: Boolean = false,
     val isPropertyTypeError: Boolean = false,
     val isAreaError: Boolean = false,
+    val isLocationError: Boolean = false,
+
+    /** Идёт отправка объявления на сервер — кнопку «Опубликовать» блокируем. */
+    val isPublishing: Boolean = false,
 
     val imageBytes: List<ByteArray> = emptyList(),
 
     val title: String = "",
+
+    val addressCountry: String = "",
+    val addressRegion: String = "",
+    val addressCity: String = "",
+    val addressStreet: String = "",
+    val addressHouse: String = "",
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+
+    val isAddressBottomSheetOpen: Boolean = false,
+    val isMapPickerOpen: Boolean = false,
     val price: String = "",
 
     val area: Int? = null,

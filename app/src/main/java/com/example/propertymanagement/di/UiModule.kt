@@ -5,9 +5,9 @@ import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
-import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
@@ -41,7 +41,10 @@ val uiModule = module {
         MapViewModel(
             observeLocationUseCase = get<ObserveLocationUseCase>(),
             getPropertiesUseCase = get<GetPropertiesUseCase>(),
-            getCurrentUserUseCase = get<GetCurrentUserUseCase>()
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
+            filterPropertiesUseCase = get<FilterPropertiesUseCase>(),
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
         )
     }
 
