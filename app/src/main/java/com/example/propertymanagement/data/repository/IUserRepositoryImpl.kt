@@ -2,7 +2,11 @@ package com.example.propertymanagement.data.repository
 
 import com.example.propertymanagement.data.mapper.toDomain
 import com.example.propertymanagement.data.model.CheckEmailRequest
+import com.example.propertymanagement.data.model.SellerTypeIdRow
+import com.example.propertymanagement.data.model.UpdateAvatarPayload
+import com.example.propertymanagement.data.model.UpdateUserProfilePayload
 import com.example.propertymanagement.data.model.UserProfileDto
+import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.data.remote.ISupabaseApi
 import com.example.propertymanagement.domain.model.UserProfile
 import com.example.propertymanagement.domain.repository.IUserRepository
@@ -26,7 +30,7 @@ class IUserRepositoryImpl(
         val result = supabase
             .from("users")
             .select(
-                Columns.raw("id, name, email, avatar_url, seller_types(name)")
+                Columns.raw("id, name, email, phone, avatar_url, seller_types(name)")
             ) {
                 filter { eq("id", userId) }
             }
@@ -41,9 +45,7 @@ class IUserRepositoryImpl(
 
         supabase
             .from("users")
-            .update(
-                mapOf("avatar_url" to url)
-            ) {
+            .update(UpdateAvatarPayload(avatarUrl = url)) {
                 filter { eq("id", userId) }
             }
     }
@@ -59,5 +61,34 @@ class IUserRepositoryImpl(
             }
             .decodeSingle<Map<String, String?>>()
             .get("avatar_url")
+    }
+
+    override suspend fun updateUserProfile(
+        name: String,
+        phone: String,
+        sellerType: SellerType
+    ) {
+        val userId = supabase.auth.currentUserOrNull()?.id
+            ?: throw IllegalStateException("User not authorized")
+
+        val typeId = supabase
+            .from("seller_types")
+            .select(Columns.raw("id")) {
+                filter { eq("name", sellerType.name) }
+            }
+            .decodeSingle<SellerTypeIdRow>()
+            .id
+
+        supabase
+            .from("users")
+            .update(
+                UpdateUserProfilePayload(
+                    name = name,
+                    phone = phone,
+                    sellerTypeId = typeId
+                )
+            ) {
+                filter { eq("id", userId) }
+            }
     }
 }

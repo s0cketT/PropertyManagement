@@ -258,6 +258,15 @@
 
     <string name="apply_request">Submit listing</string>
     <string name="my_ads">My listings</string>
+    <string name="my_ads_filter_all">All</string>
+    <string name="my_ads_filter_published">Published</string>
+    <string name="my_ads_filter_moderation">Under review</string>
+    <string name="my_ads_filter_rejected">Rejected</string>
+    <string name="my_ads_empty">You have no listings yet</string>
+    <string name="my_ads_sign_in">Sign in to see your listings</string>
+    <string name="moderation_chip_pending">Under review</string>
+    <string name="moderation_chip_rejected">Rejected</string>
+    <string name="moderation_chip_approved">Published</string>
     <string name="logout">Logout</string>
 
     <string name="settings_app">App settings</string>
@@ -276,6 +285,12 @@
     <string name="language_english">English</string>
 
     <string name="personal_info_title">Personal Info</string>
+    <string name="personal_info_name_label">Name</string>
+    <string name="personal_info_name_error">Enter your name</string>
+    <string name="personal_info_phone_label">Phone</string>
+    <string name="personal_info_phone_hint">29 123 45 67</string>
+    <string name="personal_info_phone_error">Enter 9 digits without country code</string>
+    <string name="personal_info_seller_type_label">Seller type</string>
 
     <string name="save">Save</string>
     <string name="search">Search…</string>

@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
@@ -21,11 +22,13 @@ import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
+import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.favorites_screen.FavoriteViewModel
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
 import com.example.propertymanagement.ui.map.MapViewModel
+import com.example.propertymanagement.ui.my_ads_screen.MyAdsViewModel
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
 import com.example.propertymanagement.ui.profile_screen.ProfileViewModel
 import com.example.propertymanagement.ui.property.ListPropertyViewModel
@@ -108,13 +111,24 @@ val uiModule = module {
 
     viewModel {
         PersonalInfoViewModel(
-            updateUserAvatarUseCase = get<UpdateUserAvatarUseCase>()
+            updateUserAvatarUseCase = get<UpdateUserAvatarUseCase>(),
+            updateUserProfileUseCase = get<UpdateUserProfileUseCase>(),
+            getUserProfileUseCase = get<GetUserProfileUseCase>()
         )
     }
 
     viewModel {
         FavoriteViewModel(
             getPropertiesUseCase = get<GetPropertiesUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+        )
+    }
+
+    viewModel {
+        MyAdsViewModel(
+            getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
             getTodayRatesUseCase = get<GetTodayRatesUseCase>()

@@ -75,6 +75,27 @@ enum class PropertyStatus {
     FOR_SALE
 }
 
+/** Статус модерации объявления (имена как в `moderation_statuses.name` в БД). */
+enum class ModerationStatus(val dbNameRu: String) {
+    PENDING("На модерации"),
+    REJECTED("Отклонено"),
+    APPROVED("Одобрено"),
+    UNKNOWN("");
+
+    companion object {
+        fun fromDb(name: String?): ModerationStatus =
+            entries.firstOrNull { it.dbNameRu == name } ?: UNKNOWN
+    }
+}
+
+/** Вкладки фильтра на экране «Мои объявления». */
+enum class MyAdsListingFilter {
+    ALL,
+    PUBLISHED,
+    PENDING,
+    REJECTED
+}
+
 enum class RoomsType {
     ONE,
     TWO,

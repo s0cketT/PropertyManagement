@@ -16,6 +16,7 @@ import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
@@ -32,6 +33,7 @@ import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
+import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import org.koin.dsl.module
 
@@ -59,6 +61,8 @@ val domainModule = module {
 
     factory { GetPropertiesUseCase(propertyRepository = get<IPropertyRepository>()) }
 
+    factory { GetMyPropertiesUseCase(propertyRepository = get<IPropertyRepository>()) }
+
     factory { CreateFullPropertyUseCase(
         propertyRepository = get<IPropertyRepository>(),
         storageRepository = get<IStorageRepository>())
@@ -70,6 +74,7 @@ val domainModule = module {
         )
     }
 
+    factory { UpdateUserProfileUseCase(userRepository = get<IUserRepository>()) }
 
     factory { LogoutUseCase(authRepository = get<AuthRepository>()) }
 

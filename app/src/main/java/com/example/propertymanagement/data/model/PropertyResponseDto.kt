@@ -21,6 +21,8 @@ data class PropertyResponseDto(
     val type: String,
     val deal_type: String,
 
+    val moderation_status: String? = null,
+
     val country: String?,
     val region: String?,
     val city: String?,

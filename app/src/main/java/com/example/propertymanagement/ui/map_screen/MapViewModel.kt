@@ -3,9 +3,8 @@ package com.example.propertymanagement.ui.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
-import com.example.propertymanagement.domain.model.PropertyStatus
-import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.UserLocation
+import com.example.propertymanagement.domain.model.visibleInPublicCatalog
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
@@ -183,10 +182,12 @@ class MapViewModel(
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
+                    // Только объявления со статусом модерации «Одобрено»
+                    val catalog = result.data.visibleInPublicCatalog()
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            markers = result.data,
+                            markers = catalog,
                             currencyRates = rates
                         )
                     }

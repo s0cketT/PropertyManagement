@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.model.UserProfile
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
@@ -57,7 +58,7 @@ fun PersonalInfoScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(user) {
         intent(PersonalInfoIntent.SetUser(user))
     }
 
@@ -90,7 +91,10 @@ fun PersonalInfoScreen(
 
     UI(
         state = state,
-        intent = intent
+        intent = intent,
+        onNameChange = { intent(PersonalInfoIntent.NameChanged(it)) },
+        onPhoneNationalChange = { intent(PersonalInfoIntent.PhoneNationalChanged(it)) },
+        onSellerTypeChange = { intent(PersonalInfoIntent.SellerTypeChanged(it)) }
     )
 }
 
@@ -98,7 +102,9 @@ fun PersonalInfoScreen(
 private fun UI(
     state: PersonalInfoState,
     intent: (PersonalInfoIntent) -> Unit,
-
+    onNameChange: (String) -> Unit,
+    onPhoneNationalChange: (String) -> Unit,
+    onSellerTypeChange: (SellerType) -> Unit
 ) {
     Column {
         AppTopBar(
@@ -110,8 +116,9 @@ private fun UI(
 
         ProfileContent(
             state = state,
-            user = state.user,
-            avatarBytes = state.avatarBytes,
+            onNameChange = onNameChange,
+            onPhoneNationalChange = onPhoneNationalChange,
+            onSellerTypeChange = onSellerTypeChange,
             onAvatarClick = { intent(PersonalInfoIntent.OnAvatarClick) },
             onRemoveClick = { intent(PersonalInfoIntent.RemoveAvatar) }
         )
@@ -120,7 +127,8 @@ private fun UI(
 
         PrimaryActionButton(
             text = R.string.save,
-            onClick = { intent(PersonalInfoIntent.Save) }
+            onClick = { intent(PersonalInfoIntent.Save) },
+            enabled = !state.isLoading
         )
     }
 }

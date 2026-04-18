@@ -8,6 +8,8 @@ interface IPropertyRepository {
 
     suspend fun getProperties(userId: String?): List<Property>
 
+    suspend fun getMyProperties(userId: String): List<Property>
+
     suspend fun createProperty(
         request: CreateProperty
     ): Int

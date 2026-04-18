@@ -1,5 +1,6 @@
 package com.example.propertymanagement.domain.repository
 
+import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.model.UserProfile
 
 interface IUserRepository {
@@ -10,4 +11,10 @@ interface IUserRepository {
     suspend fun updateAvatar(url: String?)
 
     suspend fun getCurrentAvatarUrl(): String?
+
+    suspend fun updateUserProfile(
+        name: String,
+        phone: String,
+        sellerType: SellerType
+    )
 }

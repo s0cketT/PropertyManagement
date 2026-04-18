@@ -22,7 +22,6 @@ import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUse
 import com.example.propertymanagement.ui.common.PropertyMultiCurrencyPriceColumn
 import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
 import com.example.propertymanagement.ui.mapper.titleRes
-import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.SpacerTiny
@@ -101,7 +100,7 @@ fun PropertyContent(
                         stringResource(it.titleRes())
                     ),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OnPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -109,7 +108,7 @@ fun PropertyContent(
                 Text(
                     text = stringResource(R.string.area_value, it),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OnPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -117,7 +116,7 @@ fun PropertyContent(
                 Text(
                     text = "${property.floor}/${property.totalFloors}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = OnPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -128,7 +127,7 @@ fun PropertyContent(
             Text(
                 text = address,
                 style = MaterialTheme.typography.bodySmall,
-                color = OnPrimary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 

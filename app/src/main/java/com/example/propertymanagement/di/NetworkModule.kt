@@ -4,6 +4,7 @@ import com.example.propertymanagement.data.common.Constants.ANON_KEY
 import com.example.propertymanagement.data.common.Constants.BASE_URL_SUPABASE
 import com.example.propertymanagement.data.remote.INbrbApi
 import com.example.propertymanagement.data.remote.ISupabaseApi
+import com.example.propertymanagement.data.remote.SupabaseRestAuthInterceptor
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
@@ -15,6 +16,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val networkModule = module {
+
+    single {
+        createSupabaseClient(
+            supabaseUrl = BASE_URL_SUPABASE,
+            supabaseKey = ANON_KEY
+        ) {
+            install(Auth)
+            install(Storage)
+            install(Postgrest)
+        }
+    }
 
     single(named("nbrb")) {
         Retrofit.Builder()
@@ -29,14 +41,7 @@ val networkModule = module {
 
     single {
         OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("apikey", ANON_KEY)
-                    .addHeader("Authorization", "Bearer $ANON_KEY")
-                    .addHeader("Prefer", "return=representation")
-                    .build()
-                chain.proceed(request)
-            }
+            .addInterceptor(SupabaseRestAuthInterceptor(get()))
             .build()
     }
 
@@ -50,16 +55,5 @@ val networkModule = module {
 
     single<ISupabaseApi> {
         get<Retrofit>(named("supabase")).create(ISupabaseApi::class.java)
-    }
-
-    single {
-        createSupabaseClient(
-            supabaseUrl = BASE_URL_SUPABASE,
-            supabaseKey = ANON_KEY
-        ) {
-            install(Auth)
-            install(Storage)
-            install(Postgrest)
-        }
     }
 }

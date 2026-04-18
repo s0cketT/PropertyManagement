@@ -57,4 +57,9 @@ interface ISupabaseApi {
     suspend fun getProperties(
         @Query("p_user_uuid") userId: String?
     ): List<PropertyResponseDto>
+
+    @GET("rpc/get_my_properties_with_favorite")
+    suspend fun getMyProperties(
+        @Query("p_user_uuid") userId: String
+    ): List<PropertyResponseDto>
 }

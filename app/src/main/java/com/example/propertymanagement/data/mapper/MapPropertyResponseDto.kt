@@ -12,6 +12,7 @@ import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.GasType
 import com.example.propertymanagement.domain.model.HeatingType
 import com.example.propertymanagement.domain.model.HouseAmenity
+import com.example.propertymanagement.domain.model.ModerationStatus
 import com.example.propertymanagement.domain.model.HouseType
 import com.example.propertymanagement.domain.model.ParkingType
 import com.example.propertymanagement.domain.model.Property
@@ -100,6 +101,8 @@ fun PropertyResponseDto.toDomain(): Property {
         currency = currencyType,
 
         isFavorite = is_favorite,
+
+        moderationStatus = ModerationStatus.fromDb(moderation_status),
 
         country = country,
         region = region,

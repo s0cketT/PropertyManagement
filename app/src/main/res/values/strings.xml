@@ -260,6 +260,15 @@
 
     <string name="apply_request">Подать объявление</string>
     <string name="my_ads">Мои объявления</string>
+    <string name="my_ads_filter_all">Все</string>
+    <string name="my_ads_filter_published">Опубликованные</string>
+    <string name="my_ads_filter_moderation">На модерации</string>
+    <string name="my_ads_filter_rejected">Отклонённые</string>
+    <string name="my_ads_empty">У вас пока нет объявлений</string>
+    <string name="my_ads_sign_in">Войдите, чтобы увидеть объявления</string>
+    <string name="moderation_chip_pending">На модерации</string>
+    <string name="moderation_chip_rejected">Отклонено</string>
+    <string name="moderation_chip_approved">Опубликовано</string>
     <string name="logout">Выйти</string>
 
     <string name="settings_app">Настройки приложения</string>
@@ -278,6 +287,12 @@
     <string name="language_english">Английский</string>
 
     <string name="personal_info_title">Персональные данные</string>
+    <string name="personal_info_name_label">Имя</string>
+    <string name="personal_info_name_error">Введите имя</string>
+    <string name="personal_info_phone_label">Телефон</string>
+    <string name="personal_info_phone_hint">29 123 45 67</string>
+    <string name="personal_info_phone_error">Введите 9 цифр номера без кода страны</string>
+    <string name="personal_info_seller_type_label">Тип продавца</string>
 
     <string name="profile_email" translatable="false" tools:ignore="DuplicateDefinition">E-mail</string>
 

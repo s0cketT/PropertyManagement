@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.property_detail_screen.components
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
+import com.example.propertymanagement.ui.list_property_screen.ListPropertyIntent
 import com.example.propertymanagement.ui.list_property_screen.components.ErrorState
 import com.example.propertymanagement.ui.list_property_screen.components.FavoriteButton
 import com.example.propertymanagement.ui.list_property_screen.components.LoadingState
@@ -79,6 +81,10 @@ fun PropertyDetailScreen(
                 }
             }
         }
+    }
+
+    BackHandler {
+        intent(PropertyDetailIntent.NavigateBack)
     }
 
     PropertyDetailUI(

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.publish_screen.components.PropertyTitleTextField
 import com.example.propertymanagement.ui.theme.HorizontalPadding
-import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingMedium
 
 @Composable
@@ -58,7 +57,7 @@ fun TopBar(
             Icon(
                 imageVector = Icons.Default.Tune, // лучше чем Build
                 contentDescription = stringResource(R.string.filters_fab_content_description),
-                tint = OnPrimary
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.visibleInPublicCatalog
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
@@ -89,18 +90,18 @@ class ListPropertyViewModel(
 
     private fun onSearchChanged(query: String) {
         _state.update { current ->
-            val query = query.trim().lowercase()
-            val filtered = if (query.isEmpty()) {
+            val q = query.trim().lowercase()
+            val filtered = if (q.isEmpty()) {
                 current.properties
             } else {
                 current.properties.filter { property ->
-                    val titleMatches = property.title.lowercase().contains(query)
-                    val descriptionMatches = property.description?.lowercase()?.contains(query) ?: false
+                    val titleMatches = property.title.lowercase().contains(q)
+                    val descriptionMatches = property.description?.lowercase()?.contains(q) ?: false
                     titleMatches || descriptionMatches
                 }
             }
             current.copy(
-                searchQuery = query,
+                searchQuery = q,
                 propertiesFilter = filtered
             )
         }
@@ -157,11 +158,12 @@ class ListPropertyViewModel(
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
+                    val approvedOnly = result.data.visibleInPublicCatalog()
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            properties = result.data,
-                            propertiesFilter = result.data,
+                            properties = approvedOnly,
+                            propertiesFilter = approvedOnly,
                             currencyRates = rates
                         )
                     }

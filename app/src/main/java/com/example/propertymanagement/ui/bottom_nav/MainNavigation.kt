@@ -213,7 +213,11 @@ fun MainNavigation() {
                         type = NavType.StringType
                         defaultValue = ""
                     }
-                )
+                ),
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
             ) { backStackEntry ->
 
                 val propertyId = backStackEntry.arguments?.getInt("propertyId") ?: 0

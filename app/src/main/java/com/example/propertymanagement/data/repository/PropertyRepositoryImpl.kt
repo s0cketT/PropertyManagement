@@ -21,6 +21,10 @@ class PropertyRepositoryImpl(
         return supabaseApi.getProperties(userId).map { it.toDomain() }
     }
 
+    override suspend fun getMyProperties(userId: String): List<Property> {
+        return supabaseApi.getMyProperties(userId).map { it.toDomain() }
+    }
+
     override suspend fun createProperty(
         request: CreateProperty
     ): Int {
