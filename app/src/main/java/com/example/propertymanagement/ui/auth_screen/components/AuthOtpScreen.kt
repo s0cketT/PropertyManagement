@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.auth_screen.components
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -72,9 +73,20 @@ fun AuthOtpScreen(
                         popUpTo(0) { inclusive = true }
                     }
                 }
+                AuthEvent.NavigateToSetNewPassword -> {
+                    navController.navigate(Screens.SetNewPasswordScreen.route)
+                }
+                AuthEvent.NavigateToChangeNewEmail -> {
+                    navController.navigate(Screens.ChangeNewEmailScreen.route)
+                }
+                AuthEvent.NavigateBack -> { navController.popBackStack() }
                 else -> Unit
             }
         }
+    }
+
+    BackHandler {
+        intent(AuthIntent.NavigateBack)
     }
 
     LaunchedEffect(Unit) {
@@ -84,6 +96,7 @@ fun AuthOtpScreen(
 
     UI(
         state = state,
+        check = check,
         intent = intent
     )
 
@@ -93,6 +106,7 @@ fun AuthOtpScreen(
 @Composable
 private fun UI(
     state: AuthState,
+    check: AuthCheck,
     intent: (AuthIntent) -> Unit
 ) {
 
@@ -104,11 +118,36 @@ private fun UI(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        val titleRes = when (check) {
+            AuthCheck.CHANGE_EMAIL_CONFIRM_OLD -> R.string.change_email_otp_old_title
+            AuthCheck.RESET_PASSWORD -> R.string.change_password_otp_title
+            else -> R.string.enter_code_from_email
+        }
         Text(
-            text = stringResource(R.string.enter_code_from_email),
+            text = stringResource(titleRes),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
+
+        when (check) {
+            AuthCheck.CHANGE_EMAIL_CONFIRM_OLD -> {
+                Spacer(modifier = Modifier.height(PaddingLarge))
+                Text(
+                    text = stringResource(R.string.change_email_otp_old_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            AuthCheck.RESET_PASSWORD -> {
+                Spacer(modifier = Modifier.height(PaddingLarge))
+                Text(
+                    text = stringResource(R.string.change_password_otp_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            else -> Unit
+        }
 
         Spacer(modifier = Modifier.height(SpacerLarge))
 

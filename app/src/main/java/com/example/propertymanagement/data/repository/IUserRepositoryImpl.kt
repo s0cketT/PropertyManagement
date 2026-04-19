@@ -4,6 +4,7 @@ import com.example.propertymanagement.data.mapper.toDomain
 import com.example.propertymanagement.data.model.CheckEmailRequest
 import com.example.propertymanagement.data.model.SellerTypeIdRow
 import com.example.propertymanagement.data.model.UpdateAvatarPayload
+import com.example.propertymanagement.data.model.UpdateUserEmailPayload
 import com.example.propertymanagement.data.model.UpdateUserProfilePayload
 import com.example.propertymanagement.data.model.UserProfileDto
 import com.example.propertymanagement.domain.model.SellerType
@@ -88,6 +89,17 @@ class IUserRepositoryImpl(
                     sellerTypeId = typeId
                 )
             ) {
+                filter { eq("id", userId) }
+            }
+    }
+
+    override suspend fun updateUserEmail(email: String) {
+        val userId = supabase.auth.currentUserOrNull()?.id
+            ?: throw IllegalStateException("User not authorized")
+
+        supabase
+            .from("users")
+            .update(UpdateUserEmailPayload(email = email)) {
                 filter { eq("id", userId) }
             }
     }

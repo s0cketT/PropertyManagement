@@ -17,4 +17,6 @@ interface IUserRepository {
         phone: String,
         sellerType: SellerType
     )
+
+    suspend fun updateUserEmail(email: String)
 }

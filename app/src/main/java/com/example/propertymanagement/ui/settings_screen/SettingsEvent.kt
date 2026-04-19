@@ -8,4 +8,12 @@ sealed class SettingsEvent {
     object NavigateToAuth : SettingsEvent()
 
     object ApplyTheme : SettingsEvent()
+
+    data class NavigateToPasswordResetOtp(val email: String) : SettingsEvent()
+
+    object ChangePasswordSendFailed : SettingsEvent()
+
+    data class NavigateToChangeEmailOtpOld(val email: String) : SettingsEvent()
+
+    object ChangeEmailSendFailed : SettingsEvent()
 }

@@ -146,6 +146,12 @@ class AuthViewModel(
                 }
             }
 
+            is AuthIntent.NavigateBack -> {
+                viewModelScope.launch {
+                    _event.emit(AuthEvent.NavigateBack)
+                }
+            }
+
             is AuthIntent.SellerTypeChanged -> {
                 _state.update {
                     it.copy(
@@ -273,12 +279,20 @@ class AuthViewModel(
             }.onSuccess {
                 Log.d("!!!", "s - $it")
                 _state.update { it.copy(isLoading = false, isRegistered = true, code = "", otpError = null) }
-                if (check == AuthCheck.REGISTER) {
-                    _event.emit(AuthEvent.ShowRegistrationSuccess)
-                    _event.emit(AuthEvent.NavigateToLoginScreen)
-                }
-                else {
-                    _event.emit(AuthEvent.NavigateToMain)
+                when (check) {
+                    AuthCheck.REGISTER -> {
+                        _event.emit(AuthEvent.ShowRegistrationSuccess)
+                        _event.emit(AuthEvent.NavigateToLoginScreen)
+                    }
+                    AuthCheck.RESET_PASSWORD -> {
+                        _event.emit(AuthEvent.NavigateToSetNewPassword)
+                    }
+                    AuthCheck.LOGIN -> {
+                        _event.emit(AuthEvent.NavigateToMain)
+                    }
+                    AuthCheck.CHANGE_EMAIL_CONFIRM_OLD -> {
+                        _event.emit(AuthEvent.NavigateToChangeNewEmail)
+                    }
                 }
             }.onFailure {
                 Log.d("!!!", "chek2 - ${code}")
@@ -321,7 +335,7 @@ class AuthViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            passwordError = AuthError.Unknown
+                            passwordError = AuthError.InvalidCredentials
                         )
                     }
                 }

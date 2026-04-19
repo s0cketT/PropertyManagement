@@ -15,6 +15,7 @@ sealed class AuthIntent {
     data class CodeChanged(val value: String) : AuthIntent()
     object VerifyOtp : AuthIntent()
     object SendOtp : AuthIntent()
+    object NavigateBack : AuthIntent()
 
 
     object Login : AuthIntent()

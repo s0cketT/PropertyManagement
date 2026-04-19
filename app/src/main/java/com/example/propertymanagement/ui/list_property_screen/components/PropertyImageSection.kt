@@ -51,20 +51,23 @@ import com.example.propertymanagement.ui.theme.PaddingSmall
 fun PropertyImageSection(
     photos: List<String>,
     isFavorite: Boolean,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    showFavoriteButton: Boolean = true
 ) {
     Box {
 
         PropertyImages(photos)
 
-        FavoriteButton(
-            isFavorite = isFavorite,
-            onClick = onFavoriteClick,
-            prominent = true,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(PaddingSmall)
-        )
+        if (showFavoriteButton) {
+            FavoriteButton(
+                isFavorite = isFavorite,
+                onClick = onFavoriteClick,
+                prominent = true,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(PaddingSmall)
+            )
+        }
     }
 }
 

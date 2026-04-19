@@ -30,7 +30,8 @@ fun PropertyList(
     currencyRates: Map<String, CurrencyRate>,
     onFavoriteClick: (Int) -> Unit,
     onItemClick: (Property) -> Unit,
-    bottomTrailing: (@Composable (Property) -> Unit)? = null
+    bottomTrailing: (@Composable (Property) -> Unit)? = null,
+    showFavoriteButton: Boolean = true
 ) {
 
     LazyColumn(
@@ -43,7 +44,8 @@ fun PropertyList(
                 currencyRates = currencyRates,
                 onFavoriteClick = onFavoriteClick,
                 onItemClick = onItemClick,
-                bottomTrailing = bottomTrailing
+                bottomTrailing = bottomTrailing,
+                showFavoriteButton = showFavoriteButton
             )
         }
     }
@@ -55,7 +57,8 @@ fun PropertyListCard(
     currencyRates: Map<String, CurrencyRate>,
     onFavoriteClick: (Int) -> Unit,
     onItemClick: (Property) -> Unit,
-    bottomTrailing: (@Composable (Property) -> Unit)? = null
+    bottomTrailing: (@Composable (Property) -> Unit)? = null,
+    showFavoriteButton: Boolean = true
 ) {
     Card(
         modifier = Modifier
@@ -71,7 +74,8 @@ fun PropertyListCard(
             PropertyImageSection(
                 photos = property.photos,
                 isFavorite = property.isFavorite,
-                onFavoriteClick = { onFavoriteClick(property.id) }
+                onFavoriteClick = { onFavoriteClick(property.id) },
+                showFavoriteButton = showFavoriteButton
             )
 
             Column(

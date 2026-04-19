@@ -49,4 +49,20 @@ class AuthRepositoryImpl(
         val user = service.getCurrentUser() ?: return null
         return user.toAuthUser()
     }
+
+    override suspend fun updatePassword(newPassword: String) {
+        service.updatePassword(newPassword)
+    }
+
+    override suspend fun requestEmailChange(newEmail: String) {
+        service.requestEmailChange(newEmail)
+    }
+
+    override suspend fun refreshAuthSession() {
+        service.refreshAuthSession()
+    }
+
+    override suspend fun retrieveCurrentUserFromServer(): AuthUser? {
+        return service.retrieveCurrentUserFromServer()?.toAuthUser()
+    }
 }

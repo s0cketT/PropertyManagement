@@ -3,13 +3,14 @@ package com.example.propertymanagement.ui.settings_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
 import com.example.propertymanagement.domain.use_case.ObserveThemeUseCase
+import com.example.propertymanagement.domain.use_case.SendOtpUseCase
 import com.example.propertymanagement.domain.use_case.SetLanguageUseCase
 import com.example.propertymanagement.domain.use_case.SetThemeUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
-import com.example.propertymanagement.ui.profile_screen.ProfileEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,6 +24,8 @@ class SettingsViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val setThemeUseCase: SetThemeUseCase,
     private val observeThemeUseCase: ObserveThemeUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val sendOtpUseCase: SendOtpUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -94,6 +97,88 @@ class SettingsViewModel(
             }
 
             is SettingsIntent.Logout -> logout()
+
+            is SettingsIntent.ChangePassword -> {
+                _state.update { it.copy(showChangePasswordSheet = true) }
+            }
+
+            is SettingsIntent.DismissChangePasswordSheet -> {
+                _state.update {
+                    it.copy(
+                        showChangePasswordSheet = false,
+                        isSendingChangePasswordCode = false
+                    )
+                }
+            }
+
+            is SettingsIntent.ConfirmChangePasswordSendCode -> sendPasswordResetCode()
+
+            is SettingsIntent.ChangeEmail -> {
+                _state.update { it.copy(showChangeEmailSheet = true) }
+            }
+
+            is SettingsIntent.DismissChangeEmailSheet -> {
+                _state.update {
+                    it.copy(
+                        showChangeEmailSheet = false,
+                        isSendingChangeEmailCode = false
+                    )
+                }
+            }
+
+            is SettingsIntent.ConfirmChangeEmailSendOldOtp -> sendChangeEmailOldOtp()
+        }
+    }
+
+    private fun sendChangeEmailOldOtp() {
+        viewModelScope.launch {
+            _state.update { it.copy(isSendingChangeEmailCode = true) }
+            val email = getCurrentUserUseCase()?.email?.trim().orEmpty()
+            if (email.isBlank()) {
+                _state.update { it.copy(isSendingChangeEmailCode = false) }
+                _event.emit(SettingsEvent.ChangeEmailSendFailed)
+                return@launch
+            }
+            runCatching {
+                sendOtpUseCase(email)
+            }.onSuccess {
+                _state.update {
+                    it.copy(
+                        isSendingChangeEmailCode = false,
+                        showChangeEmailSheet = false
+                    )
+                }
+                _event.emit(SettingsEvent.NavigateToChangeEmailOtpOld(email))
+            }.onFailure {
+                _state.update { it.copy(isSendingChangeEmailCode = false) }
+                _event.emit(SettingsEvent.ChangeEmailSendFailed)
+            }
+        }
+    }
+
+    private fun sendPasswordResetCode() {
+        viewModelScope.launch {
+            _state.update { it.copy(isSendingChangePasswordCode = true) }
+            val email = getCurrentUserUseCase()?.email?.trim().orEmpty()
+            if (email.isBlank()) {
+                _state.update { it.copy(isSendingChangePasswordCode = false) }
+                _event.emit(SettingsEvent.ChangePasswordSendFailed)
+                return@launch
+            }
+            runCatching {
+                sendOtpUseCase(email)
+            }.onSuccess {
+                _state.update {
+                    it.copy(
+                        isSendingChangePasswordCode = false,
+                        showChangePasswordSheet = false
+                    )
+                }
+                _event.emit(SettingsEvent.NavigateToPasswordResetOtp(email))
+            }.onFailure {
+                _state.update { it.copy(isSendingChangePasswordCode = false) }
+                _event.emit(SettingsEvent.ChangePasswordSendFailed)
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.visibleInPublicCatalog
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
@@ -82,6 +83,7 @@ class FavoriteViewModel(
 
                     val filtered = result.data
                         .filter { it.isFavorite }
+                        .visibleInPublicCatalog()
 
                     _state.update {
                         it.copy(
@@ -119,12 +121,15 @@ class FavoriteViewModel(
                 toggleFavoriteUseCase(userId, propertyId)
             }.onSuccess {
                 _state.update { current ->
+                    val updated = current.properties.map { property ->
+                        if (property.id == propertyId) {
+                            property.copy(isFavorite = !property.isFavorite)
+                        } else property
+                    }
                     current.copy(
-                        properties = current.properties.map { property ->
-                            if (property.id == propertyId) {
-                                property.copy(isFavorite = !property.isFavorite)
-                            } else property
-                        }
+                        properties = updated
+                            .filter { it.isFavorite }
+                            .visibleInPublicCatalog()
                     )
                 }
             }.onFailure {}

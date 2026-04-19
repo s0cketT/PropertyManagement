@@ -3,87 +3,61 @@ package com.example.propertymanagement.ui.bottom_nav
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavBackStackEntry
 
 /**
- * Переходы в духе Material motion: не полноэкранный «сдвиг», а короткая дистанция (~20% ширины),
- * лёгкий fade и чуть scale на входе — выглядит современно, без перегруза.
+ * Переходы навигации: новый экран выезжает справа, уходящий уезжает влево; при pop — наоборот.
  */
 object AppTransitions {
 
-    /** Emphasized decelerate — близко к спецификации Material 3. */
-    private val EnterEase = CubicBezierEasing(0.2f, 0f, 0f, 1f)
-    private val ExitEase = CubicBezierEasing(0.4f, 0f, 0.2f, 1f)
+    private const val DurationMs = 300
 
-    private const val EnterMs = 340
-    private const val ExitMs = 280
-    private const val FadeEnterMs = 300
-    private const val FadeExitMs = 240
+    private val slideSpec: FiniteAnimationSpec<IntOffset> = tween(
+        durationMillis = DurationMs,
+        easing = FastOutSlowInEasing
+    )
 
-    /** Доля ширины экрана для горизонтального сдвига (не на всю ширину). */
-    private fun offsetFraction(fraction: Float): (Int) -> Int = { (it * fraction).toInt() }
-
-    val defaultEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
-        slideInHorizontally(
-            initialOffsetX = offsetFraction(0.22f),
-            animationSpec = tween(EnterMs, easing = EnterEase)
-        ) + fadeIn(
-            animationSpec = tween(FadeEnterMs, easing = EnterEase)
-        ) + scaleIn(
-            initialScale = 0.96f,
-            animationSpec = tween(EnterMs, easing = EnterEase)
+    /** Вперёд: новый экран въезжает справа. */
+    private val enterForward: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        slideIntoContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = slideSpec
         )
     }
 
-    val defaultExit: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
-        slideOutHorizontally(
-            targetOffsetX = offsetFraction(-0.12f),
-            animationSpec = tween(ExitMs, easing = ExitEase)
-        ) + fadeOut(
-            animationSpec = tween(FadeExitMs, easing = ExitEase)
-        ) + scaleOut(
-            targetScale = 0.96f,
-            animationSpec = tween(ExitMs, easing = ExitEase)
+    /** Вперёд: текущий экран уезжает влево. */
+    private val exitForward: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        slideOutOfContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = slideSpec
         )
     }
 
-    val defaultPopEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
-        slideInHorizontally(
-            initialOffsetX = offsetFraction(-0.22f),
-            animationSpec = tween(EnterMs, easing = EnterEase)
-        ) + fadeIn(
-            animationSpec = tween(FadeEnterMs, easing = EnterEase)
-        ) + scaleIn(
-            initialScale = 0.96f,
-            animationSpec = tween(EnterMs, easing = EnterEase)
+    /** Назад: нижний экран въезжает слева. */
+    private val popEnter: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        slideIntoContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = slideSpec
         )
     }
 
-    val defaultPopExit: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
-        slideOutHorizontally(
-            targetOffsetX = offsetFraction(0.22f),
-            animationSpec = tween(ExitMs, easing = ExitEase)
-        ) + fadeOut(
-            animationSpec = tween(FadeExitMs, easing = ExitEase)
-        ) + scaleOut(
-            targetScale = 0.96f,
-            animationSpec = tween(ExitMs, easing = ExitEase)
+    /** Назад: верхний экран уезжает вправо. */
+    private val popExit: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        slideOutOfContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+            animationSpec = slideSpec
         )
     }
 
     val slideFromRight = NavTransition(
-        enter = defaultEnter,
-        exit = defaultExit,
-        popEnter = defaultPopEnter,
-        popExit = defaultPopExit
+        enter = enterForward,
+        exit = exitForward,
+        popEnter = popEnter,
+        popExit = popExit
     )
 }
 

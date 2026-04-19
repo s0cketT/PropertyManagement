@@ -10,4 +10,7 @@ sealed class AuthError {
     object PasswordsNotMatch : AuthError()
     object Unknown : AuthError()
     object InvalidOtp : AuthError()
+
+    object InvalidCredentials : AuthError()
+    object NewEmailSameAsCurrent : AuthError()
 }

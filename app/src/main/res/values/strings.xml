@@ -272,6 +272,37 @@
     <string name="logout">Выйти</string>
 
     <string name="settings_app">Настройки приложения</string>
+    <string name="settings_change_password">Сменить пароль</string>
+    <string name="change_password_new_password_title">Новый пароль</string>
+    <string name="change_password_new_password_subtitle">Придумайте новый пароль и подтвердите его. Минимум 6 символов.</string>
+    <string name="change_password_success">Пароль успешно изменён</string>
+    <string name="change_password_send_code_error">Не удалось отправить код. Проверьте сеть и попробуйте снова.</string>
+    <string name="change_password_sheet_title">Подтверждение смены пароля</string>
+    <string name="change_password_sheet_message">На адрес электронной почты, привязанный к аккаунту, будет отправлен одноразовый код подтверждения.\n\nВведите код на следующем экране, затем задайте новый пароль. Срок действия кода ограничен; не сообщайте его третьим лицам.</string>
+    <string name="change_password_sheet_continue">Продолжить</string>
+    <string name="change_password_sheet_cancel">Отмена</string>
+    <string name="change_password_otp_title">Код для смены пароля</string>
+    <string name="change_password_otp_hint">Введите шестизначный код из письма на текущую почту. После проверки вы сможете задать новый пароль.</string>
+
+    <string name="settings_change_email">Сменить почту</string>
+    <string name="change_email_sheet_title">Смена адреса почты</string>
+    <string name="change_email_sheet_message">Сначала мы отправим код на ваш текущий email — это подтверждает, что запрос делаете вы.\n\nЗатем вы укажете новую почту; на неё придёт письмо со ссылкой для подтверждения. Адрес в аккаунте обновится после перехода по ссылке и синхронизации в приложении.</string>
+    <string name="change_email_sheet_continue">Продолжить</string>
+    <string name="change_email_sheet_cancel">Отмена</string>
+    <string name="change_email_send_code_error">Не удалось отправить письмо. Проверьте сеть и попробуйте снова.</string>
+    <string name="change_email_new_title">Новая почта</string>
+    <string name="change_email_new_subtitle">Введите адрес, который хотите привязать к аккаунту. На него придёт письмо со ссылкой — откройте ссылку, затем вернитесь сюда и нажмите кнопку внизу экрана.</string>
+    <string name="change_email_send_code_to_new">Отправить ссылку для подтверждения</string>
+    <string name="change_email_otp_old_title">Код на текущую почту</string>
+    <string name="change_email_otp_old_hint">Мы отправили код на ваш текущий email. Введите его, чтобы перейти к указанию нового адреса.</string>
+    <string name="change_email_link_title">Подтверждение</string>
+    <string name="change_email_link_body">Мы отправили письмо на %1$s. Откройте письмо и нажмите кнопку подтверждения (ссылку), затем вернитесь сюда.</string>
+    <string name="change_email_link_check_button">Я подтвердил по ссылке</string>
+    <string name="change_email_link_not_confirmed">Новая почта ещё не подтверждена. Откройте ссылку из письма и попробуйте снова.</string>
+    <string name="change_email_success">Почта успешно изменена</string>
+    <string name="error_new_email_same_as_current">Укажите адрес, отличный от текущего</string>
+
+    <string name="error_invalid_credentials">Неправильная почта или пароль</string>
     <string name="rate_app">Оценить</string>
 
     <string name="select_seller_type">Выберите тип</string>

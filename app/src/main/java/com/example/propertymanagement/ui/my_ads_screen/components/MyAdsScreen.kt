@@ -161,11 +161,12 @@ private fun MyAdsContent(
                         PropertyList(
                             list = state.visibleList,
                             currencyRates = state.currencyRates,
-                            onFavoriteClick = { intent(MyAdsIntent.ToggleFavorite(it)) },
+                            onFavoriteClick = { },
                             onItemClick = { intent(MyAdsIntent.OnPropertyClick(it)) },
                             bottomTrailing = { property ->
                                 ModerationStatusBadge(status = property.moderationStatus)
-                            }
+                            },
+                            showFavoriteButton = false
                         )
                     }
                 }

@@ -34,6 +34,9 @@ import com.example.propertymanagement.domain.use_case.SignUpUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
+import com.example.propertymanagement.domain.use_case.RequestEmailChangeUseCase
+import com.example.propertymanagement.domain.use_case.SyncProfileEmailIfAuthMatchesUseCase
+import com.example.propertymanagement.domain.use_case.UpdatePasswordUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import org.koin.dsl.module
 
@@ -85,6 +88,14 @@ val domainModule = module {
 
     factory { SignUpUseCase(authRepository = get<AuthRepository>()) }
     factory { SignInUseCase(authRepository = get<AuthRepository>()) }
+    factory { UpdatePasswordUseCase(authRepository = get<AuthRepository>()) }
+    factory { RequestEmailChangeUseCase(authRepository = get<AuthRepository>()) }
+    factory {
+        SyncProfileEmailIfAuthMatchesUseCase(
+            authRepository = get<AuthRepository>(),
+            userRepository = get<IUserRepository>()
+        )
+    }
     factory { GetCurrentUserUseCase(authRepository = get<AuthRepository>()) }
     factory { GetUserProfileUseCase(userRepository = get<IUserRepository>()) }
 

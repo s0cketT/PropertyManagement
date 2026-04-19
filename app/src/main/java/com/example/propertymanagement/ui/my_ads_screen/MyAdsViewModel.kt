@@ -9,7 +9,6 @@ import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
-import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 class MyAdsViewModel(
     private val getMyPropertiesUseCase: GetMyPropertiesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val getTodayRatesUseCase: GetTodayRatesUseCase
 ) : ViewModel() {
 
@@ -45,8 +43,6 @@ class MyAdsViewModel(
             }
 
             is MyAdsIntent.OnPropertyClick -> onPropertyClick(intent.property)
-
-            is MyAdsIntent.ToggleFavorite -> toggleFavorite(intent.propertyId)
         }
     }
 
@@ -120,32 +116,6 @@ class MyAdsViewModel(
         }
         viewModelScope.launch {
             _event.emit(MyAdsEvent.NavigateToDetail(property = property, userId = userId))
-        }
-    }
-
-    private fun toggleFavorite(propertyId: Int) {
-        val userId = _state.value.currentUserId
-        if (userId == null) {
-            viewModelScope.launch { _event.emit(MyAdsEvent.ShowAuthRequired) }
-            return
-        }
-        viewModelScope.launch {
-            runCatching {
-                toggleFavoriteUseCase(userId, propertyId)
-            }.onSuccess {
-                _state.update { current ->
-                    val flip: (Property) -> Property = { property ->
-                        if (property.id == propertyId) {
-                            property.copy(isFavorite = !property.isFavorite)
-                        } else property
-                    }
-                    val nextProps = current.properties.map(flip)
-                    current.copy(
-                        properties = nextProps,
-                        visibleList = filterByTab(nextProps, current.listingFilter)
-                    )
-                }
-            }
         }
     }
 

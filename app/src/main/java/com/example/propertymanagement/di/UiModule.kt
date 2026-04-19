@@ -15,6 +15,8 @@ import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
 import com.example.propertymanagement.domain.use_case.ObserveThemeUseCase
 import com.example.propertymanagement.domain.use_case.SaveSelectedFiltersMarkerUseCase
+import com.example.propertymanagement.domain.use_case.RequestEmailChangeUseCase
+import com.example.propertymanagement.domain.use_case.SyncProfileEmailIfAuthMatchesUseCase
 import com.example.propertymanagement.domain.use_case.SendOtpUseCase
 import com.example.propertymanagement.domain.use_case.SetLanguageUseCase
 import com.example.propertymanagement.domain.use_case.SetThemeUseCase
@@ -22,6 +24,7 @@ import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
+import com.example.propertymanagement.domain.use_case.UpdatePasswordUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
@@ -34,6 +37,9 @@ import com.example.propertymanagement.ui.profile_screen.ProfileViewModel
 import com.example.propertymanagement.ui.property.ListPropertyViewModel
 import com.example.propertymanagement.ui.property_detail_screen.PropertyDetailViewModel
 import com.example.propertymanagement.ui.publish_screen.PublishViewModel
+import com.example.propertymanagement.ui.change_email_screen.ChangeEmailLinkViewModel
+import com.example.propertymanagement.ui.change_email_screen.ChangeNewEmailViewModel
+import com.example.propertymanagement.ui.change_password_screen.SetNewPasswordViewModel
 import com.example.propertymanagement.ui.settings_screen.SettingsViewModel
 import com.example.propertymanagement.ui.splash_screen.SplashViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -106,6 +112,29 @@ val uiModule = module {
             logoutUseCase = get<LogoutUseCase>(),
             setThemeUseCase = get<SetThemeUseCase>(),
             observeThemeUseCase = get<ObserveThemeUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            sendOtpUseCase = get<SendOtpUseCase>(),
+        )
+    }
+
+    viewModel {
+        SetNewPasswordViewModel(
+            updatePasswordUseCase = get<UpdatePasswordUseCase>()
+        )
+    }
+
+    viewModel {
+        ChangeNewEmailViewModel(
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            checkUserExistsUseCase = get<CheckUserExistsUseCase>(),
+            requestEmailChangeUseCase = get<RequestEmailChangeUseCase>()
+        )
+    }
+
+    viewModel { (expectedNewEmail: String) ->
+        ChangeEmailLinkViewModel(
+            expectedNewEmail = expectedNewEmail,
+            syncProfileEmailIfAuthMatchesUseCase = get<SyncProfileEmailIfAuthMatchesUseCase>()
         )
     }
 
@@ -130,7 +159,6 @@ val uiModule = module {
         MyAdsViewModel(
             getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
-            toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
             getTodayRatesUseCase = get<GetTodayRatesUseCase>()
         )
     }

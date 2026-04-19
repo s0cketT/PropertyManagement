@@ -2,7 +2,6 @@ package com.example.propertymanagement.ui.settings_screen
 
 import com.example.propertymanagement.domain.model.LanguageType
 import com.example.propertymanagement.domain.model.ThemeType
-import com.example.propertymanagement.ui.profile_screen.ProfileIntent
 
 sealed class SettingsIntent {
     data class ChangeTheme(val theme: ThemeType) : SettingsIntent()
@@ -14,4 +13,16 @@ sealed class SettingsIntent {
     object Save : SettingsIntent()
 
     object Logout : SettingsIntent()
+
+    object ChangePassword : SettingsIntent()
+
+    object DismissChangePasswordSheet : SettingsIntent()
+
+    object ConfirmChangePasswordSendCode : SettingsIntent()
+
+    object ChangeEmail : SettingsIntent()
+
+    object DismissChangeEmailSheet : SettingsIntent()
+
+    object ConfirmChangeEmailSendOldOtp : SettingsIntent()
 }

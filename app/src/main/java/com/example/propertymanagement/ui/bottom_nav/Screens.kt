@@ -62,7 +62,19 @@ sealed class Screens(
     object AuthOtpScreen : Screens("auth_otp?email={email}&check={check}") {
 
         fun createRoute(email: String, check: AuthCheck): String {
-            return "auth_otp?email=$email&check=${check.name}"
+            val encoded = Uri.encode(email)
+            return "auth_otp?email=$encoded&check=${check.name}"
+        }
+    }
+
+    object SetNewPasswordScreen : Screens("set_new_password")
+
+    object ChangeNewEmailScreen : Screens("change_email_new")
+
+    object ChangeEmailLinkScreen : Screens("change_email_link?email={email}") {
+        fun createRoute(email: String): String {
+            val encoded = Uri.encode(email)
+            return "change_email_link?email=$encoded"
         }
     }
 

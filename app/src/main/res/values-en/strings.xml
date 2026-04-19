@@ -270,6 +270,37 @@
     <string name="logout">Logout</string>
 
     <string name="settings_app">App settings</string>
+    <string name="settings_change_password">Change password</string>
+    <string name="change_password_new_password_title">New password</string>
+    <string name="change_password_new_password_subtitle">Choose a new password and confirm it. At least 6 characters.</string>
+    <string name="change_password_success">Password updated successfully</string>
+    <string name="change_password_send_code_error">Could not send the code. Check your connection and try again.</string>
+    <string name="change_password_sheet_title">Confirm password change</string>
+    <string name="change_password_sheet_message">A one-time confirmation code will be sent to the email address linked to your account.\n\nEnter the code on the next screen, then set a new password. The code expires after a short time—do not share it with anyone.</string>
+    <string name="change_password_sheet_continue">Continue</string>
+    <string name="change_password_sheet_cancel">Cancel</string>
+    <string name="change_password_otp_title">Password change code</string>
+    <string name="change_password_otp_hint">Enter the 6-digit code from the email sent to your current address. After verification you can set a new password.</string>
+
+    <string name="settings_change_email">Change email</string>
+    <string name="change_email_sheet_title">Change email address</string>
+    <string name="change_email_sheet_message">First, we will send a code to your current email to confirm it is really you.\n\nThen you will enter a new address and receive an email with a confirmation link. Your account email updates after you open that link and sync in the app.</string>
+    <string name="change_email_sheet_continue">Continue</string>
+    <string name="change_email_sheet_cancel">Cancel</string>
+    <string name="change_email_send_code_error">Could not send the email. Check your connection and try again.</string>
+    <string name="change_email_new_title">New email</string>
+    <string name="change_email_new_subtitle">Enter the address you want to use for this account. We will email a confirmation link—open it, then return here and tap the button at the bottom.</string>
+    <string name="change_email_send_code_to_new">Send confirmation link</string>
+    <string name="change_email_otp_old_title">Code sent to current email</string>
+    <string name="change_email_otp_old_hint">We sent a code to your current email. Enter it to continue and specify your new address.</string>
+    <string name="change_email_link_title">Confirmation</string>
+    <string name="change_email_link_body">We sent an email to %1$s. Open it and tap the confirmation button (link), then come back here.</string>
+    <string name="change_email_link_check_button">I confirmed via the link</string>
+    <string name="change_email_link_not_confirmed">The new email is not confirmed yet. Open the link from the email and try again.</string>
+    <string name="change_email_success">Email updated successfully</string>
+    <string name="error_new_email_same_as_current">Enter an address different from your current one</string>
+
+    <string name="error_invalid_credentials">Incorrect email or password</string>
     <string name="rate_app">Rate app</string>
 
     <string name="select_seller_type">Select type</string>

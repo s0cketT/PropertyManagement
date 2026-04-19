@@ -7,5 +7,4 @@ sealed class MyAdsIntent {
     object NavigateBack : MyAdsIntent()
     data class SelectListingFilter(val filter: MyAdsListingFilter) : MyAdsIntent()
     data class OnPropertyClick(val property: Property) : MyAdsIntent()
-    data class ToggleFavorite(val propertyId: Int) : MyAdsIntent()
 }

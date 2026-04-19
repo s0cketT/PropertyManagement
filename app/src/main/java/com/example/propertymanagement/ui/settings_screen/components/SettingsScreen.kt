@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.settings_screen.components
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,13 +30,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.ThemeType
+import com.example.propertymanagement.ui.auth_screen.AuthCheck
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
 import com.example.propertymanagement.ui.components.EnumRadioSection
 import com.example.propertymanagement.ui.components.PrimaryActionButton
 import com.example.propertymanagement.ui.core.locale.LocaleManager
 import com.example.propertymanagement.ui.mapper.titleRes
-import com.example.propertymanagement.ui.profile_screen.ProfileIntent
 import com.example.propertymanagement.ui.profile_screen.components.ProfileActionItem
 import com.example.propertymanagement.ui.settings_screen.SettingsEvent
 import com.example.propertymanagement.ui.settings_screen.SettingsIntent
@@ -51,6 +54,8 @@ fun SettingsScreen(navController: NavController) {
 
     val context = LocalContext.current
     val activity = context as Activity
+    val changePasswordError = stringResource(R.string.change_password_send_code_error)
+    val changeEmailError = stringResource(R.string.change_email_send_code_error)
 
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val state by settingsViewModel.state.collectAsStateWithLifecycle()
@@ -76,6 +81,29 @@ fun SettingsScreen(navController: NavController) {
                 is SettingsEvent.ApplyTheme -> {
                     activity.recreate()
                 }
+
+                is SettingsEvent.NavigateToPasswordResetOtp -> {
+                    navController.navigate(
+                        Screens.AuthOtpScreen.createRoute(event.email, AuthCheck.RESET_PASSWORD)
+                    )
+                }
+
+                is SettingsEvent.ChangePasswordSendFailed -> {
+                    Toast.makeText(context, changePasswordError, Toast.LENGTH_SHORT).show()
+                }
+
+                is SettingsEvent.NavigateToChangeEmailOtpOld -> {
+                    navController.navigate(
+                        Screens.AuthOtpScreen.createRoute(
+                            event.email,
+                            AuthCheck.CHANGE_EMAIL_CONFIRM_OLD
+                        )
+                    )
+                }
+
+                is SettingsEvent.ChangeEmailSendFailed -> {
+                    Toast.makeText(context, changeEmailError, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -88,6 +116,22 @@ fun SettingsScreen(navController: NavController) {
         state = state,
         intent = intent
     )
+
+    if (state.showChangePasswordSheet) {
+        ChangePasswordInfoBottomSheet(
+            isSending = state.isSendingChangePasswordCode,
+            onDismiss = { intent(SettingsIntent.DismissChangePasswordSheet) },
+            onContinue = { intent(SettingsIntent.ConfirmChangePasswordSendCode) }
+        )
+    }
+
+    if (state.showChangeEmailSheet) {
+        ChangeEmailInfoBottomSheet(
+            isSending = state.isSendingChangeEmailCode,
+            onDismiss = { intent(SettingsIntent.DismissChangeEmailSheet) },
+            onContinue = { intent(SettingsIntent.ConfirmChangeEmailSendOldOtp) }
+        )
+    }
 }
 
 
@@ -160,6 +204,18 @@ private fun UI(
                     .fillMaxWidth()
                     .height(BoxGrayHeight)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            ProfileActionItem(
+                textRes = R.string.settings_change_password,
+                icon = Icons.Default.Lock,
+                onClick = { intent(SettingsIntent.ChangePassword) }
+            )
+
+            ProfileActionItem(
+                textRes = R.string.settings_change_email,
+                icon = Icons.Default.Email,
+                onClick = { intent(SettingsIntent.ChangeEmail) }
             )
 
             ProfileActionItem(

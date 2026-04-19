@@ -14,6 +14,7 @@ fun UserDto.toDomain(): User {
 fun UserDto.toAuthUser(): AuthUser {
     return AuthUser(
         id = id,
-        email = email
+        email = email,
+        newEmail = newEmail,
     )
 }

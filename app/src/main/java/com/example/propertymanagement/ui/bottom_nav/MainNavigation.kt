@@ -17,6 +17,9 @@ import com.example.propertymanagement.ui.auth_screen.AuthCheck
 import com.example.propertymanagement.ui.auth_screen.components.AuthLoginScreen
 import com.example.propertymanagement.ui.auth_screen.components.AuthOtpScreen
 import com.example.propertymanagement.ui.auth_screen.components.AuthRegisterScreen
+import com.example.propertymanagement.ui.change_email_screen.components.ChangeEmailLinkInstructionScreen
+import com.example.propertymanagement.ui.change_email_screen.components.ChangeNewEmailScreen
+import com.example.propertymanagement.ui.change_password_screen.components.SetNewPasswordScreen
 import com.example.propertymanagement.ui.extensions.toUserProfile
 import com.example.propertymanagement.ui.favorites_screen.conponents.FavoritesScreen
 import com.example.propertymanagement.ui.filters_screen.components.CategorySelectionScreen
@@ -153,6 +156,46 @@ fun MainNavigation() {
                 popExitTransition = AppTransitions.slideFromRight.popExit
             ) {
                 AuthLoginScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.SetNewPasswordScreen.route,
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
+            ) {
+                SetNewPasswordScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.ChangeNewEmailScreen.route,
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
+            ) {
+                ChangeNewEmailScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.ChangeEmailLinkScreen.route,
+                arguments = listOf(
+                    navArgument("email") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                ),
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
+            ) { entry ->
+                val email = entry.arguments?.getString("email").orEmpty()
+                ChangeEmailLinkInstructionScreen(
+                    navController = navController,
+                    newEmail = email
+                )
             }
 
             composable(Screens.SplashScreen.route) {

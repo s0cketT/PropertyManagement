@@ -9,4 +9,10 @@ sealed class AuthEvent {
     object ShowRegistrationSuccess : AuthEvent()
 
     object NavigateAsGuest : AuthEvent()
+
+    object NavigateToSetNewPassword : AuthEvent()
+
+    object NavigateToChangeNewEmail : AuthEvent()
+
+    object NavigateBack : AuthEvent()
 }

@@ -3,7 +3,6 @@ package com.example.propertymanagement.domain.repository
 import com.example.propertymanagement.domain.model.AuthUser
 import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.model.User
-import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     suspend fun sendOtp(email: String)
@@ -21,4 +20,11 @@ interface AuthRepository {
     suspend fun signIn(email: String, password: String): AuthUser
     suspend fun getCurrentUser(): AuthUser?
 
+    suspend fun updatePassword(newPassword: String)
+
+    suspend fun requestEmailChange(newEmail: String)
+
+    suspend fun refreshAuthSession()
+
+    suspend fun retrieveCurrentUserFromServer(): AuthUser?
 }

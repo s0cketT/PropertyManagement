@@ -17,5 +17,7 @@ fun AuthError.asString(): String {
         AuthError.Unknown -> stringResource(R.string.error_unknown)
         AuthError.EmptyField -> stringResource(R.string.error_empty_field)
         AuthError.InvalidOtp -> stringResource(R.string.error_invalid_otp)
+        AuthError.InvalidCredentials -> stringResource(R.string.error_invalid_credentials)
+        AuthError.NewEmailSameAsCurrent -> stringResource(R.string.error_new_email_same_as_current)
     }
 }

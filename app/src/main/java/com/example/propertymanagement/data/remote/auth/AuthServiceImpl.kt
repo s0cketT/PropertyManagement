@@ -81,7 +81,37 @@ class AuthServiceImpl(
 
         return UserDto(
             id = user.id,
-            email = user.email ?: ""
+            email = user.email ?: "",
+            newEmail = user.newEmail,
         )
+    }
+
+    override suspend fun retrieveCurrentUserFromServer(): UserDto? {
+        return try {
+            val user = supabase.auth.retrieveUserForCurrentSession(updateSession = true)
+            UserDto(
+                id = user.id,
+                email = user.email ?: "",
+                newEmail = user.newEmail,
+            )
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    override suspend fun updatePassword(newPassword: String) {
+        supabase.auth.updateUser {
+            password = newPassword
+        }
+    }
+
+    override suspend fun requestEmailChange(newEmail: String) {
+        supabase.auth.updateUser {
+            email = newEmail
+        }
+    }
+
+    override suspend fun refreshAuthSession() {
+        supabase.auth.refreshCurrentSession()
     }
 }

@@ -24,4 +24,12 @@ interface AuthService {
     suspend fun signIn(email: String, password: String): UserDto
 
     suspend fun getCurrentUser(): UserDto?
+
+    suspend fun updatePassword(newPassword: String)
+
+    suspend fun requestEmailChange(newEmail: String)
+
+    suspend fun refreshAuthSession()
+
+    suspend fun retrieveCurrentUserFromServer(): UserDto?
 }
