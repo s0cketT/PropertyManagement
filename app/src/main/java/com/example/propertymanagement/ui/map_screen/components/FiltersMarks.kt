@@ -38,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.domain.model.PropertyType
@@ -46,7 +45,9 @@ import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
+import com.example.propertymanagement.ui.theme.DividerThickness
 import com.example.propertymanagement.ui.theme.IconSmall
+import com.example.propertymanagement.ui.theme.MapFilterRowHeight
 import com.example.propertymanagement.ui.theme.PaddingExtraLarge
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
@@ -200,7 +201,7 @@ private fun FilterBottomSheetContent(
                 onClick = onResetAll,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(MapFilterRowHeight),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -262,7 +263,7 @@ fun FilterChipCommon(
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,
-            borderWidth = 1.dp,
+            borderWidth = DividerThickness,
             borderColor = if (selected)
                 MaterialTheme.colorScheme.primary
             else

@@ -5,6 +5,7 @@ import com.example.propertymanagement.data.model.CheckEmailRequest
 import com.example.propertymanagement.data.model.SellerTypeIdRow
 import com.example.propertymanagement.data.model.UpdateAvatarPayload
 import com.example.propertymanagement.data.model.UpdateUserEmailPayload
+import com.example.propertymanagement.data.model.UpdateUserAppRatingPayload
 import com.example.propertymanagement.data.model.UpdateUserProfilePayload
 import com.example.propertymanagement.data.model.UserProfileDto
 import com.example.propertymanagement.domain.model.SellerType
@@ -31,7 +32,7 @@ class IUserRepositoryImpl(
         val result = supabase
             .from("users")
             .select(
-                Columns.raw("id, name, email, phone, avatar_url, seller_types(name)")
+                Columns.raw("id, name, email, phone, avatar_url, app_rating, seller_types(name)")
             ) {
                 filter { eq("id", userId) }
             }
@@ -100,6 +101,18 @@ class IUserRepositoryImpl(
         supabase
             .from("users")
             .update(UpdateUserEmailPayload(email = email)) {
+                filter { eq("id", userId) }
+            }
+    }
+
+    override suspend fun updateAppRating(stars: Int) {
+        require(stars in 1..5) { "app_rating must be 1..5" }
+        val userId = supabase.auth.currentUserOrNull()?.id
+            ?: throw IllegalStateException("User not authorized")
+
+        supabase
+            .from("users")
+            .update(UpdateUserAppRatingPayload(appRating = stars)) {
                 filter { eq("id", userId) }
             }
     }

@@ -10,6 +10,8 @@ data class CreateProperty(
 
     val title: String,
 
+    val description: String? = null,
+
     val country: String,
     val region: String,
     val city: String,

@@ -54,8 +54,16 @@ fun PropertyDetailScreen(
     val context = LocalContext.current
     val authRequiredText = stringResource(R.string.auth_required)
     val registrationRequiredText = stringResource(R.string.property_detail_request_requires_registration)
+    val applicationSentText = stringResource(R.string.property_detail_application_sent)
+    val applicationFailedText = stringResource(R.string.property_detail_application_failed)
 
-    LaunchedEffect(event, authRequiredText, registrationRequiredText) {
+    LaunchedEffect(
+        event,
+        authRequiredText,
+        registrationRequiredText,
+        applicationSentText,
+        applicationFailedText
+    ) {
         event.collect { e ->
             when (e) {
                 PropertyDetailEvent.NavigateBack -> {
@@ -76,6 +84,22 @@ fun PropertyDetailScreen(
                     Toast.makeText(
                         context,
                         registrationRequiredText,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                PropertyDetailEvent.ApplicationSubmitted -> {
+                    Toast.makeText(
+                        context,
+                        applicationSentText,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                PropertyDetailEvent.ApplicationSubmitFailed -> {
+                    Toast.makeText(
+                        context,
+                        applicationFailedText,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -146,6 +170,14 @@ private fun PropertyDetailUI(
             photos = property.photos,
             initialPage = state.imageViewerInitialPage,
             onDismiss = { intent(PropertyDetailIntent.CloseImageViewer) }
+        )
+    }
+
+    if (state.isApplicationSheetOpen) {
+        PropertyDetailApplicationBottomSheet(
+            state = state,
+            intent = intent,
+            onDismiss = { intent(PropertyDetailIntent.DismissApplicationSheet) }
         )
     }
 }

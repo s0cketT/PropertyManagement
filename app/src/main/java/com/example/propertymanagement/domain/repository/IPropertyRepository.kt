@@ -20,4 +20,10 @@ interface IPropertyRepository {
     )
 
     suspend fun deleteProperty(propertyId: Int)
+
+    suspend fun submitPropertyApplication(
+        propertyId: Int,
+        applicantUserId: String,
+        comment: String?
+    )
 }

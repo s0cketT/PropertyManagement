@@ -108,6 +108,8 @@
     <string name="new_ad_title">Новое объявление</string>
     <string name="cd_back">Назад</string>
     <string name="property_title_placeholder">Введите название</string>
+    <string name="publish_description_label">Описание</string>
+    <string name="publish_description_placeholder">Расскажите об объекте — это необязательно</string>
     <string name="publish_button">Опубликовать</string>
 
     <string name="add_photo">Добавить фото</string>
@@ -304,6 +306,15 @@
 
     <string name="error_invalid_credentials">Неправильная почта или пароль</string>
     <string name="rate_app">Оценить</string>
+    <string name="rate_app_sheet_title">Как вам приложение?</string>
+    <string name="rate_app_sheet_subtitle">Ваш отзыв помогает нам становиться лучше. Нажмите на звёзды, чтобы выставить оценку.</string>
+    <string name="rate_app_stars_hint">Выберите от 1 до 5 звёзд</string>
+    <string name="rate_app_stars_picked">Выбрано: %1$d из 5</string>
+    <string name="rate_app_submit">Оценить</string>
+    <string name="rate_app_maybe_later">Не сейчас</string>
+    <string name="rate_app_saved">Спасибо, оценка сохранена</string>
+    <string name="rate_app_save_failed">Не удалось сохранить оценку</string>
+    <string name="rate_app_star_cd">Оценка %1$d из 5 звёзд</string>
 
     <string name="select_seller_type">Выберите тип</string>
 
@@ -346,6 +357,7 @@
     <string name="property_detail_section_details">Характеристики</string>
     <string name="property_detail_section_amenities">Удобства</string>
     <string name="property_detail_section_description">Описание</string>
+    <string name="property_detail_description_empty">Описание не указано</string>
     <string name="property_detail_section_location">Расположение</string>
 
     <string name="property_detail_listing_id">ID объявления</string>
@@ -374,6 +386,13 @@
     <string name="property_detail_map_fullscreen_cd">Открыть карту на весь экран</string>
     <string name="property_detail_submit_request">Оставить заявку</string>
     <string name="property_detail_request_requires_registration">Чтобы оставить заявку, необходимо зарегистрироваться</string>
+    <string name="property_detail_application_sheet_title">Заявка по объявлению</string>
+    <string name="property_detail_application_comment_label">Комментарий для менеджера</string>
+    <string name="property_detail_application_comment_placeholder">Уточнения, удобное время связи и т.п.</string>
+    <string name="property_detail_application_submit">Отправить заявку</string>
+    <string name="property_detail_application_submitting">Отправка…</string>
+    <string name="property_detail_application_sent">Заявка отправлена</string>
+    <string name="property_detail_application_failed">Не удалось отправить заявку. Попробуйте позже.</string>
 
     <string name="publish_location_section_title">Местоположение</string>
     <string name="publish_location_not_set">Нажмите, чтобы указать адрес</string>

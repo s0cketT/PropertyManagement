@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.DealType
@@ -47,10 +46,18 @@ import com.example.propertymanagement.ui.property_detail_screen.components.build
 import com.example.propertymanagement.ui.property_detail_screen.components.effectiveArea
 import com.example.propertymanagement.ui.property_detail_screen.components.formatDouble
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
+import com.example.propertymanagement.ui.theme.DividerThickness
+import com.example.propertymanagement.ui.theme.IconSizeStarRow
+import com.example.propertymanagement.ui.theme.IconSmall
 import com.example.propertymanagement.ui.theme.ImagePickerHeight
 import com.example.propertymanagement.ui.theme.PaddingLarge
+import com.example.propertymanagement.ui.theme.PropertyDetailMapCornerRadius
+import com.example.propertymanagement.ui.theme.SpacerHeightSection
 import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.SpacerTiny
+import com.example.propertymanagement.ui.theme.Spacing12
+import com.example.propertymanagement.ui.theme.SurfaceTonalElevationLow
+import com.example.propertymanagement.ui.theme.VerticalPaddingItem
 import com.example.propertymanagement.ui.list_property_screen.components.PropertyImagePager
 
 @Composable
@@ -156,7 +163,7 @@ fun MapMarkerBottomSheetContent(
                 Icon(
                     imageVector = Icons.Outlined.Map,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(IconSmall),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Text(
@@ -198,19 +205,24 @@ private fun DealAndPropertyTypeCard(
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(PropertyDetailMapCornerRadius),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        tonalElevation = 1.dp
+        tonalElevation = SurfaceTonalElevationLow
     ) {
-        Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = IconSmall,
+                vertical = VerticalPaddingItem
+            )
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing12)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Payments,
                     contentDescription = null,
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(IconSizeStarRow),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -219,7 +231,7 @@ private fun DealAndPropertyTypeCard(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(SpacerTiny))
                     Text(
                         text = dealValue,
                         style = MaterialTheme.typography.titleMedium,
@@ -231,21 +243,21 @@ private fun DealAndPropertyTypeCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(SpacerHeightSection))
             HorizontalDivider(
-                thickness = 1.dp,
+                thickness = DividerThickness,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
             )
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(SpacerHeightSection))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing12)
             ) {
                 Icon(
                     imageVector = propertyType.mapSheetIcon(),
                     contentDescription = null,
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(IconSizeStarRow),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -254,7 +266,7 @@ private fun DealAndPropertyTypeCard(
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(SpacerTiny))
                     Text(
                         text = typeValue,
                         style = MaterialTheme.typography.titleMedium,

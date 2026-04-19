@@ -90,6 +90,7 @@ fun AuthorizedContent(
         ProfileActionItem(
             textRes = R.string.rate_app,
             icon = Icons.Default.Star,
+            trailingText = state.user?.appRating?.let { "$it/5" },
             onClick = { intent(ProfileIntent.RateApp) }
         )
 

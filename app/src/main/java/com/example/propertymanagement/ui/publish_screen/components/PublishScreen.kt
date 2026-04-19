@@ -15,6 +15,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +42,8 @@ import com.example.propertymanagement.ui.publish_screen.PublishViewModel
 import com.example.propertymanagement.ui.publish_screen.buildAddressQueryString
 import com.example.propertymanagement.ui.publish_screen.geocodeAddressQuery
 import com.example.propertymanagement.ui.publish_screen.reverseGeocodeCoordinates
+import com.example.propertymanagement.ui.property_detail_screen.components.PropertyDetailSectionDivider
+import com.example.propertymanagement.ui.property_detail_screen.components.PropertyDetailSectionHeader
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerMedium
@@ -294,7 +298,37 @@ private fun UI(
                 else -> Unit
             }
 
+            PropertyDetailSectionDivider()
 
+            OutlinedTextField(
+                value = state.description,
+                onValueChange = { intent(PublishIntent.SetDescription(it)) },
+                modifier = Modifier
+                    .padding(horizontal = PaddingLarge)
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.publish_description_placeholder),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+                    )
+                },
+                minLines = 3,
+                maxLines = 10,
+                shape = RoundedCornerShape(ButtonCornerRadius),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedBorderColor = MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                ),
+                textStyle = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
         }
 
         Button(

@@ -6,5 +6,6 @@ data class UserProfile(
     val email: String,
     val phone: String,
     val avatarUrl: String?,
-    val sellerType: SellerType
+    val sellerType: SellerType,
+    val appRating: Int? = null
 )

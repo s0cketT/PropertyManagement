@@ -5,4 +5,6 @@ import com.example.propertymanagement.domain.model.UserProfile
 data class ProfileState(
     val user: UserProfile? = null,
     val isLoading: Boolean = false,
+    val isRateAppSheetOpen: Boolean = false,
+    val isSavingAppRating: Boolean = false,
 )

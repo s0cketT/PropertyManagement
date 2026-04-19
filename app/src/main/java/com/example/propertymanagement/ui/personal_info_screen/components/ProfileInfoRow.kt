@@ -23,11 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.propertymanagement.ui.theme.AvatarLargeIconSize
 import com.example.propertymanagement.ui.theme.AvatarLargeSize
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
+import com.example.propertymanagement.ui.theme.IconSizeProfile
 import com.example.propertymanagement.ui.theme.IconSmall
 import com.example.propertymanagement.ui.theme.PaddingLarge
 
@@ -85,7 +85,7 @@ private fun AvatarBlock(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(24.dp)
+                    .size(IconSizeProfile)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
                         shape = CircleShape

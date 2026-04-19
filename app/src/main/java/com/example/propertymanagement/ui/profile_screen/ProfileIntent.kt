@@ -5,6 +5,8 @@ sealed class ProfileIntent {
     object NavToPublish : ProfileIntent()
     object MyAds : ProfileIntent()
     object RateApp : ProfileIntent()
+    object DismissRateAppSheet : ProfileIntent()
+    data class SubmitAppRating(val stars: Int) : ProfileIntent()
     object Settings : ProfileIntent()
 
     object PersonalInfo : ProfileIntent()

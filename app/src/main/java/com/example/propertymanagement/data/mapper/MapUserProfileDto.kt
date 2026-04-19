@@ -11,6 +11,7 @@ fun UserProfileDto.toDomain(): UserProfile {
         email = email,
         phone = phone.orEmpty(),
         avatarUrl = avatar_url,
-        sellerType = seller_types.name.fromDb<SellerType>()!!
+        sellerType = seller_types.name.fromDb<SellerType>()!!,
+        appRating = app_rating
     )
 }

@@ -14,11 +14,15 @@ fun convertAmountBetweenCurrencies(
     rates: Map<String, CurrencyRate>
 ): Double {
     if (from == to) return amount
-    val inByn = amountToByn(amount, from, rates)
+    val inByn = convertAmountToByn(amount, from, rates)
     return fromBynToCurrency(inByn, to, rates)
 }
 
-private fun amountToByn(amount: Double, currency: CurrencyType, rates: Map<String, CurrencyRate>): Double {
+fun convertAmountToByn(
+    amount: Double,
+    currency: CurrencyType,
+    rates: Map<String, CurrencyRate>
+): Double {
     if (currency == CurrencyType.BYN) return amount
     val rate = rates[currency.name]?.ratePerUnit ?: return amount
     return amount * rate

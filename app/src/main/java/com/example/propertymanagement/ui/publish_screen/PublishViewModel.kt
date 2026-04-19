@@ -76,6 +76,10 @@ class PublishViewModel(
                 }
             }
 
+            is PublishIntent.SetDescription -> {
+                _state.update { it.copy(description = intent.text) }
+            }
+
             is PublishIntent.SetPropertyType -> {
                 _state.update { it.copy(propertyType = intent.type) }
             }
@@ -242,6 +246,7 @@ class PublishViewModel(
         return PublishState(
             imageBytes = current.imageBytes,
             title = current.title,
+            description = current.description,
             addressCountry = current.addressCountry,
             addressRegion = current.addressRegion,
             addressCity = current.addressCity,
@@ -317,6 +322,8 @@ class PublishViewModel(
                     dealType = stateValue.dealType!!,
 
                     title = title,
+
+                    description = stateValue.description.trim().takeIf { it.isNotEmpty() },
 
                     country = stateValue.addressCountry.ifBlank { DEFAULT_COUNTRY },
                     region = stateValue.addressRegion.trim(),

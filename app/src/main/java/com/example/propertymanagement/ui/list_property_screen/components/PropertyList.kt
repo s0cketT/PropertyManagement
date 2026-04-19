@@ -16,10 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
+import com.example.propertymanagement.ui.theme.CardElevationLow
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
@@ -68,7 +68,7 @@ fun PropertyListCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = CardElevationLow)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             PropertyImageSection(

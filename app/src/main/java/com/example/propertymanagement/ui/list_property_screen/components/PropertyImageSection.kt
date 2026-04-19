@@ -38,9 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.propertymanagement.ui.theme.BoxGrayHeightSettings
+import com.example.propertymanagement.ui.theme.DpZero
 import com.example.propertymanagement.ui.theme.FavoriteIconSize
+import com.example.propertymanagement.ui.theme.HairlineBorderWidth
+import com.example.propertymanagement.ui.theme.IconMedium
 import com.example.propertymanagement.ui.theme.ImagePickerHeight
 import com.example.propertymanagement.ui.theme.IndicatorSize
 import com.example.propertymanagement.ui.theme.IndicatorSizeActive
@@ -166,9 +169,6 @@ fun PropertyImagePager(
     }
 }
 
-private val FavoriteProminentSize = 44.dp
-private val FavoriteProminentIconSize = 26.dp
-
 @Composable
 fun FavoriteButton(
     isFavorite: Boolean,
@@ -185,11 +185,11 @@ fun FavoriteButton(
             shape = CircleShape,
             color = scheme.surface.copy(alpha = 0.52f),
             border = BorderStroke(
-                width = 0.5.dp,
+                width = HairlineBorderWidth,
                 color = scheme.outline.copy(alpha = 0.16f)
             ),
-            shadowElevation = 0.dp,
-            modifier = modifier.size(FavoriteProminentSize)
+            shadowElevation = DpZero,
+            modifier = modifier.size(BoxGrayHeightSettings)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -198,7 +198,7 @@ fun FavoriteButton(
                 FavoriteAnimatedIcon(
                     isFavorite = isFavorite,
                     contentDescription = contentDescription,
-                    modifier = Modifier.size(FavoriteProminentIconSize)
+                    modifier = Modifier.size(IconMedium)
                 )
             }
         }
@@ -210,7 +210,7 @@ fun FavoriteButton(
             FavoriteAnimatedIcon(
                 isFavorite = isFavorite,
                 contentDescription = contentDescription,
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(IconMedium)
             )
         }
     }

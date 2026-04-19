@@ -148,16 +148,20 @@ fun PropertyDetailInfoSections(
             PropertyDetailAmenityChips(labels = amenityLabels)
         }
 
-        property.description?.takeIf { it.isNotBlank() }?.let { desc ->
-            PropertyDetailSectionDivider()
-            PropertyDetailSectionHeader(title = stringResource(R.string.property_detail_section_description))
-            Text(
-                text = desc,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = SpacerTiny)
-            )
-        }
+        PropertyDetailSectionDivider()
+        PropertyDetailSectionHeader(title = stringResource(R.string.property_detail_section_description))
+        val descriptionBody = property.description?.trim().takeIf { !it.isNullOrBlank() }
+        Text(
+            text = descriptionBody
+                ?: stringResource(R.string.property_detail_description_empty),
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (descriptionBody != null) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+            },
+            modifier = Modifier.padding(top = SpacerTiny)
+        )
 
         PropertyDetailSectionDivider()
         PropertyDetailSectionHeader(title = stringResource(R.string.property_detail_section_location))

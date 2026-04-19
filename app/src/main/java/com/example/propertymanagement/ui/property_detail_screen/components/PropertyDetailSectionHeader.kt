@@ -16,13 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.propertymanagement.ui.theme.CornerRadiusExtraSmall
+import com.example.propertymanagement.ui.theme.SmallHorizontalPadding
 import com.example.propertymanagement.ui.theme.SpacerMedium
 import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.SpacerTiny
-
-private val SectionAccentWidth = 4.dp
-private val SectionAccentHeight = 20.dp
+import com.example.propertymanagement.ui.theme.VerticalPaddingCategory
 
 /**
  * Заголовок секции без «карточного» вида: цветная полоска + текст.
@@ -37,11 +36,11 @@ fun PropertyDetailSectionHeader(title: String) {
     ) {
         Box(
             modifier = Modifier
-                .width(SectionAccentWidth)
-                .height(SectionAccentHeight)
+                .width(SmallHorizontalPadding)
+                .height(VerticalPaddingCategory)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(2.dp)
+                    shape = RoundedCornerShape(CornerRadiusExtraSmall)
                 )
         )
         Spacer(modifier = Modifier.width(SpacerSmall))

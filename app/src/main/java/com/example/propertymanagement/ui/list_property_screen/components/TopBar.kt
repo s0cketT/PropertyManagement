@@ -17,11 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.publish_screen.components.PropertyTitleTextField
+import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.HorizontalPadding
 import com.example.propertymanagement.ui.theme.PaddingMedium
+import com.example.propertymanagement.ui.theme.TopBarEndIconBoxSize
 
 @Composable
 fun TopBar(
@@ -34,7 +35,7 @@ fun TopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = HorizontalPadding, vertical = 8.dp),
+            .padding(horizontal = HorizontalPadding, vertical = PaddingMedium),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -48,8 +49,8 @@ fun TopBar(
         Box(
             modifier = Modifier
                 .padding(start = PaddingMedium)
-                .size(48.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .size(TopBarEndIconBoxSize)
+                .clip(RoundedCornerShape(ButtonCornerRadius))
                 .background(MaterialTheme.colorScheme.primary)
                 .clickable { onFilterClick() },
             contentAlignment = Alignment.Center

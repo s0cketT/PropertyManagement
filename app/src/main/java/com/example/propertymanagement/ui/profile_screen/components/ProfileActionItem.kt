@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.example.propertymanagement.ui.theme.IconSizeProfile
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerBetweenElements
@@ -28,6 +29,7 @@ fun ProfileActionItem(
     icon: ImageVector,
     iconTint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     textTint: Color = MaterialTheme.colorScheme.onSurface,
+    trailingText: String? = null,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -52,5 +54,14 @@ fun ProfileActionItem(
             color = textTint,
             modifier = Modifier.weight(1f)
         )
+
+        trailingText?.let { suffix ->
+            Text(
+                text = suffix,
+                fontSize = TextMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }

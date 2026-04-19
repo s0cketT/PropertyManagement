@@ -2,6 +2,7 @@ package com.example.propertymanagement.data.model
 
 data class CreateFullPropertyDto(
     val p_title: String,
+    val p_description: String? = null,
     val p_price: Double,
     val p_currency: String,
     val p_type: String,

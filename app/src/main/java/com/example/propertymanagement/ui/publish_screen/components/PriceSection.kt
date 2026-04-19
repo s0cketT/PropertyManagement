@@ -18,12 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.ui.filters_screen.components.CurrencySelector
 import com.example.propertymanagement.ui.filters_screen.components.NumberOutlinedTextField
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
+import com.example.propertymanagement.ui.theme.DpZero
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import com.example.propertymanagement.ui.theme.SpacerSmall
@@ -61,7 +61,7 @@ fun PriceSection(
                 modifier = Modifier
                     .weight(1f)
                     .border(
-                        width = if (isError) TextFieldBorderWidth else 0.dp,
+                        width = if (isError) TextFieldBorderWidth else DpZero,
                         color = if (isError) TextFieldBorderError else Color.Transparent,
                         shape = RoundedCornerShape(ButtonCornerRadius)
                     )

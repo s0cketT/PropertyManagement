@@ -30,7 +30,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
@@ -45,6 +44,7 @@ import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.HeightFilterChip
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerLarge
+import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.TextFieldBorderWidth
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -159,7 +159,7 @@ private fun UI(
         Spacer(modifier = Modifier.height(SpacerLarge))
 
         state.otpError?.let { error ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(SpacerSmall))
             Text(
                 text = when (error) {
                     AuthError.InvalidOtp -> stringResource(R.string.invalid_otp)

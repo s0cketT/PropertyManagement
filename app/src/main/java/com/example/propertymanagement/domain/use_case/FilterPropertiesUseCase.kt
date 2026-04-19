@@ -6,7 +6,7 @@ import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.SortType
-import com.example.propertymanagement.ui.mapper.toCode
+import com.example.propertymanagement.domain.currency.convertAmountToByn
 import java.time.Instant
 
 class FilterPropertiesUseCase {
@@ -32,8 +32,8 @@ class FilterPropertiesUseCase {
         return when (sortType) {
             SortType.NEWEST -> compareByDescending<Property> { it.createdAt ?: Instant.EPOCH }
                 .thenByDescending { it.id }
-            SortType.PRICE_ASC -> compareBy { toBYN(it.price, it.currency, rates) }
-            SortType.PRICE_DESC -> compareByDescending { toBYN(it.price, it.currency, rates) }
+            SortType.PRICE_ASC -> compareBy { convertAmountToByn(it.price, it.currency, rates) }
+            SortType.PRICE_DESC -> compareByDescending { convertAmountToByn(it.price, it.currency, rates) }
         }
     }
 
@@ -47,15 +47,23 @@ class FilterPropertiesUseCase {
 
         if (f.onlyWithPhotos && photos.isEmpty()) return false
 
-        val priceInBYN = toBYN(
-            price = price,
-            currency = currency,
-            rates = rates
-        )
+        val priceInBYN = convertAmountToByn(price, currency, rates)
 
-        if (!priceInBYN.inRange(f.price)) return false
+        if (!priceInBYN.inPriceFilterRange(f.price, f.selectedCurrency, rates)) return false
 
-        area?.inRange(f.area)?.let { if (!it) return false }
+        if (!area.inRange(f.area)) return false
+
+        if (!f.pricePerMeter.isEmpty()) {
+            val a = area
+            if (a == null || a <= 0.0) return false
+            val pricePerMeterInBYN = priceInBYN / a
+            if (!pricePerMeterInBYN.inPriceFilterRange(
+                    f.pricePerMeter,
+                    f.selectedCurrency,
+                    rates
+                )
+            ) return false
+        }
 
         if (!floor.inRange(f.floor)) return false
         if (!totalFloors.inRange(f.floorHouse)) return false
@@ -78,25 +86,21 @@ class FilterPropertiesUseCase {
         return true
     }
 
-    private fun toBYN(
-        price: Double,
-        currency: CurrencyType,
+    private fun Double.inPriceFilterRange(
+        range: IntRangeFilter,
+        filterCurrency: CurrencyType,
         rates: Map<String, CurrencyRate>
-    ): Double {
-
-        if (currency == CurrencyType.BYN) return price
-
-        val rate = rates[currency.toCode()]?.ratePerUnit ?: 1.0
-        return price * rate
+    ): Boolean {
+        val from = range.from?.let { convertAmountToByn(it.toDouble(), filterCurrency, rates) }
+        val to = range.to?.let { convertAmountToByn(it.toDouble(), filterCurrency, rates) }
+        return (from == null || this >= from) && (to == null || this <= to)
     }
 
     private fun Double?.inRange(range: IntRangeFilter): Boolean {
-        val value = this ?: return true
-        val from = range.from?.toDouble()
-        val to = range.to?.toDouble()
+        if (this == null) return true
 
-        return (from == null || value >= from) &&
-                (to == null || value <= to)
+        return (range.from == null || this >= range.from) &&
+                (range.to == null || this <= range.to)
     }
 
     private fun Int?.inRange(range: IntRangeFilter): Boolean {

@@ -31,12 +31,13 @@ data class PublishState(
     val isAreaError: Boolean = false,
     val isLocationError: Boolean = false,
 
-    /** Идёт отправка объявления на сервер — кнопку «Опубликовать» блокируем. */
     val isPublishing: Boolean = false,
 
     val imageBytes: List<ByteArray> = emptyList(),
 
     val title: String = "",
+
+    val description: String = "",
 
     val addressCountry: String = "",
     val addressRegion: String = "",

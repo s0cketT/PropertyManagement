@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.model.CreateProperty
 fun CreateProperty.toFullDto(): CreateFullPropertyDto {
     return CreateFullPropertyDto(
         p_title = title,
+        p_description = description?.trim()?.takeIf { it.isNotEmpty() },
         p_price = price,
         p_currency = currency.toDbValue(),
         p_type = type.toDbValue(),

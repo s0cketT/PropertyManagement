@@ -33,6 +33,8 @@ sealed class PublishIntent {
 
     data class SetTitle(val title: String) : PublishIntent()
 
+    data class SetDescription(val text: String) : PublishIntent()
+
     data class SetDealType(val type: DealType?) : PublishIntent()
     data class SetPrice(val price: String) : PublishIntent()
     data class SetCurrency(val currency: CurrencyType) : PublishIntent()
@@ -82,10 +84,6 @@ sealed class PublishIntent {
     data class SetAddressStreet(val value: String) : PublishIntent()
     data class SetAddressHouse(val value: String) : PublishIntent()
 
-    /**
-     * Закрыть лист адреса после геокодирования в UI.
-     * [latitude]/[longitude] — null, если строка пуста или геокод не удался (координаты не меняем).
-     */
     data class AddressSheetDone(
         val latitude: Double?,
         val longitude: Double?

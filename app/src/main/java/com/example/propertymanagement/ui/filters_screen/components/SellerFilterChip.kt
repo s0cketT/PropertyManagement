@@ -10,8 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
+import com.example.propertymanagement.ui.theme.DividerThickness
+import com.example.propertymanagement.ui.theme.DpZero
 import com.example.propertymanagement.ui.theme.HeightFilterChip
 
 @Preview
@@ -40,7 +41,7 @@ fun SellerFilterChip(
             selectedLeadingIconColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         border = FilterChipDefaults.filterChipBorder(
-            borderWidth = if (selected) 0.dp else 1.dp,
+            borderWidth = if (selected) DpZero else DividerThickness,
             borderColor = MaterialTheme.colorScheme.outline,
             selected = selected,
             enabled = true

@@ -5,6 +5,7 @@ import com.example.propertymanagement.data.model.CreateFullPropertyDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
 import com.example.propertymanagement.data.model.ExistsResult
 import com.example.propertymanagement.data.model.FavoriteDto
+import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
 import com.example.propertymanagement.data.model.PropertyImageDto
 import com.example.propertymanagement.data.model.PropertyResponseDto
 import com.example.propertymanagement.data.model.ToggleFavoriteBody
@@ -12,8 +13,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.HTTP
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -31,6 +30,11 @@ interface ISupabaseApi {
     suspend fun createFullProperty(
         @Body body: CreateFullPropertyDto
     ): Int
+
+    @POST("property_applications")
+    suspend fun createPropertyApplication(
+        @Body body: PropertyApplicationInsertDto
+    )
 
     @DELETE("properties")
     suspend fun deleteProperty(

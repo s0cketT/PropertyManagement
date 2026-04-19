@@ -5,6 +5,77 @@ import androidx.compose.ui.unit.sp
 
 // ui/theme/Dimens.kt
 
+/** Нулевая толщина / отсутствие отступа в dp */
+val DpZero = 0.dp
+
+/** Нулевой letterSpacing и т.п. */
+val SpZero = 0.sp
+
+/** Тонкая обводка (полупиксель на mdpi-логике) */
+val HairlineBorderWidth = 0.5.dp
+
+/** Скругление 2dp (ручка bottom sheet, акценты) */
+val CornerRadiusExtraSmall = 2.dp
+
+/** Промежуток 12dp между элементами в ряду */
+val Spacing12 = 12.dp
+
+/** Вертикальный отступ вокруг разделителя в bottom sheet */
+val SpacerHeightSection = 14.dp
+
+/** Плотный вертикальный spacer (оценка приложения и т.д.) */
+val SpacerHeightTight = 6.dp
+
+/** Минимальный размер зоны нажатия (Material) */
+val TouchTargetMinimum = 48.dp
+
+/** Кнопка фильтра в TopBar списка */
+val TopBarEndIconBoxSize = 48.dp
+
+/** Высота ряда чипов фильтров на карте */
+val MapFilterRowHeight = 48.dp
+
+/** Верхние углы bottom sheet */
+val BottomSheetTopCornerRadius = 24.dp
+
+/** Отступ зоны drag-handle у bottom sheet */
+val BottomSheetDragHandlePaddingVertical = 12.dp
+
+/** Ширина полоски «ручки» bottom sheet */
+val BottomSheetDragHandleWidth = 40.dp
+
+/** Контейнер эмодзи / главная кнопка в sheet оценки */
+val RateAppEmojiContainerSize = 56.dp
+
+/** Иконка звезды в оценке и на карточке маркера */
+val IconSizeStarRow = 22.dp
+
+/** Обводка звезды (Canvas) */
+val StarStrokeWidth = 2.dp
+
+/** Кнопка «Отправить» в sheet оценки */
+val RateAppSubmitButtonSize = 52.dp
+
+/** Квадратные кнопки 40dp (FAB на карте, действие в picker) */
+val IconSizeActionSquare = 40.dp
+
+/** Лёгкий тональный подъём Surface */
+val SurfaceTonalElevationLow = 1.dp
+
+/** Горизонтальные отступы бейджа модерации */
+val ModerationBadgePaddingHorizontal = 10.dp
+
+// Typography (Material Type + экраны)
+val TypeBodyLineHeight = 24.sp
+val TypeTitleFontSize = 22.sp
+val TypeTitleLineHeight = 28.sp
+val TypeLabelFontSize = 11.sp
+val TypeLabelLineHeight = 16.sp
+val TypeLetterSpacingTight = 0.5.sp
+
+/** Имя на экране профиля */
+val ProfileDisplayNameFontSize = 28.sp
+
 // BottomBar
 val BottomBarIconSize = 28.dp
 val BottomBarVerticalPadding = 8.dp

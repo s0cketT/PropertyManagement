@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
+import com.example.propertymanagement.ui.theme.TouchTargetMinimum
 
 @Composable
 fun AppTopBar(
@@ -52,7 +52,7 @@ fun AppTopBar(
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = PaddingMedium),
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -60,7 +60,7 @@ fun AppTopBar(
 
         Box(
             modifier = Modifier
-                .widthIn(min = 48.dp)
+                .widthIn(min = TouchTargetMinimum)
                 .padding(end = PaddingMedium),
             contentAlignment = Alignment.CenterEnd
         ) {

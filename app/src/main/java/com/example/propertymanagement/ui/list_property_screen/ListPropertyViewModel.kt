@@ -16,7 +16,13 @@ import com.example.propertymanagement.ui.SingleFlowEvent
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyEvent
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyIntent
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyState
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ListPropertyViewModel(
@@ -43,23 +49,42 @@ class ListPropertyViewModel(
         getFilterPropertyUseCase()
             .distinctUntilChanged()
             .onEach { filterProperty ->
-                val filters = filterProperty ?: return@onEach
-                applyFilters(filters)
+                if (filterProperty == null) {
+                    _state.update { current ->
+                        recomputePropertiesFilter(current.copy(activeFilters = null))
+                    }
+                } else {
+                    applyFilters(filterProperty)
+                }
             }
             .launchIn(viewModelScope)
     }
 
     private fun applyFilters(filters: FiltersProperty) {
         _state.update { current ->
-
-            val filtered = filterPropertiesUseCase(
-                properties = current.properties,
-                filters = filters,
-                rates = current.currencyRates
-            )
-
-            current.copy(propertiesFilter = filtered)
+            recomputePropertiesFilter(current.copy(activeFilters = filters))
         }
+    }
+
+    private fun recomputePropertiesFilter(state: ListPropertyState): ListPropertyState {
+        val base = state.activeFilters?.let { f ->
+            filterPropertiesUseCase(
+                properties = state.properties,
+                filters = f,
+                rates = state.currencyRates
+            )
+        } ?: state.properties
+        val q = state.searchQuery.trim().lowercase()
+        val visible = if (q.isEmpty()) {
+            base
+        } else {
+            base.filter { property ->
+                val titleMatches = property.title.lowercase().contains(q)
+                val descriptionMatches = property.description?.lowercase()?.contains(q) ?: false
+                titleMatches || descriptionMatches
+            }
+        }
+        return state.copy(propertiesFilter = visible)
     }
 
     private fun initUser() {
@@ -90,19 +115,8 @@ class ListPropertyViewModel(
 
     private fun onSearchChanged(query: String) {
         _state.update { current ->
-            val q = query.trim().lowercase()
-            val filtered = if (q.isEmpty()) {
-                current.properties
-            } else {
-                current.properties.filter { property ->
-                    val titleMatches = property.title.lowercase().contains(q)
-                    val descriptionMatches = property.description?.lowercase()?.contains(q) ?: false
-                    titleMatches || descriptionMatches
-                }
-            }
-            current.copy(
-                searchQuery = q,
-                propertiesFilter = filtered
+            recomputePropertiesFilter(
+                current.copy(searchQuery = query.trim().lowercase())
             )
         }
     }
@@ -132,9 +146,8 @@ class ListPropertyViewModel(
                             property.copy(isFavorite = !property.isFavorite)
                         } else property
                     }
-                    current.copy(
-                        properties = current.properties.map(flip),
-                        propertiesFilter = current.propertiesFilter.map(flip)
+                    recomputePropertiesFilter(
+                        current.copy(properties = current.properties.map(flip))
                     )
                 }
             }.onFailure {
@@ -159,12 +172,15 @@ class ListPropertyViewModel(
 
                 is Resource.Success -> {
                     val approvedOnly = result.data.visibleInPublicCatalog()
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            properties = approvedOnly,
-                            propertiesFilter = approvedOnly,
-                            currencyRates = rates
+                    val savedFilters = getFilterPropertyUseCase().first()
+                    _state.update { current ->
+                        recomputePropertiesFilter(
+                            current.copy(
+                                isLoading = false,
+                                properties = approvedOnly,
+                                currencyRates = rates,
+                                activeFilters = savedFilters
+                            )
                         )
                     }
                 }

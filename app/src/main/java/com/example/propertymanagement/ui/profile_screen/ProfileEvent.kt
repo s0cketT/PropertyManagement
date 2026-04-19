@@ -5,9 +5,12 @@ sealed class ProfileEvent {
     object NavigateToPublishScreen : ProfileEvent()
     object NavigateToMyAds : ProfileEvent()
     object NavigateToSettings : ProfileEvent()
-    object RateApp : ProfileEvent()
 
     object NavigateToPersonalInfo : ProfileEvent()
 
     object NavigateBack : ProfileEvent()
+
+    object AppRatingSaved : ProfileEvent()
+
+    object AppRatingSaveFailed : ProfileEvent()
 }

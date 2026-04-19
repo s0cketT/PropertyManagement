@@ -25,12 +25,14 @@ import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
 import com.example.propertymanagement.domain.use_case.ObserveThemeUseCase
+import com.example.propertymanagement.domain.use_case.SaveAppRatingUseCase
 import com.example.propertymanagement.domain.use_case.SaveSelectedFiltersMarkerUseCase
 import com.example.propertymanagement.domain.use_case.SendOtpUseCase
 import com.example.propertymanagement.domain.use_case.SetLanguageUseCase
 import com.example.propertymanagement.domain.use_case.SetThemeUseCase
 import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
+import com.example.propertymanagement.domain.use_case.SubmitPropertyApplicationUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
@@ -99,6 +101,8 @@ val domainModule = module {
     factory { GetCurrentUserUseCase(authRepository = get<AuthRepository>()) }
     factory { GetUserProfileUseCase(userRepository = get<IUserRepository>()) }
 
+    factory { SaveAppRatingUseCase(userRepository = get<IUserRepository>()) }
+
     factory { SetLanguageUseCase(settingsRepository = get<ISettingsRepository>()) }
     factory { ObserveLanguageUseCase(settingsRepository = get<ISettingsRepository>()) }
 
@@ -107,6 +111,8 @@ val domainModule = module {
 
 
     factory { ToggleFavoriteUseCase(favoriteRepository = get<IFavoriteRepository>()) }
+
+    factory { SubmitPropertyApplicationUseCase(propertyRepository = get<IPropertyRepository>()) }
 
     factory { FilterPropertiesUseCase() }
 

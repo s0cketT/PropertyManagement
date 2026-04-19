@@ -9,6 +9,7 @@ data class UserProfileDto(
     val email: String,
     val phone: String? = null,
     val avatar_url: String?,
+    val app_rating: Int? = null,
     val seller_types: SellerTypeDto
 )
 

@@ -27,10 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
+import com.example.propertymanagement.ui.theme.IconSizeActionSquare
 import com.example.propertymanagement.ui.theme.ImagePickerHeight
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
@@ -114,7 +114,7 @@ fun ImagePickerCard(
                     imageVector = Icons.Default.AddCircle,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(IconSizeActionSquare)
                 )
 
                 Spacer(modifier = Modifier.height(SpacerSmall))

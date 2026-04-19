@@ -13,4 +13,10 @@ sealed class PropertyDetailIntent {
     data object ToggleFavorite : PropertyDetailIntent()
 
     data object SubmitRequest : PropertyDetailIntent()
+
+    data object DismissApplicationSheet : PropertyDetailIntent()
+
+    data class SetApplicationComment(val text: String) : PropertyDetailIntent()
+
+    data object ConfirmApplicationSubmit : PropertyDetailIntent()
 }

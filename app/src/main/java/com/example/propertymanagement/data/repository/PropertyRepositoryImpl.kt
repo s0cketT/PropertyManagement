@@ -3,6 +3,7 @@ package com.example.propertymanagement.data.repository
 import com.example.propertymanagement.data.mapper.toDomain
 import com.example.propertymanagement.data.mapper.toFullDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
+import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
 import com.example.propertymanagement.data.remote.ISupabaseApi
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.Property
@@ -65,5 +66,19 @@ class PropertyRepositoryImpl(
         }.awaitAll()
 
         supabaseApi.deleteProperty("eq.$propertyId")
+    }
+
+    override suspend fun submitPropertyApplication(
+        propertyId: Int,
+        applicantUserId: String,
+        comment: String?
+    ) {
+        supabaseApi.createPropertyApplication(
+            PropertyApplicationInsertDto(
+                property_id = propertyId,
+                applicant_user_id = applicantUserId,
+                comment = comment
+            )
+        )
     }
 }

@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.sp
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.ui.filters_screen.components.SellerFilterChip
@@ -28,6 +27,7 @@ import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoState
 import com.example.propertymanagement.ui.theme.BoxGrayHeight
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
+import com.example.propertymanagement.ui.theme.ProfileDisplayNameFontSize
 import com.example.propertymanagement.ui.theme.SpacerMedium
 import com.example.propertymanagement.ui.theme.SpacerSmall
 import com.example.propertymanagement.ui.theme.TextSmall
@@ -134,7 +134,7 @@ private fun BelarusPhoneField(
         ) {
             Text(
                 text = "\uD83C\uDDE7\uD83C\uDDFE",
-                fontSize = 28.sp,
+                fontSize = ProfileDisplayNameFontSize,
                 modifier = Modifier.padding(end = PaddingMedium)
             )
             Text(

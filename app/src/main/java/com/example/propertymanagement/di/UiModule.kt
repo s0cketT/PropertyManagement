@@ -10,6 +10,7 @@ import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
+import com.example.propertymanagement.domain.use_case.SaveAppRatingUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
@@ -22,6 +23,7 @@ import com.example.propertymanagement.domain.use_case.SetLanguageUseCase
 import com.example.propertymanagement.domain.use_case.SetThemeUseCase
 import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
+import com.example.propertymanagement.domain.use_case.SubmitPropertyApplicationUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
 import com.example.propertymanagement.domain.use_case.UpdatePasswordUseCase
@@ -95,7 +97,8 @@ val uiModule = module {
     viewModel {
         ProfileViewModel(
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
-            getUserProfileUseCase = get<GetUserProfileUseCase>()
+            getUserProfileUseCase = get<GetUserProfileUseCase>(),
+            saveAppRatingUseCase = get<SaveAppRatingUseCase>()
         )
     }
 
@@ -171,7 +174,8 @@ val uiModule = module {
             getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
             getPropertyDetailPricesUseCase = get<GetPropertyDetailPricesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
-            toggleFavoriteUseCase = get<ToggleFavoriteUseCase>()
+            toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
+            submitPropertyApplicationUseCase = get<SubmitPropertyApplicationUseCase>()
         )
     }
 }

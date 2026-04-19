@@ -6,6 +6,9 @@ sealed interface PropertyDetailEvent {
 
     data object ShowAuthRequired : PropertyDetailEvent
 
-    /** Нужна регистрация, чтобы оставить заявку по объявлению. */
     data object ShowRegistrationRequiredForRequest : PropertyDetailEvent
+
+    data object ApplicationSubmitted : PropertyDetailEvent
+
+    data object ApplicationSubmitFailed : PropertyDetailEvent
 }

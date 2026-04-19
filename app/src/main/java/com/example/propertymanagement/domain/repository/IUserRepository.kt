@@ -19,4 +19,6 @@ interface IUserRepository {
     )
 
     suspend fun updateUserEmail(email: String)
+
+    suspend fun updateAppRating(stars: Int)
 }

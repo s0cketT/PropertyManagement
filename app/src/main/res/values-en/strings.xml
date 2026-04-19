@@ -214,6 +214,8 @@
     <string name="new_ad_title">New listing</string>
     <string name="cd_back">Back</string>
     <string name="property_title_placeholder">Enter title</string>
+    <string name="publish_description_label">Description</string>
+    <string name="publish_description_placeholder">Tell buyers about the property — optional</string>
     <string name="publish_button">Publish</string>
 
     <string name="add_photo">Add photo</string>
@@ -302,6 +304,15 @@
 
     <string name="error_invalid_credentials">Incorrect email or password</string>
     <string name="rate_app">Rate app</string>
+    <string name="rate_app_sheet_title">How do you like the app?</string>
+    <string name="rate_app_sheet_subtitle">Your feedback helps us improve. Tap the stars to rate.</string>
+    <string name="rate_app_stars_hint">Choose from 1 to 5 stars</string>
+    <string name="rate_app_stars_picked">Selected: %1$d of 5</string>
+    <string name="rate_app_submit">Rate</string>
+    <string name="rate_app_maybe_later">Not now</string>
+    <string name="rate_app_saved">Thanks, your rating was saved</string>
+    <string name="rate_app_save_failed">Could not save your rating</string>
+    <string name="rate_app_star_cd">Rate %1$d out of 5 stars</string>
 
     <string name="select_seller_type">Select type</string>
 
@@ -342,6 +353,7 @@
     <string name="property_detail_section_details">Details</string>
     <string name="property_detail_section_amenities">Amenities</string>
     <string name="property_detail_section_description">Description</string>
+    <string name="property_detail_description_empty">No description provided</string>
     <string name="property_detail_section_location">Location</string>
 
     <string name="property_detail_listing_id">Listing ID</string>
@@ -370,6 +382,13 @@
     <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
     <string name="property_detail_submit_request">Submit request</string>
     <string name="property_detail_request_requires_registration">You need to sign up to submit a request</string>
+    <string name="property_detail_application_sheet_title">Listing request</string>
+    <string name="property_detail_application_comment_label">Note for the manager</string>
+    <string name="property_detail_application_comment_placeholder">Details, preferred contact time, etc.</string>
+    <string name="property_detail_application_submit">Send request</string>
+    <string name="property_detail_application_submitting">Sending…</string>
+    <string name="property_detail_application_sent">Request submitted</string>
+    <string name="property_detail_application_failed">Could not submit the request. Try again later.</string>
 
     <string name="publish_location_section_title">Location</string>
     <string name="publish_location_not_set">Tap to set address</string>

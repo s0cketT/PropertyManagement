@@ -11,5 +11,8 @@ data class PropertyDetailState(
     val isMapFullscreen: Boolean = false,
     val isImageViewerOpen: Boolean = false,
     val imageViewerInitialPage: Int = 0,
-    val convertedPrices: PropertyDetailPrices? = null
+    val convertedPrices: PropertyDetailPrices? = null,
+    val isApplicationSheetOpen: Boolean = false,
+    val applicationComment: String = "",
+    val isSubmittingApplication: Boolean = false
 )

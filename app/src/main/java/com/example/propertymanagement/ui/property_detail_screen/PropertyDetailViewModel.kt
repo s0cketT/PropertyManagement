@@ -7,6 +7,7 @@ import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
+import com.example.propertymanagement.domain.use_case.SubmitPropertyApplicationUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,8 @@ class PropertyDetailViewModel(
     private val getTodayRatesUseCase: GetTodayRatesUseCase,
     private val getPropertyDetailPricesUseCase: GetPropertyDetailPricesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val submitPropertyApplicationUseCase: SubmitPropertyApplicationUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PropertyDetailState())
@@ -56,15 +58,70 @@ class PropertyDetailViewModel(
 
             PropertyDetailIntent.ToggleFavorite -> toggleFavorite()
 
-            PropertyDetailIntent.SubmitRequest -> submitRequest()
+            PropertyDetailIntent.SubmitRequest -> openApplicationSheet()
+
+            PropertyDetailIntent.DismissApplicationSheet ->
+                _state.update {
+                    it.copy(
+                        isApplicationSheetOpen = false,
+                        applicationComment = ""
+                    )
+                }
+
+            is PropertyDetailIntent.SetApplicationComment ->
+                _state.update { it.copy(applicationComment = intent.text) }
+
+            PropertyDetailIntent.ConfirmApplicationSubmit -> submitApplication()
         }
     }
 
-    private fun submitRequest() {
+    private fun openApplicationSheet() {
         viewModelScope.launch {
             if (getCurrentUserUseCase()?.id == null) {
                 _event.emit(PropertyDetailEvent.ShowRegistrationRequiredForRequest)
+            } else {
+                _state.update {
+                    it.copy(
+                        isApplicationSheetOpen = true,
+                        applicationComment = ""
+                    )
+                }
             }
+        }
+    }
+
+    private fun submitApplication() {
+        viewModelScope.launch {
+            val uid = getCurrentUserUseCase()?.id
+            if (uid == null) {
+                _event.emit(PropertyDetailEvent.ShowRegistrationRequiredForRequest)
+                return@launch
+            }
+            if (_state.value.isSubmittingApplication) return@launch
+
+            _state.update { it.copy(isSubmittingApplication = true) }
+            val comment = _state.value.applicationComment
+            runCatching {
+                submitPropertyApplicationUseCase(
+                    propertyId = propertyId,
+                    applicantUserId = uid,
+                    comment = comment
+                )
+            }
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isApplicationSheetOpen = false,
+                            applicationComment = "",
+                            isSubmittingApplication = false
+                        )
+                    }
+                    _event.emit(PropertyDetailEvent.ApplicationSubmitted)
+                }
+                .onFailure {
+                    _state.update { it.copy(isSubmittingApplication = false) }
+                    _event.emit(PropertyDetailEvent.ApplicationSubmitFailed)
+                }
         }
     }
 
@@ -95,7 +152,10 @@ class PropertyDetailViewModel(
                     notFound = false,
                     isMapFullscreen = false,
                     isImageViewerOpen = false,
-                    convertedPrices = null
+                    convertedPrices = null,
+                    isApplicationSheetOpen = false,
+                    applicationComment = "",
+                    isSubmittingApplication = false
                 )
             }
             val uid = userId.takeIf { it.isNotEmpty() }

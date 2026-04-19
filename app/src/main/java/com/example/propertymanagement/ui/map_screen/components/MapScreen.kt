@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -45,8 +44,10 @@ import com.example.propertymanagement.ui.map.MapViewModel
 import com.example.propertymanagement.ui.map_screen.MapEvent
 import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.map_screen.MapState
+import com.example.propertymanagement.ui.theme.IconSizeActionSquare
 import com.example.propertymanagement.ui.theme.OnPrimary
 import com.example.propertymanagement.ui.theme.PaddingExtraLarge
+import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -167,8 +168,8 @@ private fun UI(
                 }
             },
             modifier = Modifier
-                .padding(16.dp)
-                .size(40.dp)
+                .padding(PaddingLarge)
+                .size(IconSizeActionSquare)
                 .align(Alignment.TopStart)
                 .background(Color.Black.copy(alpha = 0.5f), CircleShape)
         ) {
