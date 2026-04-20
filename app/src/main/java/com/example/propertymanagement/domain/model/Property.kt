@@ -83,7 +83,7 @@ sealed interface PropertyDetails {
     ) : PropertyDetails
 
     data class Commercial(
-        val repairType: ApartmentRepairType?,
+        val repairType: CommercialRepairType?,
         val commercialType: CommercialPropertyType?
     ) : PropertyDetails
 }

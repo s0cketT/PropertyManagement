@@ -217,6 +217,11 @@
     <string name="publish_description_label">Description</string>
     <string name="publish_description_placeholder">Tell buyers about the property — optional</string>
     <string name="publish_button">Publish</string>
+    <string name="edit_property_title">Edit listing</string>
+    <string name="save_property_button">Save</string>
+    <string name="cd_edit_property">Edit listing</string>
+    <string name="publish_clear_all_photos">Remove all photos</string>
+    <string name="edit_property_sent_to_moderation">Listing sent for moderation</string>
 
     <string name="add_photo">Add photo</string>
     <string name="photos_count">%1$d photos</string>

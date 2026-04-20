@@ -2,11 +2,12 @@ package com.example.propertymanagement.di
 
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
-import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
@@ -38,6 +39,7 @@ import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewMo
 import com.example.propertymanagement.ui.profile_screen.ProfileViewModel
 import com.example.propertymanagement.ui.property.ListPropertyViewModel
 import com.example.propertymanagement.ui.property_detail_screen.PropertyDetailViewModel
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyViewModel
 import com.example.propertymanagement.ui.publish_screen.PublishViewModel
 import com.example.propertymanagement.ui.change_email_screen.ChangeEmailLinkViewModel
 import com.example.propertymanagement.ui.change_email_screen.ChangeNewEmailViewModel
@@ -80,7 +82,16 @@ val uiModule = module {
     viewModel {
         PublishViewModel(
             createFullPropertyUseCase = get<CreateFullPropertyUseCase>(),
-            getCurrentUserUseCase = get<GetCurrentUserUseCase>()
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+        )
+    }
+
+    viewModel { (propertyId: Int) ->
+        EditPropertyViewModel(
+            propertyId = propertyId,
+            updateFullPropertyUseCase = get<UpdateFullPropertyUseCase>(),
+            getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
         )
     }
 

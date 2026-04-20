@@ -25,6 +25,7 @@ import com.example.propertymanagement.domain.model.WaterType
 sealed class PublishIntent {
     object NavigateBack : PublishIntent()
     object PickImages : PublishIntent()
+    object ClearAllImages : PublishIntent()
     data class ImagesSelectedBytes(val images: List<ByteArray>) : PublishIntent()
     object Submit : PublishIntent()
     object OpenCategorySelection : PublishIntent()

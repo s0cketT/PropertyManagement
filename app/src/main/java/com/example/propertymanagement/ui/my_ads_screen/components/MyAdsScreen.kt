@@ -25,7 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.ModerationStatus
 import com.example.propertymanagement.domain.model.MyAdsListingFilter
+import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
 import com.example.propertymanagement.ui.list_property_screen.components.ErrorState
@@ -61,14 +63,6 @@ fun MyAdsScreen(navController: NavController) {
         event.collect { ev ->
             when (ev) {
                 MyAdsEvent.NavigateBack -> navController.popBackStack()
-                is MyAdsEvent.NavigateToDetail -> {
-                    navController.navigate(
-                        Screens.PropertyDetailScreen.createRoute(
-                            propertyId = ev.property.id,
-                            userId = ev.userId
-                        )
-                    )
-                }
 
                 MyAdsEvent.ShowAuthRequired -> {
                     Toast.makeText(
@@ -90,8 +84,19 @@ fun MyAdsScreen(navController: NavController) {
         intent = intent,
         myAdsSignInMessage = myAdsSignInMessage,
         myAdsEmptyMessage = myAdsEmptyMessage,
-        tabLabels = tabLabels
+        tabLabels = tabLabels,
+        onEditProperty = { property ->
+            navController.navigate(Screens.EditPropertyScreen.createRoute(property.id))
+        },
     )
+
+    state.detailSheetKey?.let { key ->
+        MyAdPropertyDetailBottomSheet(
+            propertyId = key.propertyId,
+            userId = key.userId,
+            onDismiss = { intent(MyAdsIntent.DismissPropertyDetailSheet) },
+        )
+    }
 }
 
 @Composable
@@ -100,7 +105,8 @@ private fun MyAdsContent(
     intent: (MyAdsIntent) -> Unit,
     myAdsSignInMessage: String,
     myAdsEmptyMessage: String,
-    tabLabels: List<Pair<MyAdsListingFilter, String>>
+    tabLabels: List<Pair<MyAdsListingFilter, String>>,
+    onEditProperty: (Property) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         AppTopBar(
@@ -166,7 +172,12 @@ private fun MyAdsContent(
                             bottomTrailing = { property ->
                                 ModerationStatusBadge(status = property.moderationStatus)
                             },
-                            showFavoriteButton = false
+                            showFavoriteButton = false,
+                            onEditClick = onEditProperty,
+                            showEditFor = { property ->
+                                property.moderationStatus == ModerationStatus.APPROVED ||
+                                    property.moderationStatus == ModerationStatus.REJECTED
+                            },
                         )
                     }
                 }

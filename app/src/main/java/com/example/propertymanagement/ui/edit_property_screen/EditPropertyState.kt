@@ -1,4 +1,4 @@
-package com.example.propertymanagement.ui.publish_screen
+package com.example.propertymanagement.ui.edit_property_screen
 
 import com.example.propertymanagement.domain.model.ApartmentRepairType
 import com.example.propertymanagement.domain.model.BalconyType
@@ -21,7 +21,13 @@ import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
 import com.example.propertymanagement.domain.model.WaterType
 
-data class PublishState(
+data class EditPropertyState(
+    val editingPropertyId: Int? = null,
+    val existingImageUrls: List<String> = emptyList(),
+    val pendingReplaceAllPhotos: Boolean = false,
+    val hadRemotePhotosWhenLoaded: Boolean = false,
+    val isLoadingEditPayload: Boolean = false,
+
     val isTitleError: Boolean = false,
     val isPriceError: Boolean = false,
     val isDealTypeError: Boolean = false,
@@ -58,9 +64,9 @@ data class PublishState(
     val floorHouse: Int? = null,
     val yearBuilt: Int? = null,
 
-    val commercialAmenities: Set<CommercialAmenity> = emptySet(), //добавить
-    val buildingAmenities: Set<BuildingAmenity> = emptySet(), //добавить
-    val houseAmenities: Set<HouseAmenity> = emptySet(), //добавить
+    val commercialAmenities: Set<CommercialAmenity> = emptySet(),
+    val buildingAmenities: Set<BuildingAmenity> = emptySet(),
+    val houseAmenities: Set<HouseAmenity> = emptySet(),
 
     val isWalkthroughRoom: Boolean = false,
 
@@ -81,5 +87,5 @@ data class PublishState(
     val repairType: ApartmentRepairType? = null,
     val ceilingHeight: CeilingHeightType? = null,
     val balconyType: BalconyType? = null,
-    val bathroomType: BathroomType? = null
+    val bathroomType: BathroomType? = null,
 )

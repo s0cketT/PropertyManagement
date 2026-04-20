@@ -14,10 +14,17 @@ interface IPropertyRepository {
         request: CreateProperty
     ): Int
 
+    suspend fun updateFullProperty(
+        propertyId: Int,
+        request: CreateProperty,
+    )
+
     suspend fun saveImages(
         propertyId: Int,
         imageUrls: List<String>
     )
+
+    suspend fun clearPropertyImages(propertyId: Int)
 
     suspend fun deleteProperty(propertyId: Int)
 

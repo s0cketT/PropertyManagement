@@ -2,6 +2,7 @@ package com.example.propertymanagement.data.repository
 
 import com.example.propertymanagement.data.mapper.toDomain
 import com.example.propertymanagement.data.mapper.toFullDto
+import com.example.propertymanagement.data.mapper.toUpdateDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
 import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
 import com.example.propertymanagement.data.remote.ISupabaseApi
@@ -34,6 +35,19 @@ class PropertyRepositoryImpl(
         )
     }
 
+    override suspend fun updateFullProperty(
+        propertyId: Int,
+        request: CreateProperty,
+    ) {
+        val response = supabaseApi.updateFullProperty(request.toUpdateDto(propertyId))
+        if (!response.isSuccessful) {
+            val detail = response.errorBody()?.use { it.string() }.orEmpty()
+            throw IllegalStateException(
+                "update_full_property failed: HTTP ${response.code()} $detail",
+            )
+        }
+    }
+
     override suspend fun saveImages(
         propertyId: Int,
         imageUrls: List<String>
@@ -51,6 +65,21 @@ class PropertyRepositoryImpl(
         }.awaitAll()
 
         Unit
+    }
+
+    override suspend fun clearPropertyImages(propertyId: Int) = coroutineScope {
+
+        val images = supabaseApi.getImagesByPropertyId("eq.$propertyId")
+
+        images.map { image ->
+            async {
+                runCatching {
+                    storageRepository.deleteImage(image.url)
+                }
+            }
+        }.awaitAll()
+
+        supabaseApi.deletePropertyImages("eq.$propertyId")
     }
 
     override suspend fun deleteProperty(propertyId: Int) = coroutineScope {

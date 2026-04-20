@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.ChipCornerRadius
@@ -39,11 +40,14 @@ import com.example.propertymanagement.ui.theme.SpacerSmall
 
 @Composable
 fun ImagePickerCard(
-    images: List<ByteArray>,
-    onClick: () -> Unit
+    newImageBytes: List<ByteArray>,
+    existingImageUrls: List<String> = emptyList(),
+    onClick: () -> Unit,
 ) {
 
-    val firstImage = images.firstOrNull()
+    val firstBytes = newImageBytes.firstOrNull()
+    val firstUrl = existingImageUrls.firstOrNull()
+    val totalCount = existingImageUrls.size + newImageBytes.size
 
     Box(
         modifier = Modifier
@@ -56,7 +60,7 @@ fun ImagePickerCard(
         contentAlignment = Alignment.Center
     ) {
 
-        firstImage?.let { bytes ->
+        firstBytes?.let { bytes ->
 
             val bitmap = BitmapFactory.decodeByteArray(
                 bytes,
@@ -98,13 +102,56 @@ fun ImagePickerCard(
                     )
             ) {
                 Text(
-                    text = stringResource(R.string.photos_count, images.size),
+                    text = stringResource(R.string.photos_count, totalCount),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
 
-        if (firstImage == null) {
+        if (firstBytes == null) {
+            firstUrl?.let { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.scrim
+                                )
+                            )
+                        )
+                )
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(PaddingMedium)
+                        .background(
+                            MaterialTheme.colorScheme.scrim,
+                            RoundedCornerShape(ChipCornerRadius)
+                        )
+                        .padding(
+                            horizontal = PaddingMedium,
+                            vertical = PaddingSmall
+                        )
+                ) {
+                    Text(
+                        text = stringResource(R.string.photos_count, totalCount),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+        }
+
+        if (firstBytes == null && firstUrl == null) {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally

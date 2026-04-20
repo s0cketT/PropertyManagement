@@ -7,6 +7,7 @@ import com.example.propertymanagement.domain.model.BathroomType
 import com.example.propertymanagement.domain.model.BuildingAmenity
 import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CommercialPropertyType
+import com.example.propertymanagement.domain.model.CommercialRepairType
 import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.GasType
@@ -82,7 +83,7 @@ fun PropertyResponseDto.toDomain(): Property {
         )
 
         commercial_type != null -> PropertyDetails.Commercial(
-            repairType = commercial_repair_type.fromDb<ApartmentRepairType>(),
+            repairType = commercial_repair_type.fromDb<CommercialRepairType>(),
             commercialType = commercial_type.fromDb<CommercialPropertyType>()
         )
 

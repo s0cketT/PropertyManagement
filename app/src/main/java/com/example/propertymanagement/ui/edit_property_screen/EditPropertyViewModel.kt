@@ -1,22 +1,28 @@
-package com.example.propertymanagement.ui.publish_screen
+package com.example.propertymanagement.ui.edit_property_screen
 
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.GeocodedAddressParts
-import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
+import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.SingleFlowEvent
+import com.example.propertymanagement.ui.edit_property_screen.components.toEditPropertyState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PublishViewModel(
-    private val createFullPropertyUseCase: CreateFullPropertyUseCase,
+class EditPropertyViewModel(
+    private val propertyId: Int,
+    private val updateFullPropertyUseCase: UpdateFullPropertyUseCase,
+    private val getMyPropertiesUseCase: GetMyPropertiesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
 
@@ -25,24 +31,51 @@ class PublishViewModel(
         data class Res(@StringRes val id: Int) : ValidationItem
     }
 
-    private val _state = MutableStateFlow(PublishState())
+    private val _state = MutableStateFlow(EditPropertyState())
     val state = _state.asStateFlow()
 
-    private val _event = SingleFlowEvent<PublishEvent>(viewModelScope)
+    private val _event = SingleFlowEvent<EditPropertyEvent>(viewModelScope)
     val event = _event.flow
 
-    fun processIntent(intent: PublishIntent) {
+    init {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingEditPayload = true) }
+            val user = getCurrentUserUseCase()
+            if (user == null) {
+                _state.update { it.copy(isLoadingEditPayload = false) }
+                _event.emit(EditPropertyEvent.NavigateBack)
+                return@launch
+            }
+            val resource = runCatching { getMyPropertiesUseCase(user.id) }.getOrNull()
+            val list: List<Property>? = when (resource) {
+                is Resource.Success -> resource.data
+                is Resource.Error -> null
+                null -> null
+            }
+            val domainProperty = list?.firstOrNull { it.id == propertyId }
+            if (domainProperty == null) {
+                _state.update { it.copy(isLoadingEditPayload = false) }
+                _event.emit(EditPropertyEvent.NavigateBack)
+                return@launch
+            }
+            _state.update {
+                domainProperty.toEditPropertyState().copy(isLoadingEditPayload = false)
+            }
+        }
+    }
+
+    fun processIntent(intent: EditPropertyIntent) {
         when (intent) {
 
-            is PublishIntent.ClearPropertyType -> {
+            is EditPropertyIntent.ClearPropertyType -> {
                 _state.update { it.copy(propertyType = null) }
             }
 
-            is PublishIntent.OpenCategorySelection -> {
-                viewModelScope.launch { _event.emit(PublishEvent.NavigateToCategorySelection) }
+            is EditPropertyIntent.OpenCategorySelection -> {
+                viewModelScope.launch { _event.emit(EditPropertyEvent.NavigateToCategorySelection) }
             }
 
-            is PublishIntent.SetPrice -> {
+            is EditPropertyIntent.SetPrice -> {
                 _state.update {
                     it.copy(
                         price = intent.price,
@@ -51,27 +84,35 @@ class PublishViewModel(
                 }
             }
 
-            is PublishIntent.Submit -> {
+            is EditPropertyIntent.Submit -> {
                 upload()
             }
 
-            is PublishIntent.NavigateBack -> {
-                viewModelScope.launch { _event.emit(PublishEvent.NavigateBack) }
+            is EditPropertyIntent.NavigateBack -> {
+                viewModelScope.launch { _event.emit(EditPropertyEvent.NavigateBack) }
             }
 
-            is PublishIntent.PickImages -> {
-                viewModelScope.launch { _event.emit(PublishEvent.OpenGallery) }
+            is EditPropertyIntent.PickImages -> {
+                viewModelScope.launch { _event.emit(EditPropertyEvent.OpenGallery) }
             }
 
-            is PublishIntent.ClearAllImages -> {
-                _state.update { it.copy(imageBytes = emptyList()) }
+            is EditPropertyIntent.ClearAllImages -> {
+                _state.update {
+                    it.copy(
+                        imageBytes = emptyList(),
+                        existingImageUrls = emptyList(),
+                        pendingReplaceAllPhotos = true,
+                    )
+                }
             }
 
-            is PublishIntent.ImagesSelectedBytes -> {
-                _state.update { it.copy(imageBytes = intent.images) }
+            is EditPropertyIntent.ImagesSelectedBytes -> {
+                _state.update { current ->
+                    current.copy(imageBytes = current.imageBytes + intent.images)
+                }
             }
 
-            is PublishIntent.SetTitle -> {
+            is EditPropertyIntent.SetTitle -> {
                 _state.update {
                     it.copy(
                         title = intent.title,
@@ -80,165 +121,165 @@ class PublishViewModel(
                 }
             }
 
-            is PublishIntent.SetDescription -> {
+            is EditPropertyIntent.SetDescription -> {
                 _state.update { it.copy(description = intent.text) }
             }
 
-            is PublishIntent.SetPropertyType -> {
+            is EditPropertyIntent.SetPropertyType -> {
                 _state.update { it.copy(propertyType = intent.type) }
             }
 
-            is PublishIntent.SetDealType -> {
+            is EditPropertyIntent.SetDealType -> {
                 _state.update { it.copy(dealType = intent.type) }
             }
 
-            is PublishIntent.SetCurrency -> {
+            is EditPropertyIntent.SetCurrency -> {
                 _state.update { it.copy(currency = intent.currency) }
             }
 
-            is PublishIntent.SetCommercialPropertyType -> {
+            is EditPropertyIntent.SetCommercialPropertyType -> {
                 _state.update {
                     it.copy(selectedCommercialPropertyType = intent.type)
                 }
             }
 
-            is PublishIntent.SetCommercialRepairType -> {
+            is EditPropertyIntent.SetCommercialRepairType -> {
                 _state.update {
                     it.copy(selectedCommercialRepairType = intent.type)
                 }
             }
 
-            is PublishIntent.SetArea -> {
+            is EditPropertyIntent.SetArea -> {
                 _state.update { it.copy(area = intent.value) }
             }
 
-            is PublishIntent.SetSaleArea -> {
+            is EditPropertyIntent.SetSaleArea -> {
                 _state.update { it.copy(saleArea = intent.value) }
             }
 
-            is PublishIntent.SetLandArea -> {
+            is EditPropertyIntent.SetLandArea -> {
                 _state.update { it.copy(landArea = intent.value) }
             }
 
-            is PublishIntent.SetFloor -> {
+            is EditPropertyIntent.SetFloor -> {
                 _state.update { it.copy(floor = intent.value) }
             }
 
-            is PublishIntent.SetFloorHouse -> {
+            is EditPropertyIntent.SetFloorHouse -> {
                 _state.update { it.copy(floorHouse = intent.value) }
             }
 
-            is PublishIntent.SetCommercialAmenities -> {
+            is EditPropertyIntent.SetCommercialAmenities -> {
                 _state.update {
                     it.copy(commercialAmenities = intent.amenities)
                 }
             }
 
-            is PublishIntent.SetHouseAmenities -> {
+            is EditPropertyIntent.SetHouseAmenities -> {
                 _state.update { it.copy(houseAmenities = intent.amenities) }
             }
 
-            is PublishIntent.SetBuildingAmenities -> {
+            is EditPropertyIntent.SetBuildingAmenities -> {
                 _state.update { it.copy(buildingAmenities = intent.amenities) }
             }
 
-            is PublishIntent.SetRoomsType -> {
+            is EditPropertyIntent.SetRoomsType -> {
                 _state.update { it.copy(roomsType = intent.type) }
             }
 
-            is PublishIntent.SetRoomsForSaleType -> {
+            is EditPropertyIntent.SetRoomsForSaleType -> {
                 _state.update { it.copy(roomsForSaleType = intent.type) }
             }
 
-            is PublishIntent.SetWalkthroughRoom -> {
+            is EditPropertyIntent.SetWalkthroughRoom -> {
                 _state.update { it.copy(isWalkthroughRoom = intent.value) }
             }
 
-            is PublishIntent.SetLivingArea -> {
+            is EditPropertyIntent.SetLivingArea -> {
                 _state.update { it.copy(livingArea = intent.value) }
             }
 
-            is PublishIntent.SetKitchenArea -> {
+            is EditPropertyIntent.SetKitchenArea -> {
                 _state.update { it.copy(kitchenArea = intent.value) }
             }
 
-            is PublishIntent.SetBalconyType -> {
+            is EditPropertyIntent.SetBalconyType -> {
                 _state.update { it.copy(balconyType = intent.type) }
             }
 
-            is PublishIntent.SetBathroomType -> {
+            is EditPropertyIntent.SetBathroomType -> {
                 _state.update { it.copy(bathroomType = intent.type) }
             }
 
-            is PublishIntent.SetRepairType -> {
+            is EditPropertyIntent.SetRepairType -> {
                 _state.update { it.copy(repairType = intent.type) }
             }
 
-            is PublishIntent.SetCeilingHeight -> {
+            is EditPropertyIntent.SetCeilingHeight -> {
                 _state.update { it.copy(ceilingHeight = intent.type) }
             }
 
-            is PublishIntent.SetWallMaterial -> {
+            is EditPropertyIntent.SetWallMaterial -> {
                 _state.update { it.copy(wallMaterial = intent.type) }
             }
 
-            is PublishIntent.SetYearBuilt -> {
+            is EditPropertyIntent.SetYearBuilt -> {
                 _state.update { it.copy(yearBuilt = intent.value) }
             }
 
-            is PublishIntent.SetRoofType -> {
+            is EditPropertyIntent.SetRoofType -> {
                 _state.update { it.copy(roofType = intent.type) }
             }
-            is PublishIntent.SetHeatingType -> {
+            is EditPropertyIntent.SetHeatingType -> {
                 _state.update { it.copy(heatingType = intent.type) }
             }
-            is PublishIntent.SetWaterType -> {
+            is EditPropertyIntent.SetWaterType -> {
                 _state.update { it.copy(waterType = intent.type) }
             }
-            is PublishIntent.SetGasType -> {
+            is EditPropertyIntent.SetGasType -> {
                 _state.update { it.copy(gasType = intent.type) }
             }
-            is PublishIntent.SetHouseType -> {
+            is EditPropertyIntent.SetHouseType -> {
                 _state.update { it.copy(houseType = intent.type) }
             }
-            is PublishIntent.SetParkingType -> {
+            is EditPropertyIntent.SetParkingType -> {
                 _state.update { it.copy(parkingType = intent.type) }
             }
 
-            is PublishIntent.SetAddressBottomSheetOpen -> {
+            is EditPropertyIntent.SetAddressBottomSheetOpen -> {
                 _state.update { it.copy(isAddressBottomSheetOpen = intent.open) }
             }
 
-            is PublishIntent.SetMapPickerOpen -> {
+            is EditPropertyIntent.SetMapPickerOpen -> {
                 _state.update { it.copy(isMapPickerOpen = intent.open) }
             }
 
-            is PublishIntent.SetAddressCountry -> {
+            is EditPropertyIntent.SetAddressCountry -> {
                 _state.update { it.copy(addressCountry = intent.value) }
             }
 
-            is PublishIntent.SetAddressRegion -> {
+            is EditPropertyIntent.SetAddressRegion -> {
                 _state.update { it.copy(addressRegion = intent.value) }
             }
 
-            is PublishIntent.SetAddressCity -> {
+            is EditPropertyIntent.SetAddressCity -> {
                 _state.update { it.copy(addressCity = intent.value) }
             }
 
-            is PublishIntent.SetAddressStreet -> {
+            is EditPropertyIntent.SetAddressStreet -> {
                 _state.update { it.copy(addressStreet = intent.value) }
             }
 
-            is PublishIntent.SetAddressHouse -> {
+            is EditPropertyIntent.SetAddressHouse -> {
                 _state.update { it.copy(addressHouse = intent.value) }
             }
 
-            is PublishIntent.AddressSheetDone -> applyAddressSheetDone(
+            is EditPropertyIntent.AddressSheetDone -> applyAddressSheetDone(
                 latitude = intent.latitude,
                 longitude = intent.longitude,
             )
 
-            is PublishIntent.ConfirmMapLocation -> confirmMapLocation(
+            is EditPropertyIntent.ConfirmMapLocation -> confirmMapLocation(
                 latitude = intent.latitude,
                 longitude = intent.longitude,
                 geocoded = intent.geocoded,
@@ -287,7 +328,7 @@ class PublishViewModel(
             val user = getCurrentUserUseCase()
 
             if (user == null) {
-                _event.emit(PublishEvent.ShowAuthRequired)
+                _event.emit(EditPropertyEvent.ShowAuthRequired)
                 return@launch
             }
 
@@ -358,16 +399,25 @@ class PublishViewModel(
                         parkingType = stateValue.parkingType,
                     )
 
-                    createFullPropertyUseCase(
+                    val removeRemoteImages = stateValue.pendingReplaceAllPhotos ||
+                        (
+                            stateValue.imageBytes.isEmpty() &&
+                                stateValue.existingImageUrls.isEmpty() &&
+                                stateValue.hadRemotePhotosWhenLoaded
+                            )
+
+                    updateFullPropertyUseCase(
+                        propertyId = propertyId,
                         request = request,
-                        imageBytes = stateValue.imageBytes,
+                        newImageBytes = stateValue.imageBytes,
+                        removeExistingImagesFirst = removeRemoteImages,
                     )
                 }
                     .onSuccess {
-                        _event.emit(PublishEvent.NavigateBack)
+                        _event.emit(EditPropertyEvent.SaveSuccess)
                     }
                     .onFailure { e ->
-                        Log.e("UPLOAD", "Upload failed: ${e.message}", e)
+                        Log.e("EDIT_PROPERTY", "Update failed: ${e.message}", e)
                     }
             } finally {
                 _state.update { it.copy(isPublishing = false) }
@@ -380,7 +430,7 @@ class PublishViewModel(
         private const val DEFAULT_COUNTRY = "Belarus"
     }
 
-    private fun validateState(state: PublishState): Boolean {
+    private fun validateState(state: EditPropertyState): Boolean {
 
         val errors = mutableListOf<ValidationItem>()
 
@@ -430,9 +480,9 @@ class PublishViewModel(
             viewModelScope.launch {
                 when (val first = errors.first()) {
                     is ValidationItem.Text ->
-                        _event.emit(PublishEvent.ShowValidationError(first.text))
+                        _event.emit(EditPropertyEvent.ShowValidationError(first.text))
                     is ValidationItem.Res ->
-                        _event.emit(PublishEvent.ShowValidationErrorRes(first.id))
+                        _event.emit(EditPropertyEvent.ShowValidationErrorRes(first.id))
                 }
             }
             false

@@ -43,6 +43,10 @@ class MyAdsViewModel(
             }
 
             is MyAdsIntent.OnPropertyClick -> onPropertyClick(intent.property)
+
+            MyAdsIntent.DismissPropertyDetailSheet -> {
+                _state.update { it.copy(detailSheetKey = null) }
+            }
         }
     }
 
@@ -114,8 +118,13 @@ class MyAdsViewModel(
             viewModelScope.launch { _event.emit(MyAdsEvent.ShowAuthRequired) }
             return
         }
-        viewModelScope.launch {
-            _event.emit(MyAdsEvent.NavigateToDetail(property = property, userId = userId))
+        _state.update {
+            it.copy(
+                detailSheetKey = MyAdPropertyDetailSheetKey(
+                    propertyId = property.id,
+                    userId = userId,
+                ),
+            )
         }
     }
 

@@ -13,6 +13,8 @@ import com.example.propertymanagement.ui.components.ExpandableFilterSection
 import com.example.propertymanagement.ui.components.FadeAnimatedContent
 import com.example.propertymanagement.ui.extensions.priceTitle
 import com.example.propertymanagement.ui.mapper.titleResPublish
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyIntent
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyState
 import com.example.propertymanagement.ui.publish_screen.PublishIntent
 import com.example.propertymanagement.ui.publish_screen.PublishState
 import com.example.propertymanagement.ui.theme.SpacerMedium
@@ -50,6 +52,45 @@ fun BaseInfoSection(state: PublishState, intent: (PublishIntent) -> Unit) {
                     isError = state.isPriceError,
                     onPriceChange = { intent(PublishIntent.SetPrice(it)) },
                     onCurrencySelected = { intent(PublishIntent.SetCurrency(it)) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BaseInfoSection(state: EditPropertyState, intent: (EditPropertyIntent) -> Unit) {
+
+    ExpandableFilterSection(
+        visible = state.propertyType != null,
+    ) {
+        Column {
+
+            DealTypeSection(
+                selectedType = state.dealType,
+                onTypeSelected = { intent(EditPropertyIntent.SetDealType(it)) },
+                titleRes = DealType::titleResPublish,
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            SingleValueFilterItem(
+                titleResId = R.string.area_title,
+                value = state.area,
+                onApply = { intent(EditPropertyIntent.SetArea(it)) },
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            FadeAnimatedContent(state.dealType) { dealType ->
+                PriceSection(
+                    title = stringResource(dealType.priceTitle()),
+                    price = state.price,
+                    currency = state.currency,
+                    area = state.area,
+                    isError = state.isPriceError,
+                    onPriceChange = { intent(EditPropertyIntent.SetPrice(it)) },
+                    onCurrencySelected = { intent(EditPropertyIntent.SetCurrency(it)) },
                 )
             }
         }

@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyIntent
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyState
 import com.example.propertymanagement.ui.publish_screen.PublishIntent
 import com.example.propertymanagement.ui.publish_screen.PublishState
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -113,6 +115,104 @@ fun PublishAddressBottomSheet(
             Button(
                 onClick = onConfirmAddress,
                 modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.publish_address_done))
+            }
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PublishAddressBottomSheet(
+    state: EditPropertyState,
+    intent: (EditPropertyIntent) -> Unit,
+    onDismiss: () -> Unit,
+    onConfirmAddress: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = PaddingLarge)
+                .padding(bottom = PaddingLarge)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Text(
+                text = stringResource(R.string.publish_address_sheet_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PropertyTitleTextField(
+                value = state.addressCountry,
+                placeholder = stringResource(R.string.publish_address_country),
+                onValueChange = { intent(EditPropertyIntent.SetAddressCountry(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PropertyTitleTextField(
+                value = state.addressRegion,
+                placeholder = stringResource(R.string.publish_address_region),
+                onValueChange = { intent(EditPropertyIntent.SetAddressRegion(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PropertyTitleTextField(
+                value = state.addressCity,
+                placeholder = stringResource(R.string.publish_address_city),
+                onValueChange = { intent(EditPropertyIntent.SetAddressCity(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PropertyTitleTextField(
+                value = state.addressStreet,
+                placeholder = stringResource(R.string.publish_address_street),
+                onValueChange = { intent(EditPropertyIntent.SetAddressStreet(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            PropertyTitleTextField(
+                value = state.addressHouse,
+                placeholder = stringResource(R.string.publish_address_house),
+                onValueChange = { intent(EditPropertyIntent.SetAddressHouse(it)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(SpacerLarge))
+
+            OutlinedButton(
+                onClick = {
+                    intent(EditPropertyIntent.SetAddressBottomSheetOpen(open = false))
+                    intent(EditPropertyIntent.SetMapPickerOpen(open = true))
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = stringResource(R.string.publish_pick_on_map))
+            }
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            Button(
+                onClick = onConfirmAddress,
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = stringResource(R.string.publish_address_done))
             }

@@ -111,6 +111,11 @@
     <string name="publish_description_label">Описание</string>
     <string name="publish_description_placeholder">Расскажите об объекте — это необязательно</string>
     <string name="publish_button">Опубликовать</string>
+    <string name="edit_property_title">Изменить объявление</string>
+    <string name="save_property_button">Сохранить</string>
+    <string name="cd_edit_property">Редактировать объявление</string>
+    <string name="publish_clear_all_photos">Удалить все фото</string>
+    <string name="edit_property_sent_to_moderation">Объявление отправлено на модерацию</string>
 
     <string name="add_photo">Добавить фото</string>
     <string name="photos_count">%1$d фото</string>

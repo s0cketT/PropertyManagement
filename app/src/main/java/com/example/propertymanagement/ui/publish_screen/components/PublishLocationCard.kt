@@ -1,6 +1,5 @@
 package com.example.propertymanagement.ui.publish_screen.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.ui.edit_property_screen.EditPropertyState
 import com.example.propertymanagement.ui.publish_screen.PublishState
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.CardElevationLow
@@ -81,6 +80,61 @@ fun PublishLocationCard(
     }
 }
 
+@Composable
+fun PublishLocationCard(
+    state: EditPropertyState,
+    onOpenAddressSheet: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val summary = buildLocationSummary(state).ifBlank {
+        stringResource(R.string.publish_location_not_set)
+    }
+    val subtitleColor =
+        if (state.isLocationError) {
+            MaterialTheme.colorScheme.error
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingLarge)
+            .clickable(onClick = onOpenAddressSheet),
+        shape = RoundedCornerShape(ButtonCornerRadius),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = CardElevationLow),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(PaddingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Place,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = PaddingMedium),
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.publish_location_section_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = summary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = subtitleColor,
+                )
+            }
+        }
+    }
+}
+
 private fun buildLocationSummary(state: PublishState): String {
     val lat = state.latitude
     val lon = state.longitude
@@ -90,13 +144,33 @@ private fun buildLocationSummary(state: PublishState): String {
     val parts = listOf(
         state.addressCity,
         state.addressStreet,
-        state.addressHouse
+        state.addressHouse,
     ).filter { it.isNotBlank() }
     if (parts.isNotEmpty()) {
         return parts.joinToString(separator = ", ")
     }
     return listOf(
         state.addressRegion,
-        state.addressCountry
+        state.addressCountry,
+    ).filter { it.isNotBlank() }.joinToString(separator = ", ")
+}
+
+private fun buildLocationSummary(state: EditPropertyState): String {
+    val lat = state.latitude
+    val lon = state.longitude
+    if (lat == null || lon == null) {
+        return ""
+    }
+    val parts = listOf(
+        state.addressCity,
+        state.addressStreet,
+        state.addressHouse,
+    ).filter { it.isNotBlank() }
+    if (parts.isNotEmpty()) {
+        return parts.joinToString(separator = ", ")
+    }
+    return listOf(
+        state.addressRegion,
+        state.addressCountry,
     ).filter { it.isNotBlank() }.joinToString(separator = ", ")
 }

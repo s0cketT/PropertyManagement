@@ -11,9 +11,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-/**
- * Прямое и обратное геокодирование через [HTTP API Яндекс.Геокодера](https://yandex.ru/dev/maps/geocoder/).
- */
+
 private val yandexGeocodeClient: OkHttpClient by lazy {
     OkHttpClient.Builder()
         .connectTimeout(20, TimeUnit.SECONDS)
@@ -128,7 +126,7 @@ fun PublishState.buildAddressQueryString(): String {
         addressRegion.trim(),
         addressCity.trim(),
         addressStreet.trim(),
-        addressHouse.trim()
+        addressHouse.trim(),
     )
         .filter { it.isNotEmpty() }
         .joinToString(separator = ", ")

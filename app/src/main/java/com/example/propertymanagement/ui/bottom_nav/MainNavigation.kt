@@ -30,6 +30,7 @@ import com.example.propertymanagement.ui.my_ads_screen.components.MyAdsScreen
 import com.example.propertymanagement.ui.personal_info_screen.components.PersonalInfoScreen
 import com.example.propertymanagement.ui.profile_screen.components.ProfileScreen
 import com.example.propertymanagement.ui.property_detail_screen.components.PropertyDetailScreen
+import com.example.propertymanagement.ui.edit_property_screen.components.EditPropertyScreen
 import com.example.propertymanagement.ui.publish_screen.components.PublishScreen
 import com.example.propertymanagement.ui.settings_screen.components.SettingsScreen
 import com.example.propertymanagement.ui.splash_screen.components.SplashScreen
@@ -79,7 +80,28 @@ fun MainNavigation() {
             }
 
             composable(Screens.Publish.route) {
-                PublishScreen(navController =navController)
+                PublishScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.EditPropertyScreen.route,
+                arguments = listOf(
+                    navArgument("propertyId") {
+                        type = NavType.IntType
+                    },
+                ),
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit,
+            ) { backStackEntry ->
+                val propertyId = backStackEntry.arguments?.getInt("propertyId")
+                if (propertyId != null) {
+                    EditPropertyScreen(
+                        navController = navController,
+                        propertyId = propertyId,
+                    )
+                }
             }
 
             composable(Screens.Profile.route) {

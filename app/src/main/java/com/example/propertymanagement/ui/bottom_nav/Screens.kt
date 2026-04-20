@@ -47,6 +47,11 @@ sealed class Screens(
         icon = Icons.Default.AddCircle
     )
 
+    object EditPropertyScreen : Screens("edit_property/{propertyId}") {
+
+        fun createRoute(propertyId: Int): String = "edit_property/$propertyId"
+    }
+
     object Profile : Screens(
         route = "profile",
         titleResId = R.string.screen_profile,

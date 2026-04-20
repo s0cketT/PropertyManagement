@@ -13,6 +13,7 @@ import com.example.propertymanagement.domain.repository.IUserRepository
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.ClearSelectedFiltersMarkerUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
+import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
@@ -71,6 +72,13 @@ val domainModule = module {
     factory { CreateFullPropertyUseCase(
         propertyRepository = get<IPropertyRepository>(),
         storageRepository = get<IStorageRepository>())
+    }
+
+    factory {
+        UpdateFullPropertyUseCase(
+            propertyRepository = get<IPropertyRepository>(),
+            storageRepository = get<IStorageRepository>(),
+        )
     }
     factory {
         UpdateUserAvatarUseCase(

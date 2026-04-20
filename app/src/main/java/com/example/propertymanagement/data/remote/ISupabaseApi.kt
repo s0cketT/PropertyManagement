@@ -2,6 +2,7 @@ package com.example.propertymanagement.data.remote
 
 import com.example.propertymanagement.data.model.CheckEmailRequest
 import com.example.propertymanagement.data.model.CreateFullPropertyDto
+import com.example.propertymanagement.data.model.UpdateFullPropertyDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
 import com.example.propertymanagement.data.model.ExistsResult
 import com.example.propertymanagement.data.model.FavoriteDto
@@ -31,6 +32,11 @@ interface ISupabaseApi {
         @Body body: CreateFullPropertyDto
     ): Int
 
+    @POST("rpc/update_full_property")
+    suspend fun updateFullProperty(
+        @Body body: UpdateFullPropertyDto,
+    ): Response<Unit>
+
     @POST("property_applications")
     suspend fun createPropertyApplication(
         @Body body: PropertyApplicationInsertDto
@@ -39,6 +45,11 @@ interface ISupabaseApi {
     @DELETE("properties")
     suspend fun deleteProperty(
         @Query("id") id: String
+    )
+
+    @DELETE("property_images")
+    suspend fun deletePropertyImages(
+        @Query("property_id") propertyId: String,
     )
 
     @GET("property_images")

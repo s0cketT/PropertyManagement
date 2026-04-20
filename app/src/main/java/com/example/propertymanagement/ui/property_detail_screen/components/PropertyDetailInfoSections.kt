@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
-import com.example.propertymanagement.domain.model.PropertyStatus
 import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.mapper.titleResListingDetail
@@ -32,7 +31,7 @@ fun PropertyDetailInfoSections(
     property: Property,
     convertedPrices: PropertyDetailPrices?,
     onOpenMapFullscreen: () -> Unit,
-    onSubmitRequest: () -> Unit
+    onSubmitRequest: (() -> Unit)?,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         PropertyDetailPriceBlock(
@@ -81,14 +80,6 @@ fun PropertyDetailInfoSections(
         PropertyDetailInfoRow(
             label = stringResource(R.string.property_detail_deal_type),
             value = stringResource(property.dealType.titleResListingDetail())
-        )
-        val statusRes = when (property.status) {
-            PropertyStatus.FOR_SALE -> R.string.sale_chip
-            PropertyStatus.FOR_RENT -> R.string.rent_chip
-        }
-        PropertyDetailInfoRow(
-            label = stringResource(R.string.property_detail_status),
-            value = stringResource(statusRes)
         )
 
         val areaForLayout = effectiveArea(property)
@@ -204,14 +195,16 @@ fun PropertyDetailInfoSections(
             onOpenFullscreen = onOpenMapFullscreen
         )
 
-        Spacer(modifier = Modifier.height(SpacerLarge))
+        onSubmitRequest?.let { submit ->
+            Spacer(modifier = Modifier.height(SpacerLarge))
 
-        Button(
-            onClick = onSubmitRequest,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(ButtonCornerRadius)
-        ) {
-            Text(text = stringResource(R.string.property_detail_submit_request))
+            Button(
+                onClick = submit,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(ButtonCornerRadius),
+            ) {
+                Text(text = stringResource(R.string.property_detail_submit_request))
+            }
         }
     }
 }
