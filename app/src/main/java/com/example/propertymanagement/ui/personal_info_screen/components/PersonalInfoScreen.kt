@@ -6,7 +6,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +30,7 @@ import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoEvent
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoIntent
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoState
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
+import com.example.propertymanagement.ui.theme.SpacerLarge
 import com.example.propertymanagement.ui.theme.SpacerMedium
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -111,29 +116,38 @@ private fun UI(
     onPhoneNationalChange: (String) -> Unit,
     onSellerTypeChange: (SellerType) -> Unit
 ) {
-    Column {
+    val scroll = rememberScrollState()
+
+    Column(modifier = Modifier.fillMaxSize()) {
         AppTopBar(
             title = R.string.personal_info_title,
-            onBackClick = { intent(PersonalInfoIntent.OnBackClick) }
+            onBackClick = { intent(PersonalInfoIntent.OnBackClick) },
         )
 
-        Spacer(modifier = Modifier.height(SpacerMedium))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scroll),
+        ) {
+            Spacer(modifier = Modifier.height(SpacerMedium))
 
-        ProfileContent(
-            state = state,
-            onNameChange = onNameChange,
-            onPhoneNationalChange = onPhoneNationalChange,
-            onSellerTypeChange = onSellerTypeChange,
-            onAvatarClick = { intent(PersonalInfoIntent.OnAvatarClick) },
-            onRemoveClick = { intent(PersonalInfoIntent.RemoveAvatar) }
-        )
+            ProfileContent(
+                state = state,
+                onNameChange = onNameChange,
+                onPhoneNationalChange = onPhoneNationalChange,
+                onSellerTypeChange = onSellerTypeChange,
+                onAvatarClick = { intent(PersonalInfoIntent.OnAvatarClick) },
+                onRemoveClick = { intent(PersonalInfoIntent.RemoveAvatar) },
+            )
 
-        Spacer(modifier = Modifier.height(SpacerMedium))
+            Spacer(modifier = Modifier.height(SpacerLarge))
+        }
 
         PrimaryActionButton(
             text = R.string.save,
             onClick = { intent(PersonalInfoIntent.Save) },
-            enabled = !state.isLoading
+            enabled = !state.isLoading,
         )
     }
 }

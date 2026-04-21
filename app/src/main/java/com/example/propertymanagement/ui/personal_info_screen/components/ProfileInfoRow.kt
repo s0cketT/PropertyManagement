@@ -2,10 +2,10 @@ package com.example.propertymanagement.ui.personal_info_screen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,7 +29,6 @@ import com.example.propertymanagement.ui.theme.AvatarLargeSize
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.IconSizeProfile
 import com.example.propertymanagement.ui.theme.IconSmall
-import com.example.propertymanagement.ui.theme.PaddingLarge
 
 @Composable
 fun ProfileInfoRow(
@@ -37,13 +36,13 @@ fun ProfileInfoRow(
     avatarBytes: ByteArray?,
     isAvatarRemoved: Boolean,
     onAvatarClick: () -> Unit,
-    onRemoveClick: () -> Unit
+    onRemoveClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = PaddingLarge),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
 
         AvatarBlock(

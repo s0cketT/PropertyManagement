@@ -121,7 +121,9 @@ class PersonalInfoViewModel(
                     }
 
                     current.isAvatarRemoved -> {
-                        updateUserAvatarUseCase.removeAvatar()
+                        updateUserAvatarUseCase.removeAvatar(
+                            fallbackPublicUrl = current.user.avatarUrl,
+                        )
                         null
                     }
 

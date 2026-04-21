@@ -23,12 +23,18 @@ class UpdateUserAvatarUseCase(
     }
 
 
-    suspend fun removeAvatar() {
-        val currentUrl = userRepository.getCurrentAvatarUrl() ?: return
+    suspend fun removeAvatar(fallbackPublicUrl: String? = null) {
+        val fromDb = runCatching { userRepository.getCurrentAvatarUrl() }.getOrNull()
+        val urlToDelete = when {
+            !fromDb.isNullOrBlank() -> fromDb
+            !fallbackPublicUrl.isNullOrBlank() -> fallbackPublicUrl
+            else -> null
+        }
 
-        runCatching {
-            userRepository.updateAvatar(null)
-            storageRepository.deleteImage(currentUrl)
+        userRepository.updateAvatar(null)
+
+        if (!urlToDelete.isNullOrBlank()) {
+            runCatching { storageRepository.deleteImage(urlToDelete) }
         }
     }
 }
