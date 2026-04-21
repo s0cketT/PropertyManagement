@@ -118,6 +118,21 @@ private fun UI(
 
         Spacer(modifier = Modifier.height(PaddingLarge))
 
+        Text(
+            text = stringResource(R.string.phone),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = PaddingSmall),
+        )
+
+        AuthBelarusPhoneTextField(
+            nationalDigits = state.phoneNationalDigits,
+            error = state.phoneError,
+            onNationalDigitsChange = { onIntent(AuthIntent.PhoneNationalDigitsChanged(it)) },
+        )
+
+        Spacer(modifier = Modifier.height(PaddingLarge))
+
         AuthTextField(
             value = state.email,
             placeholderRes = R.string.email,
@@ -161,6 +176,7 @@ private fun UI(
             enabled = !state.isLoading &&
                     state.emailError == null &&
                     state.passwordError == null &&
+                    state.phoneError == null &&
                     state.confirmPasswordError == null,
             modifier = Modifier.fillMaxWidth()
         ) {

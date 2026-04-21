@@ -21,7 +21,11 @@ data class PropertyResponseDto(
     val type: String,
     val deal_type: String,
 
+    @field:SerializedName(value = "moderation_status", alternate = ["moderationStatus"])
     val moderation_status: String? = null,
+
+    @field:SerializedName(value = "moderation_status_id", alternate = ["moderationStatusId"])
+    val moderation_status_id: Int? = null,
 
     val country: String?,
     val region: String?,

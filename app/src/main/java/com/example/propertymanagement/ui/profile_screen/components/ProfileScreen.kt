@@ -128,6 +128,6 @@ private fun UnauthorizedContent(
     onLogin: () -> Unit
 ) {
     Button(onClick = onLogin) {
-        Text("Login")
+        Text(text = stringResource(R.string.login))
     }
 }

@@ -234,6 +234,8 @@
     <string name="email">Почта</string>
     <string name="password">Пароль</string>
     <string name="confirm_password">Подтвердите пароль</string>
+    <string name="phone">Телефон</string>
+    <string name="phone_placeholder">+375(__)__-__-___</string>
     <!-- Ошибки -->
     <string name="error_invalid_email">Неверный формат почты</string>
     <string name="error_email_in_use">Почта уже используется</string>
@@ -243,6 +245,7 @@
     <string name="error_passwords_not_match">Пароли не совпадают</string>
     <string name="error_unknown">Повторите попытку позже</string>
     <string name="error_empty_field">Поле не может быть пустым</string>
+    <string name="error_invalid_phone">Введите номер полностью</string>
     <string name="error_invalid_otp">Неверный код подтверждения</string>
     <string name="invalid_otp">Неверный код</string>
     <!-- Инфо -->

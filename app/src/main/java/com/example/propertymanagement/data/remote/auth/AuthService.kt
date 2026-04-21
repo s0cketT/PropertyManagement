@@ -18,7 +18,8 @@ interface AuthService {
         email: String,
         password: String,
         firstName: String,
-        sellerType: SellerType
+        sellerType: SellerType,
+        phoneE164: String,
     )
 
     suspend fun signIn(email: String, password: String): UserDto

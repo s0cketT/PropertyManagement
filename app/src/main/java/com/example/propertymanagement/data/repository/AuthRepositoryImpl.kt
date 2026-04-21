@@ -31,14 +31,16 @@ class AuthRepositoryImpl(
         email: String,
         password: String,
         firstName: String,
-        sellerType: SellerType
+        sellerType: SellerType,
+        phoneE164: String,
     ) {
         service.signUp(
             email = email,
             password = password,
             firstName = firstName,
-            sellerType = sellerType
-            )
+            sellerType = sellerType,
+            phoneE164 = phoneE164,
+        )
     }
 
     override suspend fun signIn(email: String, password: String): AuthUser {

@@ -3,7 +3,9 @@ package com.example.propertymanagement.ui.property_detail_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
+import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
@@ -19,7 +21,9 @@ import kotlinx.coroutines.launch
 class PropertyDetailViewModel(
     private val propertyId: Int,
     private val userId: String,
+    private val useMyPropertiesForDetail: Boolean,
     private val getPropertiesUseCase: GetPropertiesUseCase,
+    private val getMyPropertiesUseCase: GetMyPropertiesUseCase,
     private val getTodayRatesUseCase: GetTodayRatesUseCase,
     private val getPropertyDetailPricesUseCase: GetPropertyDetailPricesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
@@ -78,7 +82,7 @@ class PropertyDetailViewModel(
     private fun openApplicationSheet() {
         viewModelScope.launch {
             if (getCurrentUserUseCase()?.id == null) {
-                _event.emit(PropertyDetailEvent.ShowRegistrationRequiredForRequest)
+                _event.emit(PropertyDetailEvent.ShowAuthRequired)
             } else {
                 _state.update {
                     it.copy(
@@ -94,7 +98,7 @@ class PropertyDetailViewModel(
         viewModelScope.launch {
             val uid = getCurrentUserUseCase()?.id
             if (uid == null) {
-                _event.emit(PropertyDetailEvent.ShowRegistrationRequiredForRequest)
+                _event.emit(PropertyDetailEvent.ShowAuthRequired)
                 return@launch
             }
             if (_state.value.isSubmittingApplication) return@launch
@@ -155,7 +159,7 @@ class PropertyDetailViewModel(
                     convertedPrices = null,
                     isApplicationSheetOpen = false,
                     applicationComment = "",
-                    isSubmittingApplication = false
+                    isSubmittingApplication = false,
                 )
             }
             val uid = userId.takeIf { it.isNotEmpty() }
@@ -165,28 +169,64 @@ class PropertyDetailViewModel(
                 else -> emptyMap()
             }
 
-            when (val result = getPropertiesUseCase(uid)) {
-                is Resource.Success -> {
-                    val property = result.data.find { it.id == propertyId }
-                    val converted = property?.let { p ->
-                        getPropertyDetailPricesUseCase(p, rates)
-                    }
+            if (useMyPropertiesForDetail) {
+                val ownerId = uid
+                if (ownerId == null) {
                     _state.update {
-                        it.copy(
-                            isLoading = false,
-                            property = property,
-                            notFound = property == null,
-                            convertedPrices = converted
-                        )
+                        it.copy(isLoading = false, notFound = true)
+                    }
+                    return@launch
+                }
+                when (val result = getMyPropertiesUseCase(ownerId)) {
+                    is Resource.Success -> {
+                        val property = result.data.find { it.id == propertyId }
+                        val converted = property?.let { p ->
+                            getPropertyDetailPricesUseCase(p, rates)
+                        }
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                property = property,
+                                notFound = property == null,
+                                convertedPrices = converted,
+                            )
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception,
+                            )
+                        }
                     }
                 }
+            } else {
+                when (val result = getPropertiesUseCase(uid)) {
+                    is Resource.Success -> {
+                        val catalog = result.data.forMainCatalogDisplay()
+                        val property = catalog.find { it.id == propertyId }
+                        val converted = property?.let { p ->
+                            getPropertyDetailPricesUseCase(p, rates)
+                        }
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                property = property,
+                                notFound = property == null,
+                                convertedPrices = converted
+                            )
+                        }
+                    }
 
-                is Resource.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exception
-                        )
+                    is Resource.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception
+                            )
+                        }
                     }
                 }
             }

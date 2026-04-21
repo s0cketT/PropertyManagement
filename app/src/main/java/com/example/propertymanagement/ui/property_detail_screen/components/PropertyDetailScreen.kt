@@ -24,7 +24,6 @@ import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
-import com.example.propertymanagement.ui.list_property_screen.ListPropertyIntent
 import com.example.propertymanagement.ui.list_property_screen.components.ErrorState
 import com.example.propertymanagement.ui.list_property_screen.components.FavoriteButton
 import com.example.propertymanagement.ui.list_property_screen.components.LoadingState
@@ -46,7 +45,7 @@ fun PropertyDetailScreen(
     userId: String
 ) {
     val viewModel: PropertyDetailViewModel = koinViewModel(
-        parameters = { parametersOf(propertyId, userId) }
+        parameters = { parametersOf(propertyId, userId, false) }
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val intent = viewModel::processIntent
@@ -136,8 +135,8 @@ private fun PropertyDetailUI(
                                 R.string.property_detail_favorite_remove_cd
                             } else {
                                 R.string.property_detail_favorite_add_cd
-                            }
-                        )
+                            },
+                        ),
                     )
                 }
             }
@@ -151,7 +150,7 @@ private fun PropertyDetailUI(
                 PropertyDetailLoadedContent(
                     property = property,
                     convertedPrices = state.convertedPrices,
-                    intent = intent
+                    intent = intent,
                 )
             }
         }
@@ -186,7 +185,7 @@ private fun PropertyDetailUI(
 private fun PropertyDetailLoadedContent(
     property: Property,
     convertedPrices: PropertyDetailPrices?,
-    intent: (PropertyDetailIntent) -> Unit
+    intent: (PropertyDetailIntent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -210,7 +209,7 @@ private fun PropertyDetailLoadedContent(
                 onOpenMapFullscreen = {
                     intent(PropertyDetailIntent.SetMapFullscreen(true))
                 },
-                onSubmitRequest = { intent(PropertyDetailIntent.SubmitRequest) }
+                onSubmitRequest = { intent(PropertyDetailIntent.SubmitRequest) },
             )
         }
     }

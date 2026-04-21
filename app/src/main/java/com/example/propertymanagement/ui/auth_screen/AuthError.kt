@@ -13,4 +13,5 @@ sealed class AuthError {
 
     object InvalidCredentials : AuthError()
     object NewEmailSameAsCurrent : AuthError()
+    object InvalidPhone : AuthError()
 }

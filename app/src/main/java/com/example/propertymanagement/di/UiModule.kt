@@ -177,11 +177,13 @@ val uiModule = module {
         )
     }
 
-    viewModel { (propertyId: Int, userId: String) ->
+    viewModel { (propertyId: Int, userId: String, useMyPropertiesForDetail: Boolean) ->
         PropertyDetailViewModel(
             propertyId = propertyId,
             userId = userId,
+            useMyPropertiesForDetail = useMyPropertiesForDetail,
             getPropertiesUseCase = get<GetPropertiesUseCase>(),
+            getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
             getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
             getPropertyDetailPricesUseCase = get<GetPropertyDetailPricesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),

@@ -60,7 +60,7 @@ fun MyAdPropertyDetailBottomSheet(
     ) {
         key(propertyId, userId) {
             val viewModel: PropertyDetailViewModel = koinViewModel(
-                parameters = { parametersOf(propertyId, userId) },
+                parameters = { parametersOf(propertyId, userId, true) },
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
             val intent = viewModel::processIntent

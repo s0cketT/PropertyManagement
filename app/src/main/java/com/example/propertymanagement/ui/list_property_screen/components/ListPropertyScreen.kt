@@ -89,8 +89,9 @@ private fun UI(
                 list = state.propertiesFilter,
                 currencyRates = state.currencyRates,
                 onFavoriteClick = { intent(ListPropertyIntent.ToggleFavorite(it)) },
-                onItemClick = { intent(ListPropertyIntent.OnPropertyClick(it)) }
-                )
+                onItemClick = { intent(ListPropertyIntent.OnPropertyClick(it)) },
+                showFavoriteButton = true,
+            )
         }
     }
 }

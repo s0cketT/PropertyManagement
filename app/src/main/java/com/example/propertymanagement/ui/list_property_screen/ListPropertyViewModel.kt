@@ -1,11 +1,12 @@
 package com.example.propertymanagement.ui.property
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.Property
-import com.example.propertymanagement.domain.model.visibleInPublicCatalog
+import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
@@ -171,8 +172,25 @@ class ListPropertyViewModel(
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
-                    val approvedOnly = result.data.visibleInPublicCatalog()
+                    val raw = result.data
+                    val moderationCounts = raw.groupingBy { it.moderationStatus }.eachCount()
+                    Log.d(
+                        TAG,
+                        "loadProperties success: userId=${userId ?: "null (guest)"} " +
+                            "rawCount=${raw.size} moderationCounts=$moderationCounts",
+                    )
+                    val approvedOnly = raw.forMainCatalogDisplay()
+                    Log.d(
+                        TAG,
+                        "loadProperties after forMainCatalogDisplay: count=${approvedOnly.size}",
+                    )
                     val savedFilters = getFilterPropertyUseCase().first()
+                    Log.d(
+                        TAG,
+                        "loadProperties savedFilters: present=${savedFilters != null} " +
+                            "deal=${savedFilters?.selectedDealType} type=${savedFilters?.type} " +
+                            "onlyWithPhotos=${savedFilters?.onlyWithPhotos ?: false}",
+                    )
                     _state.update { current ->
                         recomputePropertiesFilter(
                             current.copy(
@@ -183,8 +201,15 @@ class ListPropertyViewModel(
                             )
                         )
                     }
+                    Log.d(
+                        TAG,
+                        "loadProperties UI list: properties.size=${_state.value.properties.size} " +
+                            "propertiesFilter.size=${_state.value.propertiesFilter.size} " +
+                            "searchQuery=${_state.value.searchQuery}",
+                    )
                 }
                 is Resource.Error -> {
+                    Log.e(TAG, "loadProperties error: ${result.exception}")
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -194,5 +219,9 @@ class ListPropertyViewModel(
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val TAG = "PropertyCatalog"
     }
 }

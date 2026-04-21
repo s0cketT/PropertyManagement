@@ -48,7 +48,8 @@ class AuthServiceImpl(
         email: String,
         password: String,
         firstName: String,
-        sellerType: SellerType
+        sellerType: SellerType,
+        phoneE164: String,
     ) {
         supabase.auth.signUpWith(Email) {
             this.email = email
@@ -57,6 +58,7 @@ class AuthServiceImpl(
             data = buildJsonObject {
                 put("first_name", firstName)
                 put("seller_type", sellerType.name)
+                put("phone", phoneE164)
             }
         }
     }

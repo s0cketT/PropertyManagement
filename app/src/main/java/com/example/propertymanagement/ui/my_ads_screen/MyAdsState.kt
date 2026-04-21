@@ -13,7 +13,7 @@ data class MyAdsState(
     val isLoading: Boolean = false,
     val properties: List<Property> = emptyList(),
     val visibleList: List<Property> = emptyList(),
-    val listingFilter: MyAdsListingFilter = MyAdsListingFilter.ALL,
+    val listingFilter: MyAdsListingFilter = MyAdsListingFilter.PUBLISHED,
     val error: String? = null,
     val currencyRates: Map<String, CurrencyRate> = emptyMap(),
     val currentUserId: String? = null,

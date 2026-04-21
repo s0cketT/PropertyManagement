@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.HeightOutlinedTextField
 import com.example.propertymanagement.ui.theme.IconPassword
@@ -53,6 +52,7 @@ fun PropertyTitleTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -91,7 +91,10 @@ fun PropertyTitleTextField(
                 color = MaterialTheme.colorScheme.onSurface
             ),
             keyboardOptions = KeyboardOptions(
-                keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text
+                keyboardType = when {
+                    isPassword -> KeyboardType.Password
+                    else -> keyboardType
+                },
             ),
             visualTransformation = visualTransformation,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),

@@ -15,7 +15,8 @@ interface AuthRepository {
         email: String,
         password: String,
         firstName: String,
-        sellerType: SellerType
+        sellerType: SellerType,
+        phoneE164: String,
     )
     suspend fun signIn(email: String, password: String): AuthUser
     suspend fun getCurrentUser(): AuthUser?

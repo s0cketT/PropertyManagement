@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.UserLocation
-import com.example.propertymanagement.domain.model.visibleInPublicCatalog
+import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
@@ -182,8 +182,7 @@ class MapViewModel(
             when (val result = getPropertiesUseCase(userId)) {
 
                 is Resource.Success -> {
-                    // Только объявления со статусом модерации «Одобрено»
-                    val catalog = result.data.visibleInPublicCatalog()
+                    val catalog = result.data.forMainCatalogDisplay()
                     _state.update {
                         it.copy(
                             isLoading = false,

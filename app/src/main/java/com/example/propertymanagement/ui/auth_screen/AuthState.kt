@@ -4,6 +4,7 @@ import com.example.propertymanagement.domain.model.SellerType
 
 data class AuthState(
     val firstName: String = "",
+    val phoneNationalDigits: String = "",
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
@@ -15,6 +16,7 @@ data class AuthState(
     val sellerTypeError: AuthError? = null,
 
     val firstNameError: AuthError? = null,
+    val phoneError: AuthError? = null,
     val emailError: AuthError? = null,
     val passwordError: AuthError? = null,
     val confirmPasswordError: AuthError? = null,

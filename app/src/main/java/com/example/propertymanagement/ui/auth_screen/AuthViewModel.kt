@@ -10,6 +10,7 @@ import com.example.propertymanagement.domain.use_case.SendOtpUseCase
 import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
+import com.example.propertymanagement.ui.auth_screen.components.belarusPhoneToE164
 import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,6 +52,15 @@ class AuthViewModel(
                     it.copy(
                         firstName = intent.value,
                         firstNameError = null
+                    )
+                }
+            }
+
+            is AuthIntent.PhoneNationalDigitsChanged -> {
+                _state.update {
+                    it.copy(
+                        phoneNationalDigits = intent.nationalDigits,
+                        phoneError = null,
                     )
                 }
             }
@@ -165,6 +175,7 @@ class AuthViewModel(
     private fun signup(state: AuthState) {
 
         val firstNameError = validateFirstName(state.firstName)
+        val phoneError = validateNationalPhone(state.phoneNationalDigits)
         val emailError = validateEmail(state.email)
         val passwordError = validatePassword(state.password)
         val confirmError = validateConfirmPassword(state.password, state.confirmPassword)
@@ -172,6 +183,7 @@ class AuthViewModel(
 
         if (
             firstNameError != null ||
+            phoneError != null ||
             emailError != null ||
             passwordError != null ||
             confirmError != null ||
@@ -180,6 +192,7 @@ class AuthViewModel(
             _state.update {
                 it.copy(
                     firstNameError = firstNameError,
+                    phoneError = phoneError,
                     emailError = emailError,
                     passwordError = passwordError,
                     confirmPasswordError = confirmError,
@@ -208,10 +221,11 @@ class AuthViewModel(
 
                     runCatching {
                         signUpUseCase(
-                            state.email,
-                            state.password,
-                            state.firstName,
-                            state.sellerType!!
+                            email = state.email,
+                            password = state.password,
+                            firstName = state.firstName,
+                            sellerType = state.sellerType!!,
+                            phoneE164 = belarusPhoneToE164(state.phoneNationalDigits),
                         )
                     }
                         .onSuccess {
@@ -270,6 +284,13 @@ class AuthViewModel(
         return null
     }
 
+    private fun validateNationalPhone(nationalDigits: String): AuthError? {
+        val d = nationalDigits.filter { it.isDigit() }
+        if (d.isEmpty()) return AuthError.EmptyField
+        if (d.length != 9) return AuthError.InvalidPhone
+        return null
+    }
+
     private fun onOtpEntered(email: String, code: String, check: AuthCheck) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
@@ -282,7 +303,7 @@ class AuthViewModel(
                 when (check) {
                     AuthCheck.REGISTER -> {
                         _event.emit(AuthEvent.ShowRegistrationSuccess)
-                        _event.emit(AuthEvent.NavigateToLoginScreen)
+                        _event.emit(AuthEvent.NavigateToMain)
                     }
                     AuthCheck.RESET_PASSWORD -> {
                         _event.emit(AuthEvent.NavigateToSetNewPassword)

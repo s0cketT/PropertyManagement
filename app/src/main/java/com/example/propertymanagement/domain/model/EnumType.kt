@@ -1,6 +1,5 @@
 package com.example.propertymanagement.domain.model
 
-
 enum class PropertyType {
     COMMERCIAL,
     APARTMENT,
@@ -83,17 +82,27 @@ enum class ModerationStatus(val dbNameRu: String) {
     UNKNOWN("");
 
     companion object {
-        fun fromDb(name: String?): ModerationStatus =
-            entries.firstOrNull { it.dbNameRu == name } ?: UNKNOWN
+        fun fromDb(name: String?): ModerationStatus {
+            if (name.isNullOrBlank()) {
+                return UNKNOWN
+            }
+            val trimmed = name.trim()
+            entries.firstOrNull { it.dbNameRu.isNotEmpty() && it.dbNameRu == trimmed }?.let {
+                return it
+            }
+            runCatching {
+                java.lang.Enum.valueOf(ModerationStatus::class.java, trimmed.uppercase())
+            }.getOrNull()?.let { return it }
+            return UNKNOWN
+        }
     }
 }
 
 /** Вкладки фильтра на экране «Мои объявления». */
 enum class MyAdsListingFilter {
-    ALL,
     PUBLISHED,
     PENDING,
-    REJECTED
+    REJECTED,
 }
 
 enum class RoomsType {

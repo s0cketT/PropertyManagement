@@ -10,13 +10,15 @@ class SignUpUseCase(
         email: String,
         password: String,
         firstName: String,
-        sellerType: SellerType
+        sellerType: SellerType,
+        phoneE164: String,
     ) {
         authRepository.signUp(
             email = email,
             password = password,
             firstName = firstName,
-            sellerType = sellerType
+            sellerType = sellerType,
+            phoneE164 = phoneE164,
         )
     }
 }

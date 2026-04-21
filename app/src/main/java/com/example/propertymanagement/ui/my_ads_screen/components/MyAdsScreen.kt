@@ -2,17 +2,16 @@ package com.example.propertymanagement.ui.my_ads_screen.components
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
@@ -40,7 +40,6 @@ import com.example.propertymanagement.ui.my_ads_screen.MyAdsIntent
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsState
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsViewModel
 import com.example.propertymanagement.ui.theme.PaddingLarge
-import com.example.propertymanagement.ui.theme.PaddingSmall
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
@@ -99,6 +98,7 @@ fun MyAdsScreen(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MyAdsContent(
     state: MyAdsState,
@@ -131,17 +131,31 @@ private fun MyAdsContent(
             }
 
             else -> {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = PaddingLarge),
-                    horizontalArrangement = Arrangement.spacedBy(PaddingSmall)
+                val selectedTabIndex = tabLabels.indexOfFirst { it.first == state.listingFilter }
+                    .coerceAtLeast(0)
+
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = PaddingLarge),
                 ) {
-                    items(tabLabels, key = { it.first }) { (filter, label) ->
-                        FilterChip(
-                            selected = state.listingFilter == filter,
+                    tabLabels.forEachIndexed { index, (filter, label) ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = tabLabels.size,
+                            ),
                             onClick = { intent(MyAdsIntent.SelectListingFilter(filter)) },
-                            label = { Text(label) }
-                        )
+                            selected = index == selectedTabIndex,
+                            icon = { },
+                        ) {
+                            Text(
+                                text = label,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                        }
                     }
                 }
 

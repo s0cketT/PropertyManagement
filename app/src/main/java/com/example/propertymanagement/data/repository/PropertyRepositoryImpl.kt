@@ -10,6 +10,8 @@ import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.repository.IPropertyRepository
 import com.example.propertymanagement.domain.repository.IStorageRepository
+import com.google.gson.JsonNull
+import com.google.gson.JsonObject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -20,7 +22,13 @@ class PropertyRepositoryImpl(
 ) : IPropertyRepository {
 
     override suspend fun getProperties(userId: String?): List<Property> {
-        return supabaseApi.getProperties(userId).map { it.toDomain() }
+        val body = JsonObject()
+        if (userId != null) {
+            body.addProperty("p_user_uuid", userId)
+        } else {
+            body.add("p_user_uuid", JsonNull.INSTANCE)
+        }
+        return supabaseApi.getProperties(body).map { it.toDomain() }
     }
 
     override suspend fun getMyProperties(userId: String): List<Property> {

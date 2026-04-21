@@ -132,7 +132,6 @@ class MyAdsViewModel(
         properties: List<Property>,
         tab: MyAdsListingFilter
     ): List<Property> = when (tab) {
-        MyAdsListingFilter.ALL -> properties
         MyAdsListingFilter.PUBLISHED ->
             properties.filter { it.moderationStatus == ModerationStatus.APPROVED }
 

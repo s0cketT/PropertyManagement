@@ -5,6 +5,7 @@ import com.example.propertymanagement.domain.model.SellerType
 sealed class AuthIntent {
 
     data class FirstNameChanged(val value: String) : AuthIntent()
+    data class PhoneNationalDigitsChanged(val nationalDigits: String) : AuthIntent()
     data class EmailChanged(val email: String) : AuthIntent()
     data class AuthCheckChanged(val check: AuthCheck) : AuthIntent()
     data class PasswordChanged(val value: String) : AuthIntent()

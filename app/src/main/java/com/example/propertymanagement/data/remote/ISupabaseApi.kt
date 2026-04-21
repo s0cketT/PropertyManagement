@@ -10,6 +10,7 @@ import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
 import com.example.propertymanagement.data.model.PropertyImageDto
 import com.example.propertymanagement.data.model.PropertyResponseDto
 import com.example.propertymanagement.data.model.ToggleFavoriteBody
+import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -68,9 +69,9 @@ interface ISupabaseApi {
         @Body body: ToggleFavoriteBody
     ): Response<Unit>
 
-    @GET("rpc/get_properties_with_favorite")
+    @POST("rpc/get_properties_with_favorite")
     suspend fun getProperties(
-        @Query("p_user_uuid") userId: String?
+        @Body body: JsonObject,
     ): List<PropertyResponseDto>
 
     @GET("rpc/get_my_properties_with_favorite")
