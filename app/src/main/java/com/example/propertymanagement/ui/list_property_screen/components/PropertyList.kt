@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,6 +43,8 @@ fun PropertyList(
     showFavoriteButton: Boolean = true,
     onEditClick: ((Property) -> Unit)? = null,
     showEditFor: (Property) -> Boolean = { false },
+    onDeleteClick: ((Property) -> Unit)? = null,
+    showDeleteFor: (Property) -> Boolean = { false },
 ) {
 
     LazyColumn(
@@ -58,6 +61,8 @@ fun PropertyList(
                 showFavoriteButton = showFavoriteButton,
                 onEditClick = onEditClick,
                 showEditFor = showEditFor,
+                onDeleteClick = onDeleteClick,
+                showDeleteFor = showDeleteFor,
             )
         }
     }
@@ -73,6 +78,8 @@ fun PropertyListCard(
     showFavoriteButton: Boolean = true,
     onEditClick: ((Property) -> Unit)? = null,
     showEditFor: (Property) -> Boolean = { false },
+    onDeleteClick: ((Property) -> Unit)? = null,
+    showDeleteFor: (Property) -> Boolean = { false },
 ) {
     Card(
         modifier = Modifier
@@ -99,7 +106,9 @@ fun PropertyListCard(
             ) {
                 PropertyContent(property = property, currencyRates = currencyRates)
 
-                if (bottomTrailing != null || (onEditClick != null && showEditFor(property))) {
+                val canEdit = onEditClick != null && showEditFor(property)
+                val canDelete = onDeleteClick != null && showDeleteFor(property)
+                if (bottomTrailing != null || canEdit || canDelete) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -115,12 +124,21 @@ fun PropertyListCard(
                         Box(modifier = Modifier.weight(1f)) {
                             bottomTrailing?.invoke(property)
                         }
-                        if (onEditClick != null && showEditFor(property)) {
-                            IconButton(onClick = { onEditClick.invoke(property) }) {
+                        if (canEdit) {
+                            IconButton(onClick = { onEditClick?.invoke(property) }) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = stringResource(R.string.cd_edit_property),
                                     tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                        if (canDelete) {
+                            IconButton(onClick = { onDeleteClick?.invoke(property) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(R.string.cd_delete_property),
+                                    tint = MaterialTheme.colorScheme.error,
                                 )
                             }
                         }

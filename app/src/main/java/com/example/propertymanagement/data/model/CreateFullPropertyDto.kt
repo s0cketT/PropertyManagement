@@ -22,6 +22,8 @@ data class CreateFullPropertyDto(
     val p_total_floors: Int? = null,
     val p_year_built: Int? = null,
 
+    val p_area: Double? = null,
+
     val p_commercial_amenities: List<String> = emptyList(),
     val p_building_amenities: List<String> = emptyList(),
     val p_house_amenities: List<String> = emptyList(),

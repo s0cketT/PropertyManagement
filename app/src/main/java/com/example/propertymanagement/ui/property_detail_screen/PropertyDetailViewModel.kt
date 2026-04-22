@@ -81,8 +81,11 @@ class PropertyDetailViewModel(
 
     private fun openApplicationSheet() {
         viewModelScope.launch {
-            if (getCurrentUserUseCase()?.id == null) {
+            val currentUserId = getCurrentUserUseCase()?.id
+            if (currentUserId == null) {
                 _event.emit(PropertyDetailEvent.ShowAuthRequired)
+            } else if (_state.value.property?.ownerId == currentUserId) {
+                _event.emit(PropertyDetailEvent.ShowOwnPropertyRequestNotAllowed)
             } else {
                 _state.update {
                     it.copy(
@@ -99,6 +102,10 @@ class PropertyDetailViewModel(
             val uid = getCurrentUserUseCase()?.id
             if (uid == null) {
                 _event.emit(PropertyDetailEvent.ShowAuthRequired)
+                return@launch
+            }
+            if (_state.value.property?.ownerId == uid) {
+                _event.emit(PropertyDetailEvent.ShowOwnPropertyRequestNotAllowed)
                 return@launch
             }
             if (_state.value.isSubmittingApplication) return@launch

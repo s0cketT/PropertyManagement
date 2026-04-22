@@ -418,6 +418,7 @@ class EditPropertyViewModel(
                     }
                     .onFailure { e ->
                         Log.e("EDIT_PROPERTY", "Update failed: ${e.message}", e)
+                        _event.emit(EditPropertyEvent.ShowSaveFailedTryLater)
                     }
             } finally {
                 _state.update { it.copy(isPublishing = false) }

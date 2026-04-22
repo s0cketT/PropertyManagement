@@ -220,6 +220,8 @@
     <string name="edit_property_title">Edit listing</string>
     <string name="save_property_button">Save</string>
     <string name="cd_edit_property">Edit listing</string>
+    <string name="cd_delete_property">Delete listing</string>
+    <string name="my_ads_rejection_comment">Admin comment: %1$s</string>
     <string name="publish_clear_all_photos">Remove all photos</string>
     <string name="edit_property_sent_to_moderation">Listing sent for moderation</string>
 
@@ -243,6 +245,7 @@
     <string name="error_confirm_password_empty">Confirm password</string>
     <string name="error_passwords_not_match">Passwords do not match</string>
     <string name="error_unknown">Try again later</string>
+    <string name="error_something_went_wrong_try_later">Something went wrong. Please try again later.</string>
     <string name="error_empty_field">Field cannot be empty</string>
     <string name="error_invalid_phone">Enter the full number</string>
     <string name="error_invalid_otp">Invalid verification code</string>
@@ -274,6 +277,12 @@
     <string name="my_ads_filter_rejected">Rejected</string>
     <string name="my_ads_empty">You have no listings yet</string>
     <string name="my_ads_sign_in">Sign in to see your listings</string>
+    <string name="my_ads_delete_dialog_title">Delete listing</string>
+    <string name="my_ads_delete_dialog_message">Delete listing \"%1$s\"?</string>
+    <string name="my_ads_delete_dialog_confirm">Delete</string>
+    <string name="my_ads_delete_dialog_cancel">Cancel</string>
+    <string name="my_ads_delete_dialog_deleting">Deleting...</string>
+    <string name="my_ads_delete_failed">Failed to delete listing</string>
     <string name="moderation_chip_pending">Under review</string>
     <string name="moderation_chip_rejected">Rejected</string>
     <string name="moderation_chip_approved">Published</string>
@@ -390,6 +399,7 @@
     <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
     <string name="property_detail_submit_request">Submit request</string>
     <string name="property_detail_request_requires_registration">You need to sign up to submit a request</string>
+    <string name="property_detail_own_request_not_allowed">You cannot submit a request for your own listing</string>
     <string name="property_detail_application_sheet_title">Listing request</string>
     <string name="property_detail_application_comment_label">Note for the manager</string>
     <string name="property_detail_application_comment_placeholder">Details, preferred contact time, etc.</string>

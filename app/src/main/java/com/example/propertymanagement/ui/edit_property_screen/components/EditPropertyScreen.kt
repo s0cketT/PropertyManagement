@@ -45,6 +45,7 @@ fun EditPropertyScreen(
     val context = LocalContext.current
     val message = stringResource(R.string.auth_required)
     val validationLocationMessage = stringResource(R.string.publish_validation_location)
+    val saveFailedMessage = stringResource(R.string.error_something_went_wrong_try_later)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -108,6 +109,10 @@ fun EditPropertyScreen(
                 is EditPropertyEvent.NavigateBack -> { navController.popBackStack() }
 
                 is EditPropertyEvent.ShowAuthRequired -> { Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
+
+                is EditPropertyEvent.ShowSaveFailedTryLater -> {
+                    Toast.makeText(context, saveFailedMessage, Toast.LENGTH_LONG).show()
+                }
 
                 is EditPropertyEvent.ShowValidationError -> {
                     Toast.makeText(

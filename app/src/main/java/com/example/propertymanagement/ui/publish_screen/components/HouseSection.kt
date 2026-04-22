@@ -13,6 +13,7 @@ import com.example.propertymanagement.domain.model.GasType
 import com.example.propertymanagement.domain.model.HeatingType
 import com.example.propertymanagement.domain.model.HouseAmenity
 import com.example.propertymanagement.domain.model.HouseType
+import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.WallMaterialType
 import com.example.propertymanagement.domain.model.WaterType
@@ -29,6 +30,7 @@ import com.example.propertymanagement.ui.theme.PaddingLarge
 @Composable
 fun HouseSection(
     dealType: DealType?,
+    roomsType: RoomsType?,
     houseType: HouseType?,
     landArea: Int?,
     livingArea: Int?,
@@ -44,6 +46,7 @@ fun HouseSection(
     gasType: GasType?,
 
     onHouseType: (HouseType?) -> Unit,
+    onRoomsType: (RoomsType?) -> Unit,
     onLandArea: (Int?) -> Unit,
     onLivingArea: (Int?) -> Unit,
     onKitchenArea: (Int?) -> Unit,
@@ -68,6 +71,16 @@ fun HouseSection(
                 selectedType = houseType,
                 onTypeSelected = onHouseType,
                 titleRes = HouseType::titleRes
+            )
+
+            Spacer(modifier = Modifier.height(PaddingLarge))
+
+            EnumTypeSection(
+                title = stringResource(R.string.rooms_title),
+                entries = RoomsType.entries.toTypedArray(),
+                selectedType = roomsType,
+                onTypeSelected = onRoomsType,
+                titleRes = RoomsType::titleRes
             )
 
             Spacer(modifier = Modifier.height(PaddingLarge))

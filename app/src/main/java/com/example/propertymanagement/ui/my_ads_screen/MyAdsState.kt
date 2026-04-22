@@ -18,4 +18,6 @@ data class MyAdsState(
     val currencyRates: Map<String, CurrencyRate> = emptyMap(),
     val currentUserId: String? = null,
     val detailSheetKey: MyAdPropertyDetailSheetKey? = null,
+    val deleteCandidate: Property? = null,
+    val isDeleting: Boolean = false,
 )

@@ -27,6 +27,8 @@ fun CreateProperty.toFullDto(): CreateFullPropertyDto {
         p_total_floors = totalFloors,
         p_year_built = yearBuilt,
 
+        p_area = area,
+
         // AMENITIES
         p_commercial_amenities = commercialAmenities.map { it.toDbValue() },
         p_building_amenities = buildingAmenities.map { it.toDbValue() },
@@ -83,6 +85,8 @@ fun CreateProperty.toUpdateDto(propertyId: Int): UpdateFullPropertyDto {
         p_total_floors = f.p_total_floors,
         p_year_built = f.p_year_built,
 
+        p_area = f.p_area,
+
         p_commercial_amenities = f.p_commercial_amenities,
         p_building_amenities = f.p_building_amenities,
         p_house_amenities = f.p_house_amenities,
@@ -111,7 +115,5 @@ fun CreateProperty.toUpdateDto(propertyId: Int): UpdateFullPropertyDto {
         p_gas_type = f.p_gas_type,
 
         p_parking_type = f.p_parking_type,
-
-        p_area = area,
     )
 }

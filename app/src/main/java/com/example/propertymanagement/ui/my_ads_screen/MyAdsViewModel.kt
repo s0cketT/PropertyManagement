@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.ModerationStatus
 import com.example.propertymanagement.domain.model.MyAdsListingFilter
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.use_case.DeletePropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class MyAdsViewModel(
     private val getMyPropertiesUseCase: GetMyPropertiesUseCase,
+    private val deletePropertyUseCase: DeletePropertyUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getTodayRatesUseCase: GetTodayRatesUseCase
 ) : ViewModel() {
@@ -43,6 +45,14 @@ class MyAdsViewModel(
             }
 
             is MyAdsIntent.OnPropertyClick -> onPropertyClick(intent.property)
+
+            is MyAdsIntent.RequestDeleteProperty -> onDeleteRequest(intent.property)
+
+            MyAdsIntent.DismissDeleteDialog -> {
+                _state.update { it.copy(deleteCandidate = null) }
+            }
+
+            MyAdsIntent.ConfirmDeleteProperty -> confirmDeleteProperty()
 
             MyAdsIntent.DismissPropertyDetailSheet -> {
                 _state.update { it.copy(detailSheetKey = null) }
@@ -128,6 +138,44 @@ class MyAdsViewModel(
         }
     }
 
+    private fun onDeleteRequest(property: Property) {
+        if (!property.canBeDeleted()) {
+            return
+        }
+        _state.update { it.copy(deleteCandidate = property) }
+    }
+
+    private fun confirmDeleteProperty() {
+        val candidate = _state.value.deleteCandidate ?: return
+        if (!candidate.canBeDeleted() || _state.value.isDeleting) {
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update { it.copy(isDeleting = true) }
+            when (deletePropertyUseCase(candidate.id)) {
+                is Resource.Success -> {
+                    _state.update { current ->
+                        val updatedProperties = current.properties.filterNot { it.id == candidate.id }
+                        val shouldCloseDetailSheet = current.detailSheetKey?.propertyId == candidate.id
+                        current.copy(
+                            properties = updatedProperties,
+                            detailSheetKey = if (shouldCloseDetailSheet) null else current.detailSheetKey,
+                            deleteCandidate = null,
+                            isDeleting = false,
+                        )
+                    }
+                    applyListingFilter()
+                }
+
+                is Resource.Error -> {
+                    _state.update { it.copy(isDeleting = false) }
+                    _event.emit(MyAdsEvent.ShowDeleteFailed)
+                }
+            }
+        }
+    }
+
     private fun filterByTab(
         properties: List<Property>,
         tab: MyAdsListingFilter
@@ -140,5 +188,10 @@ class MyAdsViewModel(
 
         MyAdsListingFilter.REJECTED ->
             properties.filter { it.moderationStatus == ModerationStatus.REJECTED }
+    }
+
+    private fun Property.canBeDeleted(): Boolean {
+        return moderationStatus == ModerationStatus.APPROVED ||
+            moderationStatus == ModerationStatus.REJECTED
     }
 }

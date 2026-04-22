@@ -32,6 +32,7 @@ fun PublishScreen(navController: NavController) {
     val context = LocalContext.current
     val message = stringResource(R.string.auth_required)
     val validationLocationMessage = stringResource(R.string.publish_validation_location)
+    val saveFailedMessage = stringResource(R.string.error_something_went_wrong_try_later)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -86,6 +87,10 @@ fun PublishScreen(navController: NavController) {
 
                 is PublishEvent.ShowAuthRequired -> {
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+
+                is PublishEvent.ShowSaveFailedTryLater -> {
+                    Toast.makeText(context, saveFailedMessage, Toast.LENGTH_LONG).show()
                 }
 
                 is PublishEvent.ShowValidationError -> {

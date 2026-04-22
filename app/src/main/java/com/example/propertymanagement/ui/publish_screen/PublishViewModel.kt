@@ -368,6 +368,7 @@ class PublishViewModel(
                     }
                     .onFailure { e ->
                         Log.e("UPLOAD", "Upload failed: ${e.message}", e)
+                        _event.emit(PublishEvent.ShowSaveFailedTryLater)
                     }
             } finally {
                 _state.update { it.copy(isPublishing = false) }

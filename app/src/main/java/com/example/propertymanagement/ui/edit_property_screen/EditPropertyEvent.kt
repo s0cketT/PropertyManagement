@@ -11,6 +11,8 @@ sealed class EditPropertyEvent {
 
     object ShowAuthRequired : EditPropertyEvent()
 
+    object ShowSaveFailedTryLater : EditPropertyEvent()
+
     data class ShowValidationError(val message: String) : EditPropertyEvent()
 
     data class ShowValidationErrorRes(@StringRes val messageRes: Int) : EditPropertyEvent()

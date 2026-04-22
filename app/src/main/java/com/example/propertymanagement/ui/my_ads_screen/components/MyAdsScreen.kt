@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +42,7 @@ import com.example.propertymanagement.ui.my_ads_screen.MyAdsIntent
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsState
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsViewModel
 import com.example.propertymanagement.ui.theme.PaddingLarge
+import com.example.propertymanagement.ui.theme.PaddingSmall
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,6 +55,7 @@ fun MyAdsScreen(navController: NavController) {
     val event: Flow<MyAdsEvent> by remember { mutableStateOf(viewModel.event) }
 
     val authRequiredMessage = stringResource(R.string.auth_required)
+    val deleteFailedMessage = stringResource(R.string.my_ads_delete_failed)
     val myAdsSignInMessage = stringResource(R.string.my_ads_sign_in)
     val myAdsEmptyMessage = stringResource(R.string.my_ads_empty)
     val tabLabels = MyAdsListingFilter.entries.map { filter ->
@@ -68,6 +72,14 @@ fun MyAdsScreen(navController: NavController) {
                         navController.context,
                         authRequiredMessage,
                         Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                MyAdsEvent.ShowDeleteFailed -> {
+                    Toast.makeText(
+                        navController.context,
+                        deleteFailedMessage,
+                        Toast.LENGTH_SHORT,
                     ).show()
                 }
             }
@@ -184,11 +196,35 @@ private fun MyAdsContent(
                             onFavoriteClick = { },
                             onItemClick = { intent(MyAdsIntent.OnPropertyClick(it)) },
                             bottomTrailing = { property ->
-                                ModerationStatusBadge(status = property.moderationStatus)
+                                Column {
+                                    ModerationStatusBadge(status = property.moderationStatus)
+                                    val adminComment = property.adminComment?.trim().orEmpty()
+                                    if (
+                                        property.moderationStatus == ModerationStatus.REJECTED &&
+                                        adminComment.isNotEmpty()
+                                    ) {
+                                        Text(
+                                            text = stringResource(
+                                                R.string.my_ads_rejection_comment,
+                                                adminComment,
+                                            ),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.error,
+                                            modifier = Modifier.padding(top = PaddingSmall),
+                                        )
+                                    }
+                                }
                             },
                             showFavoriteButton = false,
                             onEditClick = onEditProperty,
                             showEditFor = { property ->
+                                property.moderationStatus == ModerationStatus.APPROVED ||
+                                    property.moderationStatus == ModerationStatus.REJECTED
+                            },
+                            onDeleteClick = { property ->
+                                intent(MyAdsIntent.RequestDeleteProperty(property))
+                            },
+                            showDeleteFor = { property ->
                                 property.moderationStatus == ModerationStatus.APPROVED ||
                                     property.moderationStatus == ModerationStatus.REJECTED
                             },
@@ -197,5 +233,45 @@ private fun MyAdsContent(
                 }
             }
         }
+    }
+
+    val deleteCandidate = state.deleteCandidate
+    if (deleteCandidate != null) {
+        AlertDialog(
+            onDismissRequest = { intent(MyAdsIntent.DismissDeleteDialog) },
+            title = { Text(text = stringResource(R.string.my_ads_delete_dialog_title)) },
+            text = {
+                Text(
+                    text = stringResource(
+                        R.string.my_ads_delete_dialog_message,
+                        deleteCandidate.title,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { intent(MyAdsIntent.ConfirmDeleteProperty) },
+                    enabled = !state.isDeleting,
+                ) {
+                    Text(
+                        text = stringResource(
+                            if (state.isDeleting) {
+                                R.string.my_ads_delete_dialog_deleting
+                            } else {
+                                R.string.my_ads_delete_dialog_confirm
+                            },
+                        ),
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { intent(MyAdsIntent.DismissDeleteDialog) },
+                    enabled = !state.isDeleting,
+                ) {
+                    Text(text = stringResource(R.string.my_ads_delete_dialog_cancel))
+                }
+            },
+        )
     }
 }

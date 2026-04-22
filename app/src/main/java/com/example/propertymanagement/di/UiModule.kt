@@ -2,6 +2,7 @@ package com.example.propertymanagement.di
 
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
+import com.example.propertymanagement.domain.use_case.DeletePropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
@@ -172,6 +173,7 @@ val uiModule = module {
     viewModel {
         MyAdsViewModel(
             getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
+            deletePropertyUseCase = get<DeletePropertyUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             getTodayRatesUseCase = get<GetTodayRatesUseCase>()
         )

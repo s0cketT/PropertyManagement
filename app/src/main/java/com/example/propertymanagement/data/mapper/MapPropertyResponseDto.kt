@@ -104,6 +104,7 @@ fun PropertyResponseDto.toDomain(): Property {
         isFavorite = is_favorite,
 
         moderationStatus = ModerationStatus.fromDb(moderation_status),
+        adminComment = admin_comment,
 
         country = country,
         region = region,

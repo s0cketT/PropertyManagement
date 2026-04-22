@@ -90,6 +90,7 @@ fun PropertyEditorFormContent(
             when (state.propertyType) {
                 PropertyType.COMMERCIAL -> CommercialSection(
                     dealType = state.dealType,
+                    roomsType = state.roomsType,
                     commercialType = state.selectedCommercialPropertyType,
                     amenities = state.commercialAmenities,
                     repairType = state.selectedCommercialRepairType,
@@ -97,6 +98,7 @@ fun PropertyEditorFormContent(
                     floorHouse = state.floorHouse,
 
                     onCommercialType = { intent(PublishIntent.SetCommercialPropertyType(it)) },
+                    onRoomsType = { intent(PublishIntent.SetRoomsType(it)) },
                     onAmenities = { intent(PublishIntent.SetCommercialAmenities(it)) },
                     onRepairType = { intent(PublishIntent.SetCommercialRepairType(it)) },
                     onFloor = { intent(PublishIntent.SetFloor(it)) },
@@ -160,6 +162,7 @@ fun PropertyEditorFormContent(
                 )
                 PropertyType.HOUSE -> HouseSection(
                     dealType = state.dealType,
+                    roomsType = state.roomsType,
                     houseType = state.houseType,
                     landArea = state.landArea,
                     livingArea = state.livingArea,
@@ -175,6 +178,7 @@ fun PropertyEditorFormContent(
                     gasType = state.gasType,
 
                     onHouseType = { intent(PublishIntent.SetHouseType(it)) },
+                    onRoomsType = { intent(PublishIntent.SetRoomsType(it)) },
                     onLandArea = { intent(PublishIntent.SetLandArea(it)) },
                     onLivingArea = { intent(PublishIntent.SetLivingArea(it)) },
                     onKitchenArea = { intent(PublishIntent.SetKitchenArea(it)) },

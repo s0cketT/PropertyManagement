@@ -11,6 +11,7 @@ import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.CommercialPropertyType
 import com.example.propertymanagement.domain.model.CommercialRepairType
 import com.example.propertymanagement.domain.model.DealType
+import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.ui.components.EnumTypeSection
 import com.example.propertymanagement.ui.components.ExpandableFilterSection
 import com.example.propertymanagement.ui.components.floorSimpleDisplayMapper
@@ -22,6 +23,7 @@ import com.example.propertymanagement.ui.theme.PaddingLarge
 @Composable
 fun CommercialSection(
     dealType: DealType?,
+    roomsType: RoomsType?,
     commercialType: CommercialPropertyType?,
     amenities: Set<CommercialAmenity>,
     repairType: CommercialRepairType?,
@@ -29,6 +31,7 @@ fun CommercialSection(
     floorHouse: Int?,
 
     onCommercialType: (CommercialPropertyType?) -> Unit,
+    onRoomsType: (RoomsType?) -> Unit,
     onAmenities: (Set<CommercialAmenity>) -> Unit,
     onRepairType: (CommercialRepairType?) -> Unit,
     onFloor: (Int?) -> Unit,
@@ -47,6 +50,16 @@ fun CommercialSection(
                 selectedType = commercialType,
                 onTypeSelected = onCommercialType,
                 titleRes = CommercialPropertyType::titleRes
+            )
+
+            Spacer(modifier = Modifier.height(PaddingLarge))
+
+            EnumTypeSection(
+                title = stringResource(R.string.rooms_title),
+                entries = RoomsType.entries.toTypedArray(),
+                selectedType = roomsType,
+                onTypeSelected = onRoomsType,
+                titleRes = RoomsType::titleRes
             )
 
             Spacer(modifier = Modifier.height(PaddingLarge))

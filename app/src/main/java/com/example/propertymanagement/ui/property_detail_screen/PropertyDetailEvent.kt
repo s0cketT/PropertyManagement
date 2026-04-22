@@ -8,6 +8,8 @@ sealed interface PropertyDetailEvent {
 
     data object ShowRegistrationRequiredForRequest : PropertyDetailEvent
 
+    data object ShowOwnPropertyRequestNotAllowed : PropertyDetailEvent
+
     data object ApplicationSubmitted : PropertyDetailEvent
 
     data object ApplicationSubmitFailed : PropertyDetailEvent

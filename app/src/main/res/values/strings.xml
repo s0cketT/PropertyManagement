@@ -114,6 +114,8 @@
     <string name="edit_property_title">Изменить объявление</string>
     <string name="save_property_button">Сохранить</string>
     <string name="cd_edit_property">Редактировать объявление</string>
+    <string name="cd_delete_property">Удалить объявление</string>
+    <string name="my_ads_rejection_comment">Комментарий администратора: %1$s</string>
     <string name="publish_clear_all_photos">Удалить все фото</string>
     <string name="edit_property_sent_to_moderation">Объявление отправлено на модерацию</string>
 
@@ -244,6 +246,7 @@
     <string name="error_confirm_password_empty">Подтвердите пароль</string>
     <string name="error_passwords_not_match">Пароли не совпадают</string>
     <string name="error_unknown">Повторите попытку позже</string>
+    <string name="error_something_went_wrong_try_later">Что-то пошло не так. Повторите попытку позже.</string>
     <string name="error_empty_field">Поле не может быть пустым</string>
     <string name="error_invalid_phone">Введите номер полностью</string>
     <string name="error_invalid_otp">Неверный код подтверждения</string>
@@ -276,6 +279,12 @@
     <string name="my_ads_filter_rejected">Отклонённые</string>
     <string name="my_ads_empty">У вас пока нет объявлений</string>
     <string name="my_ads_sign_in">Войдите, чтобы увидеть объявления</string>
+    <string name="my_ads_delete_dialog_title">Удаление объявления</string>
+    <string name="my_ads_delete_dialog_message">Удалить объявление «%1$s»?</string>
+    <string name="my_ads_delete_dialog_confirm">Удалить</string>
+    <string name="my_ads_delete_dialog_cancel">Отмена</string>
+    <string name="my_ads_delete_dialog_deleting">Удаление...</string>
+    <string name="my_ads_delete_failed">Не удалось удалить объявление</string>
     <string name="moderation_chip_pending">На модерации</string>
     <string name="moderation_chip_rejected">Отклонено</string>
     <string name="moderation_chip_approved">Опубликовано</string>
@@ -394,6 +403,7 @@
     <string name="property_detail_map_fullscreen_cd">Открыть карту на весь экран</string>
     <string name="property_detail_submit_request">Оставить заявку</string>
     <string name="property_detail_request_requires_registration">Чтобы оставить заявку, необходимо зарегистрироваться</string>
+    <string name="property_detail_own_request_not_allowed">Вы не можете Оставить заявку на свое объявление</string>
     <string name="property_detail_application_sheet_title">Заявка по объявлению</string>
     <string name="property_detail_application_comment_label">Комментарий для менеджера</string>
     <string name="property_detail_application_comment_placeholder">Уточнения, удобное время связи и т.п.</string>

@@ -72,6 +72,8 @@ fun MyAdPropertyDetailBottomSheet(
             val authRequiredText = stringResource(R.string.auth_required)
             val registrationRequiredText =
                 stringResource(R.string.property_detail_request_requires_registration)
+            val ownPropertyRequestNotAllowedText =
+                stringResource(R.string.property_detail_own_request_not_allowed)
             val applicationSentText = stringResource(R.string.property_detail_application_sent)
             val applicationFailedText = stringResource(R.string.property_detail_application_failed)
 
@@ -79,6 +81,7 @@ fun MyAdPropertyDetailBottomSheet(
                 event,
                 authRequiredText,
                 registrationRequiredText,
+                ownPropertyRequestNotAllowedText,
                 applicationSentText,
                 applicationFailedText,
             ) {
@@ -94,6 +97,14 @@ fun MyAdPropertyDetailBottomSheet(
                             Toast.makeText(
                                 context,
                                 registrationRequiredText,
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+
+                        PropertyDetailEvent.ShowOwnPropertyRequestNotAllowed -> {
+                            Toast.makeText(
+                                context,
+                                ownPropertyRequestNotAllowedText,
                                 Toast.LENGTH_SHORT,
                             ).show()
                         }
