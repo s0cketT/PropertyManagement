@@ -28,6 +28,13 @@ fun BaseInfoSectionTopFilters(state: FiltersState, intent: (FiltersIntent) -> Un
             onResetClick = { intent(FiltersIntent.ClearPropertyType) }
         )
 
+        RegionSelectorSection(
+            selectedRegionName = state.selectedRegionName,
+            selectedCityCount = state.selectedCityNames.size,
+            onClick = { intent(FiltersIntent.NavigateToRegionSelection) },
+            onResetClick = { intent(FiltersIntent.ClearLocationSelection) },
+        )
+
         if (state.selectedPropertyType != null) {
             Spacer(modifier = Modifier.height(PaddingLarge))
 

@@ -2,6 +2,12 @@ package com.example.propertymanagement.domain.model
 
 data class FiltersProperty(
     val type: PropertyType?,
+    val selectedRegionId: Long?,
+    val selectedRegionName: String?,
+    val selectedCityIds: Set<Long>,
+    val selectedCityNames: Set<String>,
+    val selectedLocationLat: Double?,
+    val selectedLocationLng: Double?,
 
     val price: IntRangeFilter,
     val pricePerMeter: IntRangeFilter,

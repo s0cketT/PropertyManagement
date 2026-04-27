@@ -5,4 +5,5 @@ sealed class FiltersEvent {
     data object NavigateBack : FiltersEvent()
 
     data object NavigateToCategorySelection : FiltersEvent()
+    data object NavigateToRegionSelection : FiltersEvent()
 }

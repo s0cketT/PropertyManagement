@@ -23,7 +23,9 @@ import com.example.propertymanagement.ui.change_password_screen.components.SetNe
 import com.example.propertymanagement.ui.extensions.toUserProfile
 import com.example.propertymanagement.ui.favorites_screen.conponents.FavoritesScreen
 import com.example.propertymanagement.ui.filters_screen.components.CategorySelectionScreen
+import com.example.propertymanagement.ui.filters_screen.components.CitySelectionScreen
 import com.example.propertymanagement.ui.filters_screen.components.FilterScreen
+import com.example.propertymanagement.ui.filters_screen.components.RegionSelectionScreen
 import com.example.propertymanagement.ui.list_property_screen.components.ListPropertyScreen
 import com.example.propertymanagement.ui.map_screen.components.MapScreen
 import com.example.propertymanagement.ui.my_ads_screen.components.MyAdsScreen
@@ -126,6 +128,42 @@ fun MainNavigation() {
                 popExitTransition = AppTransitions.slideFromRight.popExit
             ) {
                 CategorySelectionScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.RegionSelection.route,
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
+            ) {
+                RegionSelectionScreen(navController = navController)
+            }
+
+            composable(
+                route = Screens.CitySelection.route,
+                arguments = listOf(
+                    navArgument("regionId") {
+                        type = NavType.LongType
+                    },
+                    navArgument("regionName") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                ),
+                enterTransition = AppTransitions.slideFromRight.enter,
+                exitTransition = AppTransitions.slideFromRight.exit,
+                popEnterTransition = AppTransitions.slideFromRight.popEnter,
+                popExitTransition = AppTransitions.slideFromRight.popExit
+            ) { backStackEntry ->
+                val regionId = backStackEntry.arguments?.getLong("regionId") ?: 0L
+                val regionName = backStackEntry.arguments?.getString("regionName").orEmpty()
+
+                CitySelectionScreen(
+                    navController = navController,
+                    regionId = regionId,
+                    regionName = regionName,
+                )
             }
 
             composable(

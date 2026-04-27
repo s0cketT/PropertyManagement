@@ -1,17 +1,10 @@
 package com.example.propertymanagement.ui.property_detail_screen.components
 
 import com.example.propertymanagement.domain.model.Property
-import com.example.propertymanagement.domain.model.PropertyDetails
 import java.util.Locale
 
 internal fun effectiveArea(property: Property): Double? {
-    val details = property.details
-    return when (details) {
-        is PropertyDetails.Apartment -> details.livingArea ?: property.area
-        is PropertyDetails.Room -> details.saleArea ?: property.area
-        is PropertyDetails.House -> details.landArea ?: property.area
-        else -> property.area
-    }
+    return property.area
 }
 
 internal fun formatDouble(value: Double): String =

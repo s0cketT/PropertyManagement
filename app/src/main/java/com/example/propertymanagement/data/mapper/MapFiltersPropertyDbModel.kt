@@ -10,6 +10,12 @@ import com.example.propertymanagement.domain.model.IntRangeFilter
 fun FiltersPropertyDbModel.toDomain(): FiltersProperty {
     return FiltersProperty(
         type = type,
+        selectedRegionId = selectedRegionId,
+        selectedRegionName = selectedRegionName,
+        selectedCityIds = selectedCityIds.toLongSet(),
+        selectedCityNames = selectedCityNames.toStringSet(),
+        selectedLocationLat = selectedLocationLat,
+        selectedLocationLng = selectedLocationLng,
 
         price = IntRangeFilter(priceFrom, priceTo),
         pricePerMeter = IntRangeFilter(pricePerMeterFrom, pricePerMeterTo),
@@ -60,6 +66,12 @@ fun FiltersProperty.toEntity(): FiltersPropertyDbModel {
     return FiltersPropertyDbModel(
         id = 1,
         type = type,
+        selectedRegionId = selectedRegionId,
+        selectedRegionName = selectedRegionName,
+        selectedCityIds = selectedCityIds.toDbLongSet(),
+        selectedCityNames = selectedCityNames.toDbStringSet(),
+        selectedLocationLat = selectedLocationLat,
+        selectedLocationLng = selectedLocationLng,
 
         priceFrom = price.from,
         priceTo = price.to,
@@ -156,4 +168,33 @@ fun String.toHouseAmenitySet(): Set<HouseAmenity> {
 
 fun Set<HouseAmenity>.toHouseDb(): String {
     return this.joinToString(",") { it.name }
+}
+
+private fun String.toLongSet(): Set<Long> {
+    if (isBlank()) {
+        return emptySet()
+    }
+
+    return split(",")
+        .mapNotNull { value -> value.trim().toLongOrNull() }
+        .toSet()
+}
+
+private fun Set<Long>.toDbLongSet(): String {
+    return joinToString(",")
+}
+
+private fun String.toStringSet(): Set<String> {
+    if (isBlank()) {
+        return emptySet()
+    }
+
+    return split(";;")
+        .map { value -> value.trim() }
+        .filter { value -> value.isNotEmpty() }
+        .toSet()
+}
+
+private fun Set<String>.toDbStringSet(): String {
+    return joinToString(";;")
 }

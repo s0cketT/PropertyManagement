@@ -28,8 +28,13 @@ import com.example.propertymanagement.domain.model.WaterType
 sealed class FiltersIntent {
     data object NavigateBack : FiltersIntent()
     data object NavigateToCategorySelection : FiltersIntent()
+    data object NavigateToRegionSelection : FiltersIntent()
 
     data class SelectPropertyType(val type: PropertyType) : FiltersIntent()
+    data class SelectRegion(val id: Long, val name: String) : FiltersIntent()
+    data class SelectCities(val cityIds: Set<Long>, val cityNames: Set<String>) : FiltersIntent()
+    data class SelectLocationCoordinate(val lat: Double?, val lng: Double?) : FiltersIntent()
+    data object ClearLocationSelection : FiltersIntent()
     data object SaveFilters : FiltersIntent()
     data object ClearFilters : FiltersIntent()
     data object ClearPropertyType : FiltersIntent()

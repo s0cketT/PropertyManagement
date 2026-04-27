@@ -3,9 +3,17 @@ package com.example.propertymanagement.ui.filters_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.domain.common.Resource
+import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
+import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.forMainCatalogDisplay
+import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.SaveSelectedFiltersMarkerUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
 import com.example.propertymanagement.ui.extensions.clearPricePerMeter
@@ -22,6 +30,10 @@ import kotlinx.coroutines.launch
 class FiltersViewModel(
     private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
     private val saveSelectedFiltersMarkerUseCase: SaveSelectedFiltersMarkerUseCase,
+    private val getPropertiesUseCase: GetPropertiesUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val filterPropertiesUseCase: FilterPropertiesUseCase,
+    private val getTodayRatesUseCase: GetTodayRatesUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(FiltersState())
     val state = _state.asStateFlow()
@@ -29,8 +41,12 @@ class FiltersViewModel(
     private val _event = SingleFlowEvent<FiltersEvent>(viewModelScope)
     val event = _event.flow
 
+    private var sourceProperties: List<Property> = emptyList()
+    private var currencyRates: Map<String, CurrencyRate> = emptyMap()
+
     init {
         loadSelectedMarker()
+        loadPreviewSourceData()
     }
 
     private fun loadSelectedMarker() {
@@ -57,57 +73,7 @@ class FiltersViewModel(
             is FiltersIntent.SaveFilters -> {
                 viewModelScope.launch {
                     saveSelectedFiltersMarkerUseCase(
-                        FiltersProperty(
-                            type = state.value.selectedPropertyType,
-
-                            price = state.value.price.let {
-                                IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
-                            },
-
-                            pricePerMeter = state.value.pricePerMeter.let {
-                                IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
-                            },
-
-                            area = state.value.area,
-                            floor = state.value.floor,
-                            floorHouse = state.value.floorHouse,
-                            separateRooms = state.value.separateRooms,
-
-                            selectedCurrency = state.value.selectedCurrency,
-                            selectedSellerType = state.value.sellerType,
-                            onlyWithPhotos = state.value.onlyWithPhotos,
-                            sortType = state.value.sortType,
-                            selectedDealType = state.value.dealType,
-                            selectedCommercialPropertyType = state.value.commercialPropertyType,
-
-                            commercialAmenities = state.value.commercialAmenities,
-                            commercialRepairType = state.value.commercialRepairType,
-
-                            roomsForSale = state.value.roomsForSale,
-                            saleArea = state.value.saleArea,
-
-                            roomsType = state.value.roomsType,
-                            isWalkthroughRoom = state.value.isWalkthroughRoom,
-                            livingArea = state.value.livingArea,
-                            kitchenArea = state.value.kitchenArea,
-                            bathroomType = state.value.bathroomType,
-                            balconyType = state.value.balconyType,
-                            ceilingHeight = state.value.ceilingHeight,
-                            repairType = state.value.repairType,
-                            wallMaterial = state.value.wallMaterial,
-                            yearBuilt = state.value.yearBuilt,
-                            buildingAmenities = state.value.buildingAmenities,
-
-                            houseType = state.value.houseType,
-                            landArea = state.value.landArea,
-                            roofType = state.value.roofType,
-                            heatingType = state.value.heatingType,
-                            waterType = state.value.waterType,
-                            gasType = state.value.gasType,
-                            houseAmenities = state.value.houseAmenities,
-
-                            parkingType = state.value.parkingType
-                        )
+                        state.value.toFiltersProperty()
                     )
                     _event.emit(FiltersEvent.NavigateBack)
                 }
@@ -121,10 +87,58 @@ class FiltersViewModel(
                 _event.emit(FiltersEvent.NavigateToCategorySelection)
             }
 
+            is FiltersIntent.NavigateToRegionSelection -> {
+                _event.emit(FiltersEvent.NavigateToRegionSelection)
+            }
+
             is FiltersIntent.SelectPropertyType -> {
                 _state.update {
                     it.copy(
                         selectedPropertyType = intent.type,
+                    )
+                }
+            }
+
+            is FiltersIntent.SelectRegion -> {
+                _state.update {
+                    it.copy(
+                        selectedRegionId = intent.id,
+                        selectedRegionName = intent.name,
+                        selectedCityIds = emptySet(),
+                        selectedCityNames = emptySet(),
+                        selectedLocationLat = null,
+                        selectedLocationLng = null,
+                    )
+                }
+            }
+
+            is FiltersIntent.SelectCities -> {
+                _state.update {
+                    it.copy(
+                        selectedCityIds = intent.cityIds,
+                        selectedCityNames = intent.cityNames,
+                    )
+                }
+            }
+
+            is FiltersIntent.SelectLocationCoordinate -> {
+                _state.update {
+                    it.copy(
+                        selectedLocationLat = intent.lat,
+                        selectedLocationLng = intent.lng,
+                    )
+                }
+            }
+
+            is FiltersIntent.ClearLocationSelection -> {
+                _state.update {
+                    it.copy(
+                        selectedRegionId = null,
+                        selectedRegionName = null,
+                        selectedCityIds = emptySet(),
+                        selectedCityNames = emptySet(),
+                        selectedLocationLat = null,
+                        selectedLocationLng = null,
                     )
                 }
             }
@@ -144,6 +158,12 @@ class FiltersViewModel(
             is FiltersIntent.ClearPropertyType -> {
                 _state.update {
                     FiltersState(
+                        selectedRegionId = it.selectedRegionId,
+                        selectedRegionName = it.selectedRegionName,
+                        selectedCityIds = it.selectedCityIds,
+                        selectedCityNames = it.selectedCityNames,
+                        selectedLocationLat = it.selectedLocationLat,
+                        selectedLocationLng = it.selectedLocationLng,
                         selectedCurrency = it.selectedCurrency,
                         price = it.price,
                         sellerType = it.sellerType,
@@ -292,5 +312,96 @@ class FiltersViewModel(
                 _state.update { it.copy(parkingType = intent.type) }
             }
         }
+
+        updateMatchedPropertiesCount()
     }
+
+    private fun loadPreviewSourceData() {
+        viewModelScope.launch {
+            val userId = getCurrentUserUseCase()?.id
+
+            currencyRates = when (val ratesResult = getTodayRatesUseCase()) {
+                is Resource.Success -> ratesResult.data
+                else -> emptyMap()
+            }
+
+            sourceProperties = when (val propertiesResult = getPropertiesUseCase(userId = userId)) {
+                is Resource.Success -> propertiesResult.data.forMainCatalogDisplay()
+                is Resource.Error -> emptyList()
+            }
+
+            updateMatchedPropertiesCount()
+        }
+    }
+
+    private fun updateMatchedPropertiesCount() {
+        val matchedCount = if (sourceProperties.isEmpty()) {
+            0
+        } else {
+            filterPropertiesUseCase(
+                properties = sourceProperties,
+                filters = _state.value.toFiltersProperty(),
+                rates = currencyRates,
+            ).size
+        }
+
+        _state.update { current ->
+            if (current.matchedPropertiesCount == matchedCount) {
+                current
+            } else {
+                current.copy(matchedPropertiesCount = matchedCount)
+            }
+        }
+    }
+}
+
+private fun FiltersState.toFiltersProperty(): FiltersProperty {
+    return FiltersProperty(
+        type = selectedPropertyType,
+        selectedRegionId = selectedRegionId,
+        selectedRegionName = selectedRegionName,
+        selectedCityIds = selectedCityIds,
+        selectedCityNames = selectedCityNames,
+        selectedLocationLat = selectedLocationLat,
+        selectedLocationLng = selectedLocationLng,
+        price = price.let {
+            IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
+        },
+        pricePerMeter = pricePerMeter.let {
+            IntRangeFilter(it.from?.toIntOrNull(), it.to?.toIntOrNull())
+        },
+        area = area,
+        floor = floor,
+        floorHouse = floorHouse,
+        separateRooms = separateRooms,
+        selectedCurrency = selectedCurrency,
+        selectedSellerType = sellerType,
+        onlyWithPhotos = onlyWithPhotos,
+        sortType = sortType,
+        selectedDealType = dealType,
+        selectedCommercialPropertyType = commercialPropertyType,
+        commercialAmenities = commercialAmenities,
+        commercialRepairType = commercialRepairType,
+        roomsForSale = roomsForSale,
+        saleArea = saleArea,
+        roomsType = roomsType,
+        isWalkthroughRoom = isWalkthroughRoom,
+        livingArea = livingArea,
+        kitchenArea = kitchenArea,
+        bathroomType = bathroomType,
+        balconyType = balconyType,
+        ceilingHeight = ceilingHeight,
+        repairType = repairType,
+        wallMaterial = wallMaterial,
+        yearBuilt = yearBuilt,
+        buildingAmenities = buildingAmenities,
+        houseType = houseType,
+        landArea = landArea,
+        roofType = roofType,
+        heatingType = heatingType,
+        waterType = waterType,
+        gasType = gasType,
+        houseAmenities = houseAmenities,
+        parkingType = parkingType,
+    )
 }

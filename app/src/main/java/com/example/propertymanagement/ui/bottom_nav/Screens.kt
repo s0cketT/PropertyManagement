@@ -62,6 +62,15 @@ sealed class Screens(
 
     object CategorySelection : Screens("category_selection")
 
+    object RegionSelection : Screens("region_selection")
+
+    object CitySelection : Screens("city_selection?regionId={regionId}&regionName={regionName}") {
+        fun createRoute(regionId: Long, regionName: String = ""): String {
+            val encodedRegionName = Uri.encode(regionName)
+            return "city_selection?regionId=$regionId&regionName=$encodedRegionName"
+        }
+    }
+
     object AuthRegister : Screens("auth_register")
 
     object AuthOtpScreen : Screens("auth_otp?email={email}&check={check}") {

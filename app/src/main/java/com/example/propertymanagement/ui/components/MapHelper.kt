@@ -3,21 +3,25 @@ package com.example.propertymanagement.ui.components
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PointF
+import android.graphics.RectF
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.UserLocation
+import com.example.propertymanagement.ui.common.formatPrice
 import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
+import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.MapObjectTapListener
@@ -42,6 +46,7 @@ class MapHelper {
     private var propertyMarkersLayer: MapObjectCollection? = null
 
     private var detailPlacemark: PlacemarkMapObject? = null
+    private val priceMarkerIconCache = mutableMapOf<String, ImageProvider>()
 
     fun updateUserLocation(
         mapView: MapView,
@@ -79,12 +84,21 @@ class MapHelper {
         // Выше круга/метки геолокации, иначе большой круг перехватывает все тапы по карте.
         layer.zIndex = PROPERTY_MARKERS_Z_INDEX
 
-        val icon = createMarkerIcon(mapView.context)
-
         markers.forEach { marker ->
+            val priceLabel = marker.buildMarkerPriceLabel()
+            val icon = priceMarkerIconCache.getOrPut(priceLabel) {
+                createPriceMarkerIcon(
+                    context = mapView.context,
+                    text = priceLabel,
+                )
+            }
+
             val placemark = layer.addPlacemark(
                 Point(marker.latitude, marker.longitude),
-                icon
+                icon,
+                IconStyle().apply {
+                    anchor = PointF(0.5f, 1f)
+                },
             )
             placemark.zIndex = PROPERTY_MARKERS_Z_INDEX
             placemark.userData = marker
@@ -110,6 +124,7 @@ class MapHelper {
             mapView.map.mapObjects.remove(layer)
             propertyMarkersLayer = null
         }
+        priceMarkerIconCache.clear()
     }
 
     /**
@@ -130,6 +145,24 @@ class MapHelper {
             CameraPosition(
                 Point(property.latitude, property.longitude),
                 MapSizesColors.PROPERTY_DETAIL_MAP_ZOOM,
+                0f,
+                0f
+            ),
+            Animation(Animation.Type.SMOOTH, MapSizesColors.CAMERA_MOVE_ANIMATION_DURATION_SEC),
+            null
+        )
+    }
+
+    fun moveCameraTo(
+        mapView: MapView,
+        latitude: Double,
+        longitude: Double,
+        zoom: Float = MapSizesColors.PROPERTY_DETAIL_MAP_ZOOM,
+    ) {
+        mapView.map.move(
+            CameraPosition(
+                Point(latitude, longitude),
+                zoom,
                 0f,
                 0f
             ),
@@ -169,6 +202,96 @@ class MapHelper {
         drawable.draw(canvas)
 
         return ImageProvider.fromBitmap(bitmap)
+    }
+
+    private fun createPriceMarkerIcon(
+        context: Context,
+        text: String,
+    ): ImageProvider {
+        val density = context.resources.displayMetrics.density
+        val textSizePx = 13f * density
+        val horizontalPadding = 10f * density
+        val verticalPadding = 6f * density
+        val pointerHeight = 8f * density
+        val pointerHalfWidth = 7f * density
+        val cornerRadius = 12f * density
+        val strokeWidth = 1f * density
+        val minBubbleWidth = 58f * density
+
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = AndroidColor.parseColor("#111827")
+            textSize = textSizePx
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+        }
+        val fontMetrics = textPaint.fontMetrics
+        val textWidth = textPaint.measureText(text)
+        val textHeight = fontMetrics.bottom - fontMetrics.top
+
+        val bubbleWidth = maxOf(minBubbleWidth, textWidth + horizontalPadding * 2f)
+        val bubbleHeight = textHeight + verticalPadding * 2f
+        val bitmapWidth = kotlin.math.ceil(bubbleWidth).toInt()
+        val bitmapHeight = kotlin.math.ceil(bubbleHeight + pointerHeight).toInt()
+
+        val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        val bubbleRect = RectF(
+            0f,
+            0f,
+            bubbleWidth,
+            bubbleHeight,
+        )
+        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = AndroidColor.WHITE
+            style = Paint.Style.FILL
+        }
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = AndroidColor.parseColor("#D1D5DB")
+            style = Paint.Style.STROKE
+            this.strokeWidth = strokeWidth
+        }
+
+        canvas.drawRoundRect(
+            bubbleRect,
+            cornerRadius,
+            cornerRadius,
+            fillPaint,
+        )
+        canvas.drawRoundRect(
+            bubbleRect,
+            cornerRadius,
+            cornerRadius,
+            strokePaint,
+        )
+
+        val centerX = bubbleWidth / 2f
+        val pointerTopY = bubbleHeight - 1f
+        val pointerPath = Path().apply {
+            moveTo(centerX - pointerHalfWidth, pointerTopY)
+            lineTo(centerX + pointerHalfWidth, pointerTopY)
+            lineTo(centerX, bubbleHeight + pointerHeight)
+            close()
+        }
+        canvas.drawPath(pointerPath, fillPaint)
+        canvas.drawPath(pointerPath, strokePaint)
+
+        val textX = (bubbleWidth - textWidth) / 2f
+        val textY = bubbleHeight / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f
+        canvas.drawText(text, textX, textY, textPaint)
+
+        return ImageProvider.fromBitmap(bitmap)
+    }
+
+    private fun Property.buildMarkerPriceLabel(): String {
+        return "${formatPrice(price)} ${currency.shortMarkerSymbol()}"
+    }
+
+    private fun CurrencyType.shortMarkerSymbol(): String {
+        return when (this) {
+            CurrencyType.USD -> "$"
+            CurrencyType.EUR -> "EUR"
+            CurrencyType.BYN -> "BYN"
+        }
     }
 
     private fun updateUserLocationOnMap(

@@ -7,6 +7,12 @@ import com.example.propertymanagement.ui.filters_screen.FiltersState
 fun FiltersProperty.toState(): FiltersState {
     return FiltersState(
         selectedPropertyType = type,
+        selectedRegionId = selectedRegionId,
+        selectedRegionName = selectedRegionName,
+        selectedCityIds = selectedCityIds,
+        selectedCityNames = selectedCityNames,
+        selectedLocationLat = selectedLocationLat,
+        selectedLocationLng = selectedLocationLng,
 
         price = StringRangeFilter(
             from = price.from?.toString(),

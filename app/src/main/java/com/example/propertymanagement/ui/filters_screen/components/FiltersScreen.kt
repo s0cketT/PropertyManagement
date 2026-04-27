@@ -47,6 +47,30 @@ fun FilterScreen(navController: NavController) {
         .getStateFlow<String?>("selected_property_type", null)
         .collectAsStateWithLifecycle()
 
+    val selectedRegionIdRaw by savedStateHandle
+        .getStateFlow<String?>("selected_region_id", null)
+        .collectAsStateWithLifecycle()
+
+    val selectedRegionName by savedStateHandle
+        .getStateFlow<String?>("selected_region_name", null)
+        .collectAsStateWithLifecycle()
+
+    val selectedCityIdsRaw by savedStateHandle
+        .getStateFlow<String?>("selected_city_ids", null)
+        .collectAsStateWithLifecycle()
+
+    val selectedCityNamesRaw by savedStateHandle
+        .getStateFlow<String?>("selected_city_names", null)
+        .collectAsStateWithLifecycle()
+
+    val selectedLocationLatRaw by savedStateHandle
+        .getStateFlow<String?>("selected_location_lat", null)
+        .collectAsStateWithLifecycle()
+
+    val selectedLocationLngRaw by savedStateHandle
+        .getStateFlow<String?>("selected_location_lng", null)
+        .collectAsStateWithLifecycle()
+
     val selectedType = selectedTypeName?.let { name ->
         try {
             PropertyType.valueOf(name)
@@ -63,11 +87,67 @@ fun FilterScreen(navController: NavController) {
         }
     }
 
+    LaunchedEffect(selectedRegionIdRaw, selectedRegionName) {
+        val regionId = selectedRegionIdRaw?.toLongOrNull()
+        val regionName = selectedRegionName?.trim().orEmpty()
+
+        if (regionId != null && regionName.isNotEmpty()) {
+            intent(
+                FiltersIntent.SelectRegion(
+                    id = regionId,
+                    name = regionName,
+                )
+            )
+            savedStateHandle.remove<String>("selected_region_id")
+            savedStateHandle.remove<String>("selected_region_name")
+        }
+    }
+
+    LaunchedEffect(selectedCityIdsRaw, selectedCityNamesRaw) {
+        val cityIds = selectedCityIdsRaw
+            .orEmpty()
+            .split(",")
+            .mapNotNull { value -> value.trim().toLongOrNull() }
+            .toSet()
+
+        val cityNames = selectedCityNamesRaw
+            .orEmpty()
+            .split(";;")
+            .map { value -> value.trim() }
+            .filter { value -> value.isNotEmpty() }
+            .toSet()
+
+        if (selectedCityIdsRaw != null || selectedCityNamesRaw != null) {
+            intent(
+                FiltersIntent.SelectCities(
+                    cityIds = cityIds,
+                    cityNames = cityNames,
+                )
+            )
+            savedStateHandle.remove<String>("selected_city_ids")
+            savedStateHandle.remove<String>("selected_city_names")
+        }
+    }
+
+    LaunchedEffect(selectedLocationLatRaw, selectedLocationLngRaw) {
+        if (selectedLocationLatRaw != null || selectedLocationLngRaw != null) {
+            intent(
+                FiltersIntent.SelectLocationCoordinate(
+                    lat = selectedLocationLatRaw?.toDoubleOrNull(),
+                    lng = selectedLocationLngRaw?.toDoubleOrNull(),
+                )
+            )
+            savedStateHandle.remove<String>("selected_location_lat")
+            savedStateHandle.remove<String>("selected_location_lng")
+        }
+    }
+
     LaunchedEffect(Unit) {
         event.filterIsInstance<FiltersEvent>().collect { event ->
             when (event) {
                 is FiltersEvent.NavigateBack -> navController.popBackStack()
                 FiltersEvent.NavigateToCategorySelection -> navController.navigate(Screens.CategorySelection.route)
+                FiltersEvent.NavigateToRegionSelection -> navController.navigate(Screens.RegionSelection.route)
             }
         }
     }
@@ -185,6 +265,9 @@ private fun UI(
 
         PrimaryActionButton(
             text = R.string.show_properties,
+            textOverride = state.showPropertiesText(),
+            containerColor = state.showPropertiesButtonContainerColor(),
+            contentColor = state.showPropertiesButtonContentColor(),
             onClick = { intent(FiltersIntent.SaveFilters) },
             enabled = state.isFiltersValid,
         )
@@ -192,3 +275,27 @@ private fun UI(
         Spacer(modifier = Modifier.height(PaddingLarge))
     }
 }
+
+@Composable
+private fun FiltersState.showPropertiesText(): String {
+    return androidx.compose.ui.res.stringResource(
+        R.string.show_properties_with_count,
+        matchedPropertiesCount,
+    )
+}
+
+@Composable
+private fun FiltersState.showPropertiesButtonContainerColor() =
+    if (matchedPropertiesCount == 0) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
+@Composable
+private fun FiltersState.showPropertiesButtonContentColor() =
+    if (matchedPropertiesCount == 0) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }

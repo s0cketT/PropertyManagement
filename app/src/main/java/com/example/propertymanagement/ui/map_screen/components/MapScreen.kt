@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -143,11 +144,46 @@ private fun UI(
         }
     }
 
+    val hasRegionFilter = !state.filtersProperty?.selectedRegionName.isNullOrBlank()
+
     // Оба ключа: геолокация рисуется под метками (низкий z-index); объявления — сверху и получают тапы.
-    LaunchedEffect(state.filteredMarkers, state.userLocation) {
-        state.userLocation?.let { mapHelper.updateUserLocation(mapView, it) }
+    LaunchedEffect(state.filteredMarkers, state.userLocation, hasRegionFilter) {
+        state.userLocation?.let { userLocation ->
+            mapHelper.updateUserLocation(
+                mapView = mapView,
+                location = userLocation,
+                moveCameraOnFirstFix = !hasRegionFilter,
+            )
+        }
         mapHelper.showPropertyMarkers(mapView, state.filteredMarkers) { property ->
             intent(MapIntent.MarkerTapped(property))
+        }
+    }
+
+    LaunchedEffect(
+        hasRegionFilter,
+        state.filtersProperty?.selectedLocationLat,
+        state.filtersProperty?.selectedLocationLng,
+        state.filteredMarkers,
+    ) {
+        val lat = state.filtersProperty?.selectedLocationLat
+        val lng = state.filtersProperty?.selectedLocationLng
+        if (hasRegionFilter) {
+            if (lat != null && lng != null) {
+                mapHelper.moveCameraTo(
+                    mapView = mapView,
+                    latitude = lat,
+                    longitude = lng,
+                )
+            } else {
+                state.filteredMarkers.firstOrNull()?.let { property ->
+                    mapHelper.moveCameraTo(
+                        mapView = mapView,
+                        latitude = property.latitude,
+                        longitude = property.longitude,
+                    )
+                }
+            }
         }
     }
 
@@ -177,6 +213,31 @@ private fun UI(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White
+            )
+        }
+
+        FloatingActionButton(
+            onClick = {
+                val location = state.userLocation
+                if (location != null) {
+                    mapHelper.moveCameraTo(
+                        mapView = mapView,
+                        latitude = location.lat,
+                        longitude = location.lon,
+                    )
+                } else {
+                    intent(MapIntent.LoadUserLocation)
+                }
+            },
+            modifier = Modifier
+                .padding(PaddingExtraLarge)
+                .align(Alignment.BottomStart),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = OnPrimary
+        ) {
+            Icon(
+                imageVector = Icons.Default.MyLocation,
+                contentDescription = stringResource(R.string.map_my_location_content_description)
             )
         }
 

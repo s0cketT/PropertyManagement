@@ -15,6 +15,7 @@ import com.example.propertymanagement.data.repository.FiltersRepositoryImpl
 import com.example.propertymanagement.data.repository.IUserRepositoryImpl
 import com.example.propertymanagement.data.repository.LocationRepositoryImpl
 import com.example.propertymanagement.data.repository.PropertyRepositoryImpl
+import com.example.propertymanagement.data.repository.RegionCityRepositoryImpl
 import com.example.propertymanagement.data.repository.SettingsRepositoryImpl
 import com.example.propertymanagement.data.repository.StorageRepositoryImpl
 import com.example.propertymanagement.data.repository.ThemeRepositoryImpl
@@ -24,6 +25,7 @@ import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
+import com.example.propertymanagement.domain.repository.IRegionCityRepository
 import com.example.propertymanagement.domain.repository.ISettingsRepository
 import com.example.propertymanagement.domain.repository.IStorageRepository
 import com.example.propertymanagement.domain.repository.IThemeRepository
@@ -44,6 +46,12 @@ val dataModule = module {
     single<ILocationRepository> {
         LocationRepositoryImpl(
             fusedLocationClient = get<FusedLocationProviderClient>()
+        )
+    }
+
+    single<IRegionCityRepository> {
+        RegionCityRepositoryImpl(
+            supabaseApi = get<ISupabaseApi>(),
         )
     }
 

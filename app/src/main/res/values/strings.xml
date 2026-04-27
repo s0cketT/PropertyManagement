@@ -6,6 +6,7 @@
     <string name="sale_chip">Продажа</string>
     <string name="rent_chip">Аренда</string>
     <string name="filters_fab_content_description">Фильтры</string>
+    <string name="map_my_location_content_description">Моё местоположение</string>
 
     <string name="screen_advertisements">Объявления</string>
     <string name="screen_favorites">Избранное</string>
@@ -33,11 +34,14 @@
     <string name="close">Закрыть</string>
     <string name="clear_filters">Очистить</string>
     <string name="category">Категория</string>
+    <string name="region">Регион</string>
+    <string name="region_with_cities_count">%1$s, городов: %2$d</string>
     <string name="all_categories">Все категории</string>
 
     <string name="real_estate">Недвижимость</string>
 
     <string name="show_properties">Показать объявления</string>
+    <string name="show_properties_with_count">Показать %1$d объявлений</string>
 
     <string name="price">Цена</string>
     <string name="price_per_month">Цена за месяц</string>

@@ -113,6 +113,7 @@
     <string name="sale_chip">For Sale</string>
     <string name="rent_chip">For Rent</string>
     <string name="filters_fab_content_description">Filters</string>
+    <string name="map_my_location_content_description">My location</string>
 
     <string name="screen_advertisements">Listings</string>
     <string name="screen_favorites">Favorites</string>
@@ -138,11 +139,14 @@
     <string name="close">Close</string>
     <string name="clear_filters">Clear</string>
     <string name="category">Category</string>
+    <string name="region">Region</string>
+    <string name="region_with_cities_count">%1$s, cities: %2$d</string>
     <string name="all_categories">All categories</string>
 
     <string name="real_estate">Real Estate</string>
 
     <string name="show_properties">Show listings</string>
+    <string name="show_properties_with_count">Show %1$d listings</string>
 
     <string name="price">Price</string>
     <string name="price_per_month">Price per month</string>

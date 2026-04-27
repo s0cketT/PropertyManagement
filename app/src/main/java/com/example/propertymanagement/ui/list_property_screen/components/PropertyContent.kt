@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.Property
-import com.example.propertymanagement.domain.model.PropertyDetails
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.ui.common.PropertyMultiCurrencyPriceColumn
 import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
@@ -31,16 +30,9 @@ fun PropertyContent(
     property: Property,
     currencyRates: Map<String, CurrencyRate>
 ) {
-    val details = property.details
-
     val rooms = property.rooms
 
-    val area = when (details) {
-        is PropertyDetails.Apartment -> details.livingArea ?: property.area
-        is PropertyDetails.Room -> details.saleArea ?: property.area
-        is PropertyDetails.House -> details.landArea ?: property.area
-        else -> property.area
-    }
+    val area = property.area
 
     val address = listOfNotNull(
         property.region,

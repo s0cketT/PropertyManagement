@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
@@ -26,6 +27,9 @@ import com.example.propertymanagement.ui.theme.TextMedium
 @Composable
 fun PrimaryActionButton(
     text: Int,
+    textOverride: String? = null,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
     icon: ImageVector? = null,
     onClick: () -> Unit,
     enabled: Boolean = true,
@@ -38,8 +42,8 @@ fun PrimaryActionButton(
             .padding(PaddingLarge),
         shape = RoundedCornerShape(ButtonCornerRadius),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = containerColor,
+            contentColor = contentColor,
         )
     ) {
         Row(
@@ -56,7 +60,7 @@ fun PrimaryActionButton(
             Spacer(modifier = Modifier.width(SpacerTiny))
 
             Text(
-                text = stringResource(text),
+                text = textOverride ?: stringResource(text),
                 fontSize = TextMedium
             )
         }

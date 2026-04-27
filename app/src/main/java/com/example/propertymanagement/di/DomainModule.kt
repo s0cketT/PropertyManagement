@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
+import com.example.propertymanagement.domain.repository.IRegionCityRepository
 import com.example.propertymanagement.domain.repository.ISettingsRepository
 import com.example.propertymanagement.domain.repository.IStorageRepository
 import com.example.propertymanagement.domain.repository.IThemeRepository
@@ -22,6 +23,8 @@ import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
+import com.example.propertymanagement.domain.use_case.GetCitiesByRegionUseCase
+import com.example.propertymanagement.domain.use_case.GetRegionsUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
@@ -49,6 +52,18 @@ val domainModule = module {
     factory<ObserveLocationUseCase> {
         ObserveLocationUseCase(
             ILocationRepository = get<ILocationRepository>()
+        )
+    }
+
+    factory<GetRegionsUseCase> {
+        GetRegionsUseCase(
+            regionCityRepository = get<IRegionCityRepository>(),
+        )
+    }
+
+    factory<GetCitiesByRegionUseCase> {
+        GetCitiesByRegionUseCase(
+            regionCityRepository = get<IRegionCityRepository>(),
         )
     }
 

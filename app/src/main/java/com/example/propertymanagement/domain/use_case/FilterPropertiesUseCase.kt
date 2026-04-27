@@ -44,6 +44,8 @@ class FilterPropertiesUseCase {
 
         if (f.type != null && type != f.type) return false
         if (f.selectedDealType != null && dealType != f.selectedDealType) return false
+        if (!region.matchesSelectedRegion(f.selectedRegionName)) return false
+        if (!city.matchesSelectedCities(f.selectedCityNames)) return false
 
         if (f.onlyWithPhotos && photos.isEmpty()) return false
 
@@ -108,5 +110,31 @@ class FilterPropertiesUseCase {
 
         return (range.from == null || this >= range.from) &&
                 (range.to == null || this <= range.to)
+    }
+
+    private fun String?.matchesSelectedRegion(selectedRegionName: String?): Boolean {
+        if (selectedRegionName.isNullOrBlank()) {
+            return true
+        }
+
+        return this.normalizeLocationName() == selectedRegionName.normalizeLocationName()
+    }
+
+    private fun String?.matchesSelectedCities(selectedCityNames: Set<String>): Boolean {
+        if (selectedCityNames.isEmpty()) {
+            return true
+        }
+
+        val cityName = this.normalizeLocationName()
+        return selectedCityNames.any { selectedCity ->
+            selectedCity.normalizeLocationName() == cityName
+        }
+    }
+
+    private fun String?.normalizeLocationName(): String {
+        return this.orEmpty()
+            .trim()
+            .lowercase()
+            .replace('ё', 'е')
     }
 }

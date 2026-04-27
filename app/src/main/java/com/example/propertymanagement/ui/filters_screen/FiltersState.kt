@@ -29,6 +29,13 @@ import com.example.propertymanagement.ui.extensions.isRangeValid
 
 data class FiltersState(
     val selectedPropertyType:  PropertyType? = null,
+    val selectedRegionId: Long? = null,
+    val selectedRegionName: String? = null,
+    val selectedCityIds: Set<Long> = emptySet(),
+    val selectedCityNames: Set<String> = emptySet(),
+    val selectedLocationLat: Double? = null,
+    val selectedLocationLng: Double? = null,
+    val matchedPropertiesCount: Int = 0,
 
     val selectedCurrency: CurrencyType = CurrencyType.USD,
 

@@ -28,6 +28,12 @@ data class FiltersPropertyDbModel(
     val id: Int,
 
     val type: PropertyType?,
+    val selectedRegionId: Long?,
+    val selectedRegionName: String?,
+    val selectedCityIds: String,
+    val selectedCityNames: String,
+    val selectedLocationLat: Double?,
+    val selectedLocationLng: Double?,
 
     val priceFrom: Int?,
     val priceTo: Int?,

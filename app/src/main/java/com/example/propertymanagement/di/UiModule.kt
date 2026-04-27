@@ -7,10 +7,12 @@ import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetCitiesByRegionUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
+import com.example.propertymanagement.domain.use_case.GetRegionsUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.SaveAppRatingUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
@@ -34,6 +36,8 @@ import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.favorites_screen.FavoriteViewModel
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
+import com.example.propertymanagement.ui.filters_screen.city_selection.CitySelectionViewModel
+import com.example.propertymanagement.ui.filters_screen.region_selection.RegionSelectionViewModel
 import com.example.propertymanagement.ui.map.MapViewModel
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsViewModel
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
@@ -66,6 +70,24 @@ val uiModule = module {
         FiltersViewModel(
             getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
             saveSelectedFiltersMarkerUseCase = get<SaveSelectedFiltersMarkerUseCase>(),
+            getPropertiesUseCase = get<GetPropertiesUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            filterPropertiesUseCase = get<FilterPropertiesUseCase>(),
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+        )
+    }
+
+    viewModel<RegionSelectionViewModel> {
+        RegionSelectionViewModel(
+            getRegionsUseCase = get<GetRegionsUseCase>(),
+        )
+    }
+
+    viewModel<CitySelectionViewModel> { (regionId: Long, selectedCityIds: Set<Long>) ->
+        CitySelectionViewModel(
+            regionId = regionId,
+            initialSelectedCityIds = selectedCityIds,
+            getCitiesByRegionUseCase = get<GetCitiesByRegionUseCase>(),
         )
     }
 

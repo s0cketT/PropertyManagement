@@ -1,6 +1,7 @@
 package com.example.propertymanagement.data.remote
 
 import com.example.propertymanagement.data.model.CheckEmailRequest
+import com.example.propertymanagement.data.model.CityDto
 import com.example.propertymanagement.data.model.CreateFullPropertyDto
 import com.example.propertymanagement.data.model.UpdateFullPropertyDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
@@ -9,6 +10,7 @@ import com.example.propertymanagement.data.model.FavoriteDto
 import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
 import com.example.propertymanagement.data.model.PropertyImageDto
 import com.example.propertymanagement.data.model.PropertyResponseDto
+import com.example.propertymanagement.data.model.RegionDto
 import com.example.propertymanagement.data.model.ToggleFavoriteBody
 import com.google.gson.JsonObject
 import retrofit2.Response
@@ -19,6 +21,20 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ISupabaseApi {
+
+    @GET("region")
+    suspend fun getRegions(
+        @Query("select") select: String = "id,name",
+        @Query("country_name") countryName: String = "eq.Беларусь",
+        @Query("order") order: String = "name.asc"
+    ): List<RegionDto>
+
+    @GET("cities")
+    suspend fun getCitiesByRegion(
+        @Query("region_id") regionId: String,
+        @Query("select") select: String = "id,region_id,name,lat,lng",
+        @Query("order") order: String = "name.asc"
+    ): List<CityDto>
 
     @POST("rpc/check_email_exists")
     suspend fun checkEmailExists(@Body body: CheckEmailRequest): List<ExistsResult>
