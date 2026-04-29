@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.GeocodedAddressParts
+import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.R
@@ -85,7 +86,16 @@ class PublishViewModel(
             }
 
             is PublishIntent.SetPropertyType -> {
-                _state.update { it.copy(propertyType = intent.type) }
+                _state.update {
+                    it.copy(
+                        propertyType = intent.type,
+                        windowViews = if (intent.type == PropertyType.APARTMENT || intent.type == PropertyType.ROOM) {
+                            it.windowViews
+                        } else {
+                            emptySet()
+                        }
+                    )
+                }
             }
 
             is PublishIntent.SetDealType -> {
@@ -176,6 +186,10 @@ class PublishViewModel(
 
             is PublishIntent.SetCeilingHeight -> {
                 _state.update { it.copy(ceilingHeight = intent.type) }
+            }
+
+            is PublishIntent.SetWindowViews -> {
+                _state.update { it.copy(windowViews = intent.views) }
             }
 
             is PublishIntent.SetWallMaterial -> {
@@ -343,6 +357,7 @@ class PublishViewModel(
                         ceilingHeight = stateValue.ceilingHeight,
                         repairType = stateValue.repairType,
                         wallMaterial = stateValue.wallMaterial,
+                        windowViews = stateValue.windowViews,
 
                         roomsForSale = stateValue.roomsForSaleType,
                         saleArea = stateValue.saleArea?.toDouble(),

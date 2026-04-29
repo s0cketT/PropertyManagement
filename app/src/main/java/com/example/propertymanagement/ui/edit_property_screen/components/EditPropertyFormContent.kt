@@ -129,6 +129,7 @@ fun EditPropertyFormContent(
                     repairType = state.repairType,
                     yearBuilt = state.yearBuilt,
                     buildingAmenities = state.buildingAmenities,
+                    windowViews = state.windowViews,
                     wallMaterial = state.wallMaterial,
 
                     onRoomsType = { intent(EditPropertyIntent.SetRoomsType(it)) },
@@ -143,6 +144,7 @@ fun EditPropertyFormContent(
                     onRepairType = { intent(EditPropertyIntent.SetRepairType(it)) },
                     onYearBuilt = { intent(EditPropertyIntent.SetYearBuilt(it)) },
                     onBuildingAmenities = { intent(EditPropertyIntent.SetBuildingAmenities(it)) },
+                    onWindowViews = { intent(EditPropertyIntent.SetWindowViews(it)) },
                     onWallMaterial = { intent(EditPropertyIntent.SetWallMaterial(it)) },
                 )
                 PropertyType.ROOM -> RoomSection(
@@ -157,6 +159,7 @@ fun EditPropertyFormContent(
                     floorHouse = state.floorHouse,
                     repairType = state.repairType,
                     buildingAmenities = state.buildingAmenities,
+                    windowViews = state.windowViews,
                     wallMaterial = state.wallMaterial,
 
                     onRoomsType = { intent(EditPropertyIntent.SetRoomsType(it)) },
@@ -169,6 +172,7 @@ fun EditPropertyFormContent(
                     onFloorHouse = { intent(EditPropertyIntent.SetFloorHouse(it)) },
                     onRepairType = { intent(EditPropertyIntent.SetRepairType(it)) },
                     onBuildingAmenities = { intent(EditPropertyIntent.SetBuildingAmenities(it)) },
+                    onWindowViews = { intent(EditPropertyIntent.SetWindowViews(it)) },
                     onWallMaterial = { intent(EditPropertyIntent.SetWallMaterial(it)) },
                 )
                 PropertyType.HOUSE -> HouseSection(

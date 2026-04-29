@@ -60,12 +60,14 @@ sealed interface PropertyDetails {
         val balconyType: BalconyType?,
         val ceilingHeight: CeilingHeightType?,
         val repairType: ApartmentRepairType?,
-        val wallMaterial: WallMaterialType?
+        val wallMaterial: WallMaterialType?,
+        val windowViews: Set<WindowViewType> = emptySet()
     ) : PropertyDetails
 
     data class Room(
         val roomsForSale: RoomsType?,
-        val saleArea: Double?
+        val saleArea: Double?,
+        val windowViews: Set<WindowViewType> = emptySet()
     ) : PropertyDetails
 
     data class House(

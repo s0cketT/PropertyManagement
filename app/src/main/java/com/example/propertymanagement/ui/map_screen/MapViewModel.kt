@@ -29,7 +29,7 @@ class MapViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
     private val filterPropertiesUseCase: FilterPropertiesUseCase,
-    private val getTodayRatesUseCase: GetTodayRatesUseCase
+    private val getTodayRatesUseCase: GetTodayRatesUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MapState())

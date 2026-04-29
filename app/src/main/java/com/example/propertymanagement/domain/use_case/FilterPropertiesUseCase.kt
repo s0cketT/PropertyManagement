@@ -5,7 +5,9 @@ import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.PropertyDetails
 import com.example.propertymanagement.domain.model.SortType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.currency.convertAmountToByn
 import java.time.Instant
 
@@ -72,6 +74,7 @@ class FilterPropertiesUseCase {
 
         if (f.roomsType != null && rooms != f.roomsType) return false
         if (f.yearBuilt != null && yearBuilt != f.yearBuilt) return false
+        if (!matchesWindowViews(f.windowViews)) return false
 
         if (f.buildingAmenities.isNotEmpty() &&
             !buildingAmenities.containsAll(f.buildingAmenities)
@@ -129,6 +132,24 @@ class FilterPropertiesUseCase {
         return selectedCityNames.any { selectedCity ->
             selectedCity.normalizeLocationName() == cityName
         }
+    }
+
+    private fun Property.matchesWindowViews(selectedWindowViews: Set<WindowViewType>): Boolean {
+        if (selectedWindowViews.isEmpty()) {
+            return true
+        }
+
+        val propertyWindowViews = when (val d = details) {
+            is PropertyDetails.Apartment -> d.windowViews
+            is PropertyDetails.Room -> d.windowViews
+            else -> emptySet()
+        }
+
+        if (propertyWindowViews.isEmpty()) {
+            return false
+        }
+
+        return propertyWindowViews.any { it in selectedWindowViews }
     }
 
     private fun String?.normalizeLocationName(): String {

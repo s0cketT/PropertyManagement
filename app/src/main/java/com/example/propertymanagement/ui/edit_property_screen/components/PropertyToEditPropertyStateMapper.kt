@@ -41,12 +41,14 @@ fun Property.toEditPropertyState(): EditPropertyState {
             ceilingHeight = d.ceilingHeight,
             repairType = d.repairType,
             wallMaterial = d.wallMaterial,
+            windowViews = d.windowViews,
             isWalkthroughRoom = d.isWalkthrough == true,
         )
 
         is PropertyDetails.Room -> base.copy(
             roomsForSaleType = d.roomsForSale,
             saleArea = d.saleArea?.toInt(),
+            windowViews = d.windowViews,
         )
 
         is PropertyDetails.House -> base.copy(

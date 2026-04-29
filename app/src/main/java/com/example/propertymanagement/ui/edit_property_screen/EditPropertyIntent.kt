@@ -20,6 +20,7 @@ import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.model.WaterType
 
 sealed class EditPropertyIntent {
@@ -65,6 +66,7 @@ sealed class EditPropertyIntent {
 
     data class SetRepairType(val type: ApartmentRepairType?) : EditPropertyIntent()
     data class SetCeilingHeight(val type: CeilingHeightType?) : EditPropertyIntent()
+    data class SetWindowViews(val views: Set<WindowViewType>) : EditPropertyIntent()
 
     data class SetWallMaterial(val type: WallMaterialType?) : EditPropertyIntent()
 

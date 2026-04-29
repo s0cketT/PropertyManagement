@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.model.CommercialAmenity
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.HouseAmenity
 import com.example.propertymanagement.domain.model.IntRangeFilter
+import com.example.propertymanagement.domain.model.WindowViewType
 
 fun FiltersPropertyDbModel.toDomain(): FiltersProperty {
     return FiltersProperty(
@@ -47,6 +48,7 @@ fun FiltersPropertyDbModel.toDomain(): FiltersProperty {
         ceilingHeight = ceilingHeight,
         repairType = repairType,
         wallMaterial = wallMaterial,
+        windowViews = windowViews.toWindowViewSet(),
         yearBuilt = yearBuilt,
         buildingAmenities = buildingAmenities.toBuildingAmenitySet(),
 
@@ -112,6 +114,7 @@ fun FiltersProperty.toEntity(): FiltersPropertyDbModel {
         ceilingHeight = ceilingHeight,
         repairType = repairType,
         wallMaterial = wallMaterial,
+        windowViews = windowViews.toWindowViewDb(),
         yearBuilt = yearBuilt,
         buildingAmenities = buildingAmenities.toBuildingDb(),
 
@@ -197,4 +200,17 @@ private fun String.toStringSet(): Set<String> {
 
 private fun Set<String>.toDbStringSet(): String {
     return joinToString(";;")
+}
+
+private fun String.toWindowViewSet(): Set<WindowViewType> {
+    if (isBlank()) return emptySet()
+    return split(",")
+        .mapNotNull { raw ->
+            runCatching { WindowViewType.valueOf(raw.trim()) }.getOrNull()
+        }
+        .toSet()
+}
+
+private fun Set<WindowViewType>.toWindowViewDb(): String {
+    return joinToString(",") { it.name }
 }

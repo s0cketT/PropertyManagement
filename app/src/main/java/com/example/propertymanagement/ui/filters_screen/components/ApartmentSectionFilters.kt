@@ -16,6 +16,7 @@ import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.ui.components.EnumTypeSection
 import com.example.propertymanagement.ui.components.ExpandableFilterSection
 import com.example.propertymanagement.ui.components.LabeledCheckboxSection
@@ -45,6 +46,7 @@ fun ApartmentSectionFilters(
     balconyType: BalconyType?,
     ceilingHeight: CeilingHeightType?,
     repairType: ApartmentRepairType?,
+    windowViews: Set<WindowViewType>,
 
     floor: IntRangeFilter,
     floorHouse: IntRangeFilter,
@@ -137,6 +139,16 @@ fun ApartmentSectionFilters(
                 selectedType = repairType,
                 onTypeSelected = { intent(FiltersIntent.RepairTypeChanged(it)) },
                 titleRes = ApartmentRepairType::titleRes
+            )
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            AmenitiesFilterItem(
+                titleResId = R.string.window_views_title,
+                items = WindowViewType.entries,
+                selected = windowViews,
+                titleRes = { it.titleRes() },
+                onApply = { intent(FiltersIntent.WindowViewsChanged(it)) }
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))

@@ -7,6 +7,8 @@
     <string name="rent_chip">Аренда</string>
     <string name="filters_fab_content_description">Фильтры</string>
     <string name="map_my_location_content_description">Моё местоположение</string>
+    <string name="map_legend_sale">Продажа</string>
+    <string name="map_legend_rent">Аренда</string>
 
     <string name="screen_advertisements">Объявления</string>
     <string name="screen_favorites">Избранное</string>
@@ -184,6 +186,15 @@
     <string name="amenity_gated_area">Закрытая территория</string>
     <string name="amenity_intercom">Домофон</string>
     <string name="amenity_basement">Подвал</string>
+    <string name="window_views_title">Окна выходят</string>
+    <string name="window_view_river">На речку</string>
+    <string name="window_view_courtyard">Во двор</string>
+    <string name="window_view_park">В парк</string>
+    <string name="window_view_street">На улицу</string>
+    <string name="window_view_south">Юг</string>
+    <string name="window_view_north">Север</string>
+    <string name="window_view_east">Восток</string>
+    <string name="window_view_west">Запад</string>
 
     <string name="rooms_for_sale_title">Кол-во предлагаемых комнат</string>
 
@@ -397,7 +408,7 @@
     <string name="property_detail_street">Улица</string>
     <string name="property_detail_house">Дом / корпус</string>
     <string name="property_detail_area">Площадь, м²</string>
-    <string name="property_detail_walkthrough">Свободная планировка</string>
+    <string name="property_detail_walkthrough">Есть проходная комната</string>
     <string name="property_detail_kitchen_area">Площадь кухни, м²</string>
     <string name="property_detail_land_area">Площадь участка, м²</string>
     <string name="property_detail_floors">Этажей в доме</string>

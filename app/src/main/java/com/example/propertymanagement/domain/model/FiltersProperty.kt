@@ -40,6 +40,7 @@ data class FiltersProperty(
     val ceilingHeight: CeilingHeightType?,
     val repairType: ApartmentRepairType?,
     val wallMaterial: WallMaterialType?,
+    val windowViews: Set<WindowViewType>,
     val yearBuilt: Int?,
     val buildingAmenities: Set<BuildingAmenity>,
 

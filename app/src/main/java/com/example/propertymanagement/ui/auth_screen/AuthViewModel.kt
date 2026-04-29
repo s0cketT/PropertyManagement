@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.data.common.OneSignalManager
 import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.SendOtpUseCase
@@ -302,6 +303,7 @@ class AuthViewModel(
                 _state.update { it.copy(isLoading = false, isRegistered = true, code = "", otpError = null) }
                 when (check) {
                     AuthCheck.REGISTER -> {
+                        OneSignalManager.loginAfterPermission(it.id)
                         _event.emit(AuthEvent.ShowRegistrationSuccess)
                         _event.emit(AuthEvent.NavigateToMain)
                     }
@@ -309,6 +311,7 @@ class AuthViewModel(
                         _event.emit(AuthEvent.NavigateToSetNewPassword)
                     }
                     AuthCheck.LOGIN -> {
+                        OneSignalManager.loginAfterPermission(it.id)
                         _event.emit(AuthEvent.NavigateToMain)
                     }
                     AuthCheck.CHANGE_EMAIL_CONFIRM_OLD -> {
@@ -345,6 +348,7 @@ class AuthViewModel(
             }
                 .onSuccess { user ->
                     Log.d("!!!", "S - user - $user")
+                    OneSignalManager.loginAfterPermission(user.id)
                     _state.update {
                         it.copy(isLoading = false)
                     }

@@ -52,6 +52,7 @@ fun FiltersProperty.toState(): FiltersState {
         ceilingHeight = ceilingHeight,
         repairType = repairType,
         wallMaterial = wallMaterial,
+        windowViews = windowViews,
         yearBuilt = yearBuilt,
         buildingAmenities = buildingAmenities,
 

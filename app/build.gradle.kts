@@ -7,6 +7,7 @@ plugins {
 
     alias(libs.plugins.kotlin.serialization)
 
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -84,6 +85,9 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended")
 
+    // OneSignal push notifications
+    implementation("com.onesignal:OneSignal:[5.1.15, 5.1.99]")
+
     // Supabase
     implementation(platform("io.github.jan-tennert.supabase:bom:2.3.0"))
     implementation("io.github.jan-tennert.supabase:storage-kt")
@@ -94,6 +98,10 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.7")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // FireBase
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+    implementation("com.google.firebase:firebase-messaging")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

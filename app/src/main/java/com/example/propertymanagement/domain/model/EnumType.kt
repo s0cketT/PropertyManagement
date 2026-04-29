@@ -150,6 +150,18 @@ enum class WallMaterialType {
     MONOLITH,
     BRICK
 }
+
+enum class WindowViewType {
+    RIVER,
+    COURTYARD,
+    PARK,
+    STREET,
+    SOUTH,
+    NORTH,
+    EAST,
+    WEST
+}
+
 enum class RoofType {
     FLAT,
     SINGLE_SLOPE,

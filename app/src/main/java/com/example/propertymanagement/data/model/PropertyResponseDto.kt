@@ -49,6 +49,7 @@ data class PropertyResponseDto(
     val apartment_total_floors: Int?,
     val apartment_ceiling_height: Double?,
     val apartment_year_built: Int?,
+    val window_views: List<String>?,
     val bathroom_type: String?,
     val balcony_type: String?,
     val apartment_repair_type: String?,

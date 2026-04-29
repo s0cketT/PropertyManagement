@@ -19,6 +19,7 @@ import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.model.WaterType
 
 data class PublishState(
@@ -81,5 +82,6 @@ data class PublishState(
     val repairType: ApartmentRepairType? = null,
     val ceilingHeight: CeilingHeightType? = null,
     val balconyType: BalconyType? = null,
-    val bathroomType: BathroomType? = null
+    val bathroomType: BathroomType? = null,
+    val windowViews: Set<WindowViewType> = emptySet(),
 )

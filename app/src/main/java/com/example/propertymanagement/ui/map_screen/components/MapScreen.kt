@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.MapHelper
 import com.example.propertymanagement.ui.map.MapViewModel
@@ -146,8 +147,8 @@ private fun UI(
 
     val hasRegionFilter = !state.filtersProperty?.selectedRegionName.isNullOrBlank()
 
-    // Оба ключа: геолокация рисуется под метками (низкий z-index); объявления — сверху и получают тапы.
-    LaunchedEffect(state.filteredMarkers, state.userLocation, hasRegionFilter) {
+    // Геолокация обновляется часто, поэтому держим её отдельно, чтобы не трогать слой объявлений.
+    LaunchedEffect(state.userLocation, hasRegionFilter) {
         state.userLocation?.let { userLocation ->
             mapHelper.updateUserLocation(
                 mapView = mapView,
@@ -155,7 +156,18 @@ private fun UI(
                 moveCameraOnFirstFix = !hasRegionFilter,
             )
         }
-        mapHelper.showPropertyMarkers(mapView, state.filteredMarkers) { property ->
+    }
+
+    val markerDisplayCurrency = state.filtersProperty?.selectedCurrency ?: CurrencyType.USD
+
+    // Метки объявлений перерисовываются только когда меняется набор/курс/выбранная валюта отображения.
+    LaunchedEffect(state.filteredMarkers, state.currencyRates, markerDisplayCurrency) {
+        mapHelper.showPropertyMarkers(
+            mapView = mapView,
+            markers = state.filteredMarkers,
+            currencyRates = state.currencyRates,
+            displayCurrency = markerDisplayCurrency,
+        ) { property ->
             intent(MapIntent.MarkerTapped(property))
         }
     }
@@ -215,6 +227,12 @@ private fun UI(
                 tint = Color.White
             )
         }
+
+        MapDealTypeLegend(
+            modifier = Modifier
+                .padding(PaddingLarge)
+                .align(Alignment.TopEnd),
+        )
 
         FloatingActionButton(
             onClick = {

@@ -8,6 +8,7 @@ import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.GeocodedAddressParts
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
@@ -126,7 +127,16 @@ class EditPropertyViewModel(
             }
 
             is EditPropertyIntent.SetPropertyType -> {
-                _state.update { it.copy(propertyType = intent.type) }
+                _state.update {
+                    it.copy(
+                        propertyType = intent.type,
+                        windowViews = if (intent.type == PropertyType.APARTMENT || intent.type == PropertyType.ROOM) {
+                            it.windowViews
+                        } else {
+                            emptySet()
+                        }
+                    )
+                }
             }
 
             is EditPropertyIntent.SetDealType -> {
@@ -217,6 +227,10 @@ class EditPropertyViewModel(
 
             is EditPropertyIntent.SetCeilingHeight -> {
                 _state.update { it.copy(ceilingHeight = intent.type) }
+            }
+
+            is EditPropertyIntent.SetWindowViews -> {
+                _state.update { it.copy(windowViews = intent.views) }
             }
 
             is EditPropertyIntent.SetWallMaterial -> {
@@ -384,6 +398,7 @@ class EditPropertyViewModel(
                         ceilingHeight = stateValue.ceilingHeight,
                         repairType = stateValue.repairType,
                         wallMaterial = stateValue.wallMaterial,
+                        windowViews = stateValue.windowViews,
 
                         roomsForSale = stateValue.roomsForSaleType,
                         saleArea = stateValue.saleArea?.toDouble(),

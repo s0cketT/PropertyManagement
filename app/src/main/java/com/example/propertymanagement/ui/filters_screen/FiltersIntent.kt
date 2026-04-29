@@ -23,6 +23,7 @@ import com.example.propertymanagement.domain.model.ParkingType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.model.WaterType
 
 sealed class FiltersIntent {
@@ -71,6 +72,7 @@ sealed class FiltersIntent {
     data class CeilingHeightChanged(val type: CeilingHeightType?) : FiltersIntent()
     data class RepairTypeChanged(val type: ApartmentRepairType?) : FiltersIntent()
     data class WallMaterialChanged(val type: WallMaterialType?) : FiltersIntent()
+    data class WindowViewsChanged(val views: Set<WindowViewType>) : FiltersIntent()
     data class YearBuiltChanged(val year: Int?) : FiltersIntent()
     data class BuildingAmenitiesChanged(val amenities: Set<BuildingAmenity>) : FiltersIntent()
 

@@ -8,6 +8,7 @@ import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
@@ -95,6 +96,11 @@ class FiltersViewModel(
                 _state.update {
                     it.copy(
                         selectedPropertyType = intent.type,
+                        windowViews = if (intent.type == PropertyType.APARTMENT || intent.type == PropertyType.ROOM) {
+                            it.windowViews
+                        } else {
+                            emptySet()
+                        }
                     )
                 }
             }
@@ -260,6 +266,10 @@ class FiltersViewModel(
                 _state.update { it.copy(wallMaterial = intent.type) }
             }
 
+            is FiltersIntent.WindowViewsChanged -> {
+                _state.update { it.copy(windowViews = intent.views) }
+            }
+
             is FiltersIntent.YearBuiltChanged -> {
                 _state.update { it.copy(yearBuilt = intent.year) }
             }
@@ -393,6 +403,7 @@ private fun FiltersState.toFiltersProperty(): FiltersProperty {
         ceilingHeight = ceilingHeight,
         repairType = repairType,
         wallMaterial = wallMaterial,
+        windowViews = windowViews,
         yearBuilt = yearBuilt,
         buildingAmenities = buildingAmenities,
         houseType = houseType,

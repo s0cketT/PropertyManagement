@@ -59,6 +59,15 @@
     <string name="amenity_gated_area">Gated area</string>
     <string name="amenity_intercom">Intercom</string>
     <string name="amenity_basement">Basement</string>
+    <string name="window_views_title">Windows face</string>
+    <string name="window_view_river">River</string>
+    <string name="window_view_courtyard">Courtyard</string>
+    <string name="window_view_park">Park</string>
+    <string name="window_view_street">Street</string>
+    <string name="window_view_south">South</string>
+    <string name="window_view_north">North</string>
+    <string name="window_view_east">East</string>
+    <string name="window_view_west">West</string>
 
     <string name="rooms_for_sale_title">Rooms for sale</string>
 
@@ -114,6 +123,8 @@
     <string name="rent_chip">For Rent</string>
     <string name="filters_fab_content_description">Filters</string>
     <string name="map_my_location_content_description">My location</string>
+    <string name="map_legend_sale">Sale</string>
+    <string name="map_legend_rent">Rent</string>
 
     <string name="screen_advertisements">Listings</string>
     <string name="screen_favorites">Favorites</string>

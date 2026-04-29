@@ -11,7 +11,10 @@ import android.graphics.RectF
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.currency.convertAmountBetweenCurrencies
+import com.example.propertymanagement.domain.model.CurrencyRate
 import com.example.propertymanagement.domain.model.CurrencyType
+import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.UserLocation
 import com.example.propertymanagement.ui.common.formatPrice
@@ -36,6 +39,11 @@ class MapHelper {
         /** Метки объявлений должны быть выше слоя геолокации (круг ~30 м перекрывает экран). */
         private const val USER_LAYER_Z_INDEX = 0f
         private const val PROPERTY_MARKERS_Z_INDEX = 5f
+
+        private const val SALE_CHEAP_USD = 30_000.0
+        private const val SALE_EXPENSIVE_USD = 150_000.0
+        private const val RENT_CHEAP_USD = 190.0
+        private const val RENT_EXPENSIVE_USD = 1_000.0
     }
 
     private var userPlacemark: PlacemarkMapObject? = null
@@ -74,6 +82,8 @@ class MapHelper {
     fun showPropertyMarkers(
         mapView: MapView,
         markers: List<Property>,
+        currencyRates: Map<String, CurrencyRate>,
+        displayCurrency: CurrencyType,
         onMarkerTap: (Property) -> Unit
     ) {
         clearPropertyMarkersLayer(mapView)
@@ -85,11 +95,19 @@ class MapHelper {
         layer.zIndex = PROPERTY_MARKERS_Z_INDEX
 
         markers.forEach { marker ->
-            val priceLabel = marker.buildMarkerPriceLabel()
-            val icon = priceMarkerIconCache.getOrPut(priceLabel) {
+            val priceLabel = marker.buildMarkerPriceLabel(
+                currencyRates = currencyRates,
+                displayCurrency = displayCurrency,
+            )
+            val markerStyle = marker.toPriceMarkerStyle(currencyRates = currencyRates)
+            val iconCacheKey = "${priceLabel}_${markerStyle.cacheKey}"
+            val icon = priceMarkerIconCache.getOrPut(iconCacheKey) {
                 createPriceMarkerIcon(
                     context = mapView.context,
                     text = priceLabel,
+                    backgroundColor = markerStyle.backgroundColor,
+                    borderColor = markerStyle.borderColor,
+                    textColor = markerStyle.textColor,
                 )
             }
 
@@ -207,6 +225,9 @@ class MapHelper {
     private fun createPriceMarkerIcon(
         context: Context,
         text: String,
+        backgroundColor: Int,
+        borderColor: Int,
+        textColor: Int,
     ): ImageProvider {
         val density = context.resources.displayMetrics.density
         val textSizePx = 13f * density
@@ -219,7 +240,7 @@ class MapHelper {
         val minBubbleWidth = 58f * density
 
         val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = AndroidColor.parseColor("#111827")
+            color = textColor
             textSize = textSizePx
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
@@ -242,14 +263,24 @@ class MapHelper {
             bubbleHeight,
         )
         val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = AndroidColor.WHITE
+            color = backgroundColor
             style = Paint.Style.FILL
         }
         val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = AndroidColor.parseColor("#D1D5DB")
+            color = borderColor
             style = Paint.Style.STROKE
             this.strokeWidth = strokeWidth
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
         }
+
+        val strokeInset = strokeWidth / 2f
+        val bubbleStrokeRect = RectF(
+            bubbleRect.left + strokeInset,
+            bubbleRect.top + strokeInset,
+            bubbleRect.right - strokeInset,
+            bubbleRect.bottom - strokeInset,
+        )
 
         canvas.drawRoundRect(
             bubbleRect,
@@ -258,22 +289,27 @@ class MapHelper {
             fillPaint,
         )
         canvas.drawRoundRect(
-            bubbleRect,
+            bubbleStrokeRect,
             cornerRadius,
             cornerRadius,
             strokePaint,
         )
 
         val centerX = bubbleWidth / 2f
-        val pointerTopY = bubbleHeight - 1f
+        val pointerTopY = bubbleHeight
         val pointerPath = Path().apply {
             moveTo(centerX - pointerHalfWidth, pointerTopY)
             lineTo(centerX + pointerHalfWidth, pointerTopY)
             lineTo(centerX, bubbleHeight + pointerHeight)
             close()
         }
+        val pointerBorderPath = Path().apply {
+            moveTo(centerX - pointerHalfWidth, pointerTopY)
+            lineTo(centerX, bubbleHeight + pointerHeight - strokeInset)
+            lineTo(centerX + pointerHalfWidth, pointerTopY)
+        }
         canvas.drawPath(pointerPath, fillPaint)
-        canvas.drawPath(pointerPath, strokePaint)
+        canvas.drawPath(pointerBorderPath, strokePaint)
 
         val textX = (bubbleWidth - textWidth) / 2f
         val textY = bubbleHeight / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f
@@ -282,8 +318,21 @@ class MapHelper {
         return ImageProvider.fromBitmap(bitmap)
     }
 
-    private fun Property.buildMarkerPriceLabel(): String {
-        return "${formatPrice(price)} ${currency.shortMarkerSymbol()}"
+    private fun Property.buildMarkerPriceLabel(
+        currencyRates: Map<String, CurrencyRate>,
+        displayCurrency: CurrencyType,
+    ): String {
+        val displayPrice = if (currency == displayCurrency) {
+            price
+        } else {
+            convertAmountBetweenCurrencies(
+                amount = price,
+                from = currency,
+                to = displayCurrency,
+                rates = currencyRates,
+            )
+        }
+        return "${formatPrice(displayPrice)} ${displayCurrency.shortMarkerSymbol()}"
     }
 
     private fun CurrencyType.shortMarkerSymbol(): String {
@@ -293,6 +342,118 @@ class MapHelper {
             CurrencyType.BYN -> "BYN"
         }
     }
+
+    private fun Property.toPriceMarkerStyle(
+        currencyRates: Map<String, CurrencyRate>,
+    ): PriceMarkerStyle {
+        val priceUsd = toUsdPrice(currencyRates = currencyRates)
+        val normalized = when (dealType) {
+            DealType.BUY -> normalizePrice(
+                price = priceUsd,
+                cheap = SALE_CHEAP_USD,
+                expensive = SALE_EXPENSIVE_USD,
+            )
+            DealType.RENT -> normalizePrice(
+                price = priceUsd,
+                cheap = RENT_CHEAP_USD,
+                expensive = RENT_EXPENSIVE_USD,
+            )
+        }
+
+        val lightColor = when (dealType) {
+            DealType.BUY -> AndroidColor.parseColor("#DBEAFE")
+            DealType.RENT -> AndroidColor.parseColor("#FFEDD5")
+        }
+        val darkColor = when (dealType) {
+            DealType.BUY -> AndroidColor.parseColor("#1D4ED8")
+            DealType.RENT -> AndroidColor.parseColor("#C2410C")
+        }
+        val borderLightColor = when (dealType) {
+            DealType.BUY -> AndroidColor.parseColor("#93C5FD")
+            DealType.RENT -> AndroidColor.parseColor("#FDBA74")
+        }
+        val borderDarkColor = when (dealType) {
+            DealType.BUY -> AndroidColor.parseColor("#1E40AF")
+            DealType.RENT -> AndroidColor.parseColor("#9A3412")
+        }
+
+        return PriceMarkerStyle(
+            backgroundColor = interpolateColor(
+                startColor = lightColor,
+                endColor = darkColor,
+                fraction = normalized,
+            ),
+            borderColor = interpolateColor(
+                startColor = borderLightColor,
+                endColor = borderDarkColor,
+                fraction = normalized,
+            ),
+            textColor = if (normalized > 0.55f) {
+                AndroidColor.WHITE
+            } else {
+                AndroidColor.parseColor("#111827")
+            },
+            cacheKey = "${dealType.name}_${(normalized * 100).toInt()}",
+        )
+    }
+
+    private fun Property.toUsdPrice(currencyRates: Map<String, CurrencyRate>): Double {
+        if (currency == CurrencyType.USD) {
+            return price
+        }
+
+        val hasUsdRate = currencyRates[CurrencyType.USD.name] != null
+        val hasCurrentRate = currencyRates[currency.name] != null || currency == CurrencyType.BYN
+        if (!hasUsdRate || !hasCurrentRate) {
+            return price
+        }
+
+        return convertAmountBetweenCurrencies(
+            amount = price,
+            from = currency,
+            to = CurrencyType.USD,
+            rates = currencyRates,
+        )
+    }
+
+    private fun normalizePrice(price: Double, cheap: Double, expensive: Double): Float {
+        if (expensive <= cheap) {
+            return 0f
+        }
+
+        return ((price - cheap) / (expensive - cheap))
+            .coerceIn(0.0, 1.0)
+            .toFloat()
+    }
+
+    private fun interpolateColor(
+        startColor: Int,
+        endColor: Int,
+        fraction: Float,
+    ): Int {
+        val clamped = fraction.coerceIn(0f, 1f)
+        val startA = AndroidColor.alpha(startColor)
+        val startR = AndroidColor.red(startColor)
+        val startG = AndroidColor.green(startColor)
+        val startB = AndroidColor.blue(startColor)
+        val endA = AndroidColor.alpha(endColor)
+        val endR = AndroidColor.red(endColor)
+        val endG = AndroidColor.green(endColor)
+        val endB = AndroidColor.blue(endColor)
+
+        val a = (startA + ((endA - startA) * clamped)).toInt()
+        val r = (startR + ((endR - startR) * clamped)).toInt()
+        val g = (startG + ((endG - startG) * clamped)).toInt()
+        val b = (startB + ((endB - startB) * clamped)).toInt()
+        return AndroidColor.argb(a, r, g, b)
+    }
+
+    private data class PriceMarkerStyle(
+        val backgroundColor: Int,
+        val borderColor: Int,
+        val textColor: Int,
+        val cacheKey: String,
+    )
 
     private fun updateUserLocationOnMap(
         mapView: MapView,

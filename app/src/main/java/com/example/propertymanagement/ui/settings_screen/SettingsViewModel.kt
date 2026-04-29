@@ -3,6 +3,7 @@ package com.example.propertymanagement.ui.settings_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.data.common.OneSignalManager
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLanguageUseCase
@@ -188,6 +189,7 @@ class SettingsViewModel(
             runCatching {
                 logoutUseCase()
             }.onSuccess {
+                OneSignalManager.logout()
                 Log.d("!!!", "S - $it")
                 _event.emit(SettingsEvent.NavigateToAuth)
             }

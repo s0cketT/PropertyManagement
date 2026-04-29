@@ -18,7 +18,7 @@ fun PropertyDetailPropertyDetailsBlock(details: PropertyDetails) {
             }
             details.livingArea?.let {
                 PropertyDetailInfoRow(
-                    label = stringResource(R.string.area_title),
+                    label = stringResource(R.string.living_area_title),
                     value = formatDouble(it)
                 )
             }
@@ -58,6 +58,20 @@ fun PropertyDetailPropertyDetailsBlock(details: PropertyDetails) {
                     value = stringResource(it.titleRes())
                 )
             }
+            if (details.windowViews.isNotEmpty()) {
+                val windowViewsText = buildString {
+                    details.windowViews.forEachIndexed { index, windowView ->
+                        if (index > 0) {
+                            append(", ")
+                        }
+                        append(stringResource(windowView.titleRes()))
+                    }
+                }
+                PropertyDetailInfoRow(
+                    label = stringResource(R.string.window_views_title),
+                    value = windowViewsText
+                )
+            }
         }
 
         is PropertyDetails.Room -> {
@@ -71,6 +85,20 @@ fun PropertyDetailPropertyDetailsBlock(details: PropertyDetails) {
                 PropertyDetailInfoRow(
                     label = stringResource(R.string.sale_area),
                     value = formatDouble(it)
+                )
+            }
+            if (details.windowViews.isNotEmpty()) {
+                val windowViewsText = buildString {
+                    details.windowViews.forEachIndexed { index, windowView ->
+                        if (index > 0) {
+                            append(", ")
+                        }
+                        append(stringResource(windowView.titleRes()))
+                    }
+                }
+                PropertyDetailInfoRow(
+                    label = stringResource(R.string.window_views_title),
+                    value = windowViewsText
                 )
             }
         }

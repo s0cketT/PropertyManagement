@@ -37,6 +37,7 @@ data class UpdateFullPropertyDto(
     val p_ceiling_height: Double? = null,
     val p_apartment_repair_type: String? = null,
     val p_wall_material: String? = null,
+    val p_window_views: List<String> = emptyList(),
 
     val p_rooms_for_sale: Int? = null,
     val p_sale_area: Double? = null,

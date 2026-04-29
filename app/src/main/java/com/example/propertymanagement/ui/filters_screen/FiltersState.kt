@@ -24,6 +24,7 @@ import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.model.SortType
 import com.example.propertymanagement.domain.model.StringRangeFilter
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.model.WaterType
 import com.example.propertymanagement.ui.extensions.isRangeValid
 
@@ -70,6 +71,7 @@ data class FiltersState(
     val ceilingHeight: CeilingHeightType? = null,
     val repairType: ApartmentRepairType? = null,
     val wallMaterial: WallMaterialType? = null,
+    val windowViews: Set<WindowViewType> = emptySet(),
     val yearBuilt: Int? = null,
     val buildingAmenities: Set<BuildingAmenity> = emptySet(),
 

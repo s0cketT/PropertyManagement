@@ -21,6 +21,7 @@ import com.example.propertymanagement.domain.model.PropertyDetails
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.domain.model.WaterType
 import java.time.Instant
 import java.time.LocalDateTime
@@ -59,12 +60,18 @@ fun PropertyResponseDto.toDomain(): Property {
             balconyType = balcony_type.fromDb<BalconyType>(),
             ceilingHeight = apartment_ceiling_height?.toCeilingHeightType(),
             repairType = apartment_repair_type.fromDb<ApartmentRepairType>(),
-            wallMaterial = apartment_wall_material.fromDb<WallMaterialType>()
+            wallMaterial = apartment_wall_material.fromDb<WallMaterialType>(),
+            windowViews = window_views.orEmpty()
+                .mapNotNull { it.fromDb<WindowViewType>() }
+                .toSet()
         )
 
         room_total != null -> PropertyDetails.Room(
             roomsForSale = room_for_sale?.toRoomsType(),
-            saleArea = sale_area
+            saleArea = sale_area,
+            windowViews = window_views.orEmpty()
+                .mapNotNull { it.fromDb<WindowViewType>() }
+                .toSet()
         )
 
         house_rooms != null -> PropertyDetails.House(

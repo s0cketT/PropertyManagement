@@ -42,6 +42,7 @@ data class CreateProperty(
     val ceilingHeight: CeilingHeightType? = null,
     val repairType: ApartmentRepairType? = null,
     val wallMaterial: WallMaterialType? = null,
+    val windowViews: Set<WindowViewType> = emptySet(),
 
     val roomsForSale: RoomsType? = null,
     val saleArea: Double? = null,

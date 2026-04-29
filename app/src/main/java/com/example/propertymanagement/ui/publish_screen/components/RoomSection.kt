@@ -14,6 +14,7 @@ import com.example.propertymanagement.domain.model.CeilingHeightType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.RoomsType
 import com.example.propertymanagement.domain.model.WallMaterialType
+import com.example.propertymanagement.domain.model.WindowViewType
 import com.example.propertymanagement.ui.components.EnumTypeSection
 import com.example.propertymanagement.ui.components.ExpandableFilterSection
 import com.example.propertymanagement.ui.components.floorSimpleDisplayMapper
@@ -35,6 +36,7 @@ fun RoomSection(
     floorHouse: Int?,
     repairType: ApartmentRepairType?,
     buildingAmenities: Set<BuildingAmenity>,
+    windowViews: Set<WindowViewType>,
     wallMaterial: WallMaterialType?,
 
     onRoomsType: (RoomsType?) -> Unit,
@@ -47,6 +49,7 @@ fun RoomSection(
     onFloorHouse: (Int?) -> Unit,
     onRepairType: (ApartmentRepairType?) -> Unit,
     onBuildingAmenities: (Set<BuildingAmenity>) -> Unit,
+    onWindowViews: (Set<WindowViewType>) -> Unit,
     onWallMaterial: (WallMaterialType?) -> Unit
 ) {
     ExpandableFilterSection(
@@ -146,6 +149,14 @@ fun RoomSection(
                 selected = buildingAmenities,
                 titleRes = { it.titleRes() },
                 onApply = onBuildingAmenities
+            )
+
+            AmenitiesFilterItem(
+                titleResId = R.string.window_views_title,
+                items = WindowViewType.entries,
+                selected = windowViews,
+                titleRes = { it.titleRes() },
+                onApply = onWindowViews
             )
 
             Spacer(modifier = Modifier.height(PaddingLarge))

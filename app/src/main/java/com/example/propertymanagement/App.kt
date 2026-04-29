@@ -2,6 +2,7 @@ package com.example.propertymanagement
 
 import android.app.Application
 import com.example.propertymanagement.data.common.Constants.API_KEY_MAPKIT
+import com.example.propertymanagement.data.common.OneSignalManager
 import com.example.propertymanagement.di.coreModule
 import com.example.propertymanagement.di.dataModule
 import com.example.propertymanagement.di.databaseModule
@@ -16,6 +17,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         MapKitFactory.setApiKey(API_KEY_MAPKIT)
+        OneSignalManager.init(this)
         startKoin {
             androidContext(this@App)
             modules(databaseModule, networkModule, dataModule, domainModule, uiModule, coreModule)

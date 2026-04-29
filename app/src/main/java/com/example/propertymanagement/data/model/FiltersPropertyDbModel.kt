@@ -76,6 +76,7 @@ data class FiltersPropertyDbModel(
     val ceilingHeight: CeilingHeightType?,
     val repairType: ApartmentRepairType?,
     val wallMaterial: WallMaterialType?,
+    val windowViews: String,
     val yearBuilt: Int?,
     val buildingAmenities: String,
 

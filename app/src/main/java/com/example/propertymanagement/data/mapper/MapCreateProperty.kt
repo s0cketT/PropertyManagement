@@ -45,6 +45,7 @@ fun CreateProperty.toFullDto(): CreateFullPropertyDto {
         p_ceiling_height = ceilingHeight?.toDbValue(),
         p_apartment_repair_type = repairType?.toDbValue(),
         p_wall_material = wallMaterial?.toDbValue(),
+        p_window_views = windowViews.map { it.toDbValue() },
 
         p_rooms_for_sale = roomsForSale?.toInt(),
         p_sale_area = saleArea,
@@ -102,6 +103,7 @@ fun CreateProperty.toUpdateDto(propertyId: Int): UpdateFullPropertyDto {
         p_ceiling_height = f.p_ceiling_height,
         p_apartment_repair_type = f.p_apartment_repair_type,
         p_wall_material = f.p_wall_material,
+        p_window_views = f.p_window_views,
 
         p_rooms_for_sale = f.p_rooms_for_sale,
         p_sale_area = f.p_sale_area,
