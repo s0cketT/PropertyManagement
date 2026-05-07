@@ -18,13 +18,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MyAdsViewModel(
+    private val initialListingFilter: MyAdsListingFilter,
     private val getMyPropertiesUseCase: GetMyPropertiesUseCase,
     private val deletePropertyUseCase: DeletePropertyUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getTodayRatesUseCase: GetTodayRatesUseCase
+    private val getTodayRatesUseCase: GetTodayRatesUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(MyAdsState())
+    private val _state = MutableStateFlow(MyAdsState(listingFilter = initialListingFilter))
     val state: StateFlow<MyAdsState> = _state.asStateFlow()
 
     private val _event = SingleFlowEvent<MyAdsEvent>(viewModelScope)

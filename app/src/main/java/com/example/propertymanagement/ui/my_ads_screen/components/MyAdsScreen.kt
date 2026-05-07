@@ -45,11 +45,17 @@ import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun MyAdsScreen(navController: NavController) {
+fun MyAdsScreen(
+    navController: NavController,
+    initialListingFilter: MyAdsListingFilter = MyAdsListingFilter.PUBLISHED,
+) {
 
-    val viewModel: MyAdsViewModel = koinViewModel()
+    val viewModel: MyAdsViewModel = koinViewModel(
+        parameters = { parametersOf(initialListingFilter) },
+    )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val intent = viewModel::processIntent
     val event: Flow<MyAdsEvent> by remember { mutableStateOf(viewModel.event) }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.MyAdsListingFilter
 import com.example.propertymanagement.domain.model.UserProfile
 import com.example.propertymanagement.ui.auth_screen.AuthCheck
 import com.example.propertymanagement.ui.extensions.toJson
@@ -97,7 +98,11 @@ sealed class Screens(
     object SplashScreen : Screens("splash")
 
     object SettingsScreen : Screens("settings")
-    object MyAdsScreen : Screens("my_ads")
+    object MyAdsScreen : Screens("my_ads?initialTab={initialTab}") {
+
+        fun createRoute(initialTab: MyAdsListingFilter = MyAdsListingFilter.PUBLISHED): String =
+            "my_ads?initialTab=${initialTab.name}"
+    }
     object PersonalInfoScreen : Screens("personal_info?user={user}") {
 
         fun createRoute(user: UserProfile): String {

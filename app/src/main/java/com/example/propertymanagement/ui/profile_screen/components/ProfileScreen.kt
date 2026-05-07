@@ -56,7 +56,9 @@ fun ProfileScreen(
                     }
                 }
 
-                is ProfileEvent.NavigateToMyAds -> { navController.navigate(Screens.MyAdsScreen.route) }
+                is ProfileEvent.NavigateToMyAds -> {
+                    navController.navigate(Screens.MyAdsScreen.createRoute())
+                }
                 is ProfileEvent.NavigateToSettings -> { navController.navigate(Screens.SettingsScreen.route) }
                 is ProfileEvent.NavigateToPersonalInfo -> {
                     navController.navigate(Screens.PersonalInfoScreen.createRoute(state.user!!))

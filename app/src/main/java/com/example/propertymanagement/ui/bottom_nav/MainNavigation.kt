@@ -4,14 +4,17 @@ package com.example.propertymanagement.ui.bottom_nav
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.propertymanagement.domain.model.MyAdsListingFilter
 import com.example.propertymanagement.domain.model.UserProfile
 import com.example.propertymanagement.ui.auth_screen.AuthCheck
 import com.example.propertymanagement.ui.auth_screen.components.AuthLoginScreen
@@ -36,6 +39,7 @@ import com.example.propertymanagement.ui.edit_property_screen.components.EditPro
 import com.example.propertymanagement.ui.publish_screen.components.PublishScreen
 import com.example.propertymanagement.ui.settings_screen.components.SettingsScreen
 import com.example.propertymanagement.ui.splash_screen.components.SplashScreen
+import com.example.propertymanagement.data.common.PushNotificationNavigation
 
 @Composable
 fun MainNavigation() {
@@ -44,6 +48,21 @@ fun MainNavigation() {
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+
+    val pendingMyAdsTab by PushNotificationNavigation.pendingMyAdsTab.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = currentRoute, key2 = pendingMyAdsTab) {
+        if (pendingMyAdsTab == null) {
+            return@LaunchedEffect
+        }
+        val route = currentRoute ?: return@LaunchedEffect
+        if (route == Screens.SplashScreen.route || isAuthRoute(route)) {
+            return@LaunchedEffect
+        }
+
+        val tab = PushNotificationNavigation.takePendingMyAdsTab() ?: return@LaunchedEffect
+        navController.resetStackToAdvertisementsThenMyAds(tab)
+    }
 
     val bottomBarRoutes = listOf(
         Screens.Advertisements.route,
@@ -274,12 +293,28 @@ fun MainNavigation() {
 
             composable(
                 route = Screens.MyAdsScreen.route,
+                arguments = listOf(
+                    navArgument("initialTab") {
+                        type = NavType.StringType
+                        defaultValue = MyAdsListingFilter.PUBLISHED.name
+                    },
+                ),
                 enterTransition = AppTransitions.slideFromRight.enter,
                 exitTransition = AppTransitions.slideFromRight.exit,
                 popEnterTransition = AppTransitions.slideFromRight.popEnter,
                 popExitTransition = AppTransitions.slideFromRight.popExit
-            ) {
-                MyAdsScreen(navController = navController)
+            ) { backStackEntry ->
+                val tabName = backStackEntry.arguments?.getString("initialTab")
+                val initialTab = try {
+                    tabName?.let { MyAdsListingFilter.valueOf(it) }
+                } catch (_: IllegalArgumentException) {
+                    null
+                } ?: MyAdsListingFilter.PUBLISHED
+
+                MyAdsScreen(
+                    navController = navController,
+                    initialListingFilter = initialTab,
+                )
             }
 
             composable(
@@ -334,4 +369,13 @@ fun MainNavigation() {
             }
         }
     }
+}
+
+private fun isAuthRoute(route: String): Boolean {
+    return route == Screens.AuthLoginScreen.route ||
+        route == Screens.AuthRegister.route ||
+        route.startsWith("auth_otp") ||
+        route == Screens.SetNewPasswordScreen.route ||
+        route == Screens.ChangeNewEmailScreen.route ||
+        route.startsWith("change_email_link")
 }

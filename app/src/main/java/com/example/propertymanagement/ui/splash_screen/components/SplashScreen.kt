@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.propertymanagement.ui.bottom_nav.Screens
+import com.example.propertymanagement.ui.bottom_nav.navigateToMainOrMyAdsFromModerationPush
 import com.example.propertymanagement.ui.splash_screen.SplashEvent
 import com.example.propertymanagement.ui.splash_screen.SplashViewModel
 import kotlinx.coroutines.flow.Flow
@@ -29,9 +30,7 @@ fun SplashScreen(
         event.collect { event ->
             when (event) {
                 SplashEvent.NavigateToMain -> {
-                    navController.navigate(Screens.Advertisements.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navController.navigateToMainOrMyAdsFromModerationPush()
                 }
 
                 SplashEvent.NavigateToAuth -> {

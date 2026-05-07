@@ -30,7 +30,9 @@ import com.example.propertymanagement.ui.auth_screen.AuthEvent
 import com.example.propertymanagement.ui.auth_screen.AuthIntent
 import com.example.propertymanagement.ui.auth_screen.AuthState
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
+import com.example.propertymanagement.data.common.PushNotificationNavigation
 import com.example.propertymanagement.ui.bottom_nav.Screens
+import com.example.propertymanagement.ui.bottom_nav.navigateToMainOrMyAdsFromModerationPush
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
@@ -56,9 +58,7 @@ fun AuthLoginScreen(navController: NavController) {
                     }
                 }
                 is AuthEvent.NavigateToMain -> {
-                    navController.navigate(Screens.Advertisements.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navController.navigateToMainOrMyAdsFromModerationPush()
                 }
                 is AuthEvent.NavigateToCodeScreen -> {
                     navController.navigate(Screens.AuthOtpScreen.createRoute(event.email,  AuthCheck.LOGIN)) {
@@ -66,9 +66,11 @@ fun AuthLoginScreen(navController: NavController) {
                     }
                 }
                 is AuthEvent.NavigateAsGuest -> {
+                    PushNotificationNavigation.clearPendingOpenMyAds()
                     navController.navigate(Screens.Advertisements.route) {
                         popUpTo(0) { inclusive = true }
-                } }
+                    }
+                }
                 else -> Unit
             }
         }

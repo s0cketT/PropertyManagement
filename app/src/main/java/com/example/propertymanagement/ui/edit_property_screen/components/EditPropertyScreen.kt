@@ -98,7 +98,7 @@ fun EditPropertyScreen(
                         context.getString(R.string.edit_property_sent_to_moderation),
                         Toast.LENGTH_SHORT,
                     ).show()
-                    navController.navigate(Screens.MyAdsScreen.route) {
+                    navController.navigate(Screens.MyAdsScreen.createRoute()) {
                         popUpTo(Screens.Profile.route) {
                             inclusive = false
                         }

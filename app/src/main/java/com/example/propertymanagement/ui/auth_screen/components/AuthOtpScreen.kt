@@ -40,6 +40,7 @@ import com.example.propertymanagement.ui.auth_screen.AuthIntent
 import com.example.propertymanagement.ui.auth_screen.AuthState
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.bottom_nav.Screens
+import com.example.propertymanagement.ui.bottom_nav.navigateToMainOrMyAdsFromModerationPush
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.HeightFilterChip
 import com.example.propertymanagement.ui.theme.PaddingLarge
@@ -69,9 +70,7 @@ fun AuthOtpScreen(
                 is AuthEvent.NavigateToLoginScreen -> { navController.navigate(Screens.AuthLoginScreen.route) }
                 is AuthEvent.ShowRegistrationSuccess -> { Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show() }
                 is AuthEvent.NavigateToMain -> {
-                    navController.navigate(Screens.Advertisements.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navController.navigateToMainOrMyAdsFromModerationPush()
                 }
                 AuthEvent.NavigateToSetNewPassword -> {
                     navController.navigate(Screens.SetNewPasswordScreen.route)

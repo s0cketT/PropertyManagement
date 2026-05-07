@@ -33,6 +33,7 @@ import com.example.propertymanagement.domain.use_case.UpdateUserAvatarUseCase
 import com.example.propertymanagement.domain.use_case.UpdatePasswordUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
+import com.example.propertymanagement.domain.model.MyAdsListingFilter
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.favorites_screen.FavoriteViewModel
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
@@ -192,12 +193,13 @@ val uiModule = module {
         )
     }
 
-    viewModel {
+    viewModel { (initialListingFilter: MyAdsListingFilter) ->
         MyAdsViewModel(
+            initialListingFilter = initialListingFilter,
             getMyPropertiesUseCase = get<GetMyPropertiesUseCase>(),
             deletePropertyUseCase = get<DeletePropertyUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
-            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
         )
     }
 
