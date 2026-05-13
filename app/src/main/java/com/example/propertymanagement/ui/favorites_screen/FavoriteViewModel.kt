@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.visibleInPublicCatalog
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
@@ -13,13 +14,16 @@ import com.example.propertymanagement.ui.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(
     private val getPropertiesUseCase: GetPropertiesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val getTodayRatesUseCase: GetTodayRatesUseCase
+    private val getTodayRatesUseCase: GetTodayRatesUseCase,
+    private val getManagerCommissionPercentUseCase: GetManagerCommissionPercentUseCase,
 ): ViewModel()
 {
 
@@ -57,6 +61,7 @@ class FavoriteViewModel(
                         isLoading = false,
                         properties = emptyList(),
                         currencyRates = emptyMap(),
+                        managerCommissionPercent = 0.0,
                         error = null
                     )
                 }
@@ -73,33 +78,40 @@ class FavoriteViewModel(
 
             val userId = _state.value.currentUserId
 
-            val rates = when (val ratesResult = getTodayRatesUseCase()) {
-                is Resource.Success -> ratesResult.data
-                else -> emptyMap()
-            }
+            coroutineScope {
+                val commissionDeferred = async { getManagerCommissionPercentUseCase() }
 
-            when (val result = getPropertiesUseCase(userId)) {
-                is Resource.Success -> {
-
-                    val filtered = result.data
-                        .filter { it.isFavorite }
-                        .visibleInPublicCatalog()
-
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            properties = filtered,
-                            currencyRates = rates
-                        )
-                    }
+                val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                    is Resource.Success -> ratesResult.data
+                    else -> emptyMap()
                 }
 
-                is Resource.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exception
-                        )
+                val commissionPercent = commissionDeferred.await()
+
+                when (val result = getPropertiesUseCase(userId)) {
+                    is Resource.Success -> {
+
+                        val filtered = result.data
+                            .filter { it.isFavorite }
+                            .visibleInPublicCatalog()
+
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                properties = filtered,
+                                currencyRates = rates,
+                                managerCommissionPercent = commissionPercent,
+                            )
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception
+                            )
+                        }
                     }
                 }
             }

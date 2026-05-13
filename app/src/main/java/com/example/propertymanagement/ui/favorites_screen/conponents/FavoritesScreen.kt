@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.ui.bottom_nav.Screens
 import com.example.propertymanagement.ui.components.AppTopBar
 import com.example.propertymanagement.ui.favorites_screen.FavoriteEvent
@@ -90,6 +91,8 @@ private fun UI(
             else -> PropertyList(
                 list = state.properties,
                 currencyRates = state.currencyRates,
+                managerCommissionPercent = state.managerCommissionPercent,
+                cardPriceLeadCurrency = CurrencyType.USD,
                 onFavoriteClick = { intent(FavoriteIntent.ToggleFavorite(it)) },
                 onItemClick = { intent(FavoriteIntent.OnPropertyClick(it)) }
             )

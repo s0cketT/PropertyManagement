@@ -11,6 +11,7 @@ import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
@@ -24,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class ListPropertyViewModel(
@@ -33,7 +36,8 @@ class ListPropertyViewModel(
 
     private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
     private val filterPropertiesUseCase: FilterPropertiesUseCase,
-    private val getTodayRatesUseCase: GetTodayRatesUseCase
+    private val getTodayRatesUseCase: GetTodayRatesUseCase,
+    private val getManagerCommissionPercentUseCase: GetManagerCommissionPercentUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ListPropertyState())
@@ -164,57 +168,64 @@ class ListPropertyViewModel(
 
             val userId = _state.value.currentUserId
 
-            val rates = when (val ratesResult = getTodayRatesUseCase()) {
-                is Resource.Success -> ratesResult.data
-                else -> emptyMap()
-            }
+            coroutineScope {
+                val commissionDeferred = async { getManagerCommissionPercentUseCase() }
 
-            when (val result = getPropertiesUseCase(userId)) {
+                val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                    is Resource.Success -> ratesResult.data
+                    else -> emptyMap()
+                }
 
-                is Resource.Success -> {
-                    val raw = result.data
-                    val moderationCounts = raw.groupingBy { it.moderationStatus }.eachCount()
-                    Log.d(
-                        TAG,
-                        "loadProperties success: userId=${userId ?: "null (guest)"} " +
-                            "rawCount=${raw.size} moderationCounts=$moderationCounts",
-                    )
-                    val approvedOnly = raw.forMainCatalogDisplay()
-                    Log.d(
-                        TAG,
-                        "loadProperties after forMainCatalogDisplay: count=${approvedOnly.size}",
-                    )
-                    val savedFilters = getFilterPropertyUseCase().first()
-                    Log.d(
-                        TAG,
-                        "loadProperties savedFilters: present=${savedFilters != null} " +
-                            "deal=${savedFilters?.selectedDealType} type=${savedFilters?.type} " +
-                            "onlyWithPhotos=${savedFilters?.onlyWithPhotos ?: false}",
-                    )
-                    _state.update { current ->
-                        recomputePropertiesFilter(
-                            current.copy(
-                                isLoading = false,
-                                properties = approvedOnly,
-                                currencyRates = rates,
-                                activeFilters = savedFilters
+                val commissionPercent = commissionDeferred.await()
+
+                when (val result = getPropertiesUseCase(userId)) {
+
+                    is Resource.Success -> {
+                        val raw = result.data
+                        val moderationCounts = raw.groupingBy { it.moderationStatus }.eachCount()
+                        Log.d(
+                            TAG,
+                            "loadProperties success: userId=${userId ?: "null (guest)"} " +
+                                "rawCount=${raw.size} moderationCounts=$moderationCounts",
+                        )
+                        val approvedOnly = raw.forMainCatalogDisplay()
+                        Log.d(
+                            TAG,
+                            "loadProperties after forMainCatalogDisplay: count=${approvedOnly.size}",
+                        )
+                        val savedFilters = getFilterPropertyUseCase().first()
+                        Log.d(
+                            TAG,
+                            "loadProperties savedFilters: present=${savedFilters != null} " +
+                                "deal=${savedFilters?.selectedDealType} type=${savedFilters?.type} " +
+                                "onlyWithPhotos=${savedFilters?.onlyWithPhotos ?: false}",
+                        )
+                        _state.update { current ->
+                            recomputePropertiesFilter(
+                                current.copy(
+                                    isLoading = false,
+                                    properties = approvedOnly,
+                                    currencyRates = rates,
+                                    managerCommissionPercent = commissionPercent,
+                                    activeFilters = savedFilters
+                                )
                             )
+                        }
+                        Log.d(
+                            TAG,
+                            "loadProperties UI list: properties.size=${_state.value.properties.size} " +
+                                "propertiesFilter.size=${_state.value.propertiesFilter.size} " +
+                                "searchQuery=${_state.value.searchQuery}",
                         )
                     }
-                    Log.d(
-                        TAG,
-                        "loadProperties UI list: properties.size=${_state.value.properties.size} " +
-                            "propertiesFilter.size=${_state.value.propertiesFilter.size} " +
-                            "searchQuery=${_state.value.searchQuery}",
-                    )
-                }
-                is Resource.Error -> {
-                    Log.e(TAG, "loadProperties error: ${result.exception}")
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exception
-                        )
+                    is Resource.Error -> {
+                        Log.e(TAG, "loadProperties error: ${result.exception}")
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception
+                            )
+                        }
                     }
                 }
             }

@@ -427,6 +427,9 @@
     <string name="property_detail_application_sent">Заявка отправлена</string>
     <string name="property_detail_application_failed">Не удалось отправить заявку. Попробуйте позже.</string>
 
+    <string name="buyer_price_includes_manager_commission">С учётом комиссии менеджера %1$s%%</string>
+    <string name="property_application_commission_notice">Комиссия менеджера — %1$s%% от цены в объявлении. Доля менеджера: %2$s %3$s.</string>
+
     <string name="publish_location_section_title">Местоположение</string>
     <string name="publish_location_not_set">Нажмите, чтобы указать адрес</string>
     <string name="publish_address_sheet_title">Адрес объекта</string>

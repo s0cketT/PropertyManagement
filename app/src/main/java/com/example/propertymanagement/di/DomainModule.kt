@@ -4,6 +4,7 @@ import com.example.propertymanagement.domain.repository.AuthRepository
 import com.example.propertymanagement.domain.repository.ICurrencyRepository
 import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
+import com.example.propertymanagement.domain.repository.IManagerCommissionRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
 import com.example.propertymanagement.domain.repository.IRegionCityRepository
@@ -18,12 +19,13 @@ import com.example.propertymanagement.domain.use_case.DeletePropertyUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
-import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetCitiesByRegionUseCase
+import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetRegionsUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
@@ -145,5 +147,11 @@ val domainModule = module {
     factory { GetTodayRatesUseCase(currencyRepository = get<ICurrencyRepository>()) }
 
     factory { GetPropertyDetailPricesUseCase() }
+
+    factory {
+        GetManagerCommissionPercentUseCase(
+            repository = get<IManagerCommissionRepository>(),
+        )
+    }
 
 }

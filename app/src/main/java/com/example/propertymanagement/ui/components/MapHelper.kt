@@ -17,6 +17,7 @@ import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.DealType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.UserLocation
+import com.example.propertymanagement.domain.pricing.ManagerCommissionPricing
 import com.example.propertymanagement.ui.common.formatPrice
 import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.yandex.mapkit.Animation
@@ -84,6 +85,7 @@ class MapHelper {
         markers: List<Property>,
         currencyRates: Map<String, CurrencyRate>,
         displayCurrency: CurrencyType,
+        managerCommissionPercent: Double = 0.0,
         onMarkerTap: (Property) -> Unit
     ) {
         clearPropertyMarkersLayer(mapView)
@@ -98,8 +100,12 @@ class MapHelper {
             val priceLabel = marker.buildMarkerPriceLabel(
                 currencyRates = currencyRates,
                 displayCurrency = displayCurrency,
+                managerCommissionPercent = managerCommissionPercent,
             )
-            val markerStyle = marker.toPriceMarkerStyle(currencyRates = currencyRates)
+            val markerStyle = marker.toPriceMarkerStyle(
+                currencyRates = currencyRates,
+                managerCommissionPercent = managerCommissionPercent,
+            )
             val iconCacheKey = "${priceLabel}_${markerStyle.cacheKey}"
             val icon = priceMarkerIconCache.getOrPut(iconCacheKey) {
                 createPriceMarkerIcon(
@@ -321,12 +327,17 @@ class MapHelper {
     private fun Property.buildMarkerPriceLabel(
         currencyRates: Map<String, CurrencyRate>,
         displayCurrency: CurrencyType,
+        managerCommissionPercent: Double,
     ): String {
+        val grossInListingCurrency = ManagerCommissionPricing.grossListingAmount(
+            listedPrice = price,
+            commissionPercent = managerCommissionPercent,
+        )
         val displayPrice = if (currency == displayCurrency) {
-            price
+            grossInListingCurrency
         } else {
             convertAmountBetweenCurrencies(
-                amount = price,
+                amount = grossInListingCurrency,
                 from = currency,
                 to = displayCurrency,
                 rates = currencyRates,
@@ -345,8 +356,12 @@ class MapHelper {
 
     private fun Property.toPriceMarkerStyle(
         currencyRates: Map<String, CurrencyRate>,
+        managerCommissionPercent: Double,
     ): PriceMarkerStyle {
-        val priceUsd = toUsdPrice(currencyRates = currencyRates)
+        val priceUsd = toUsdPrice(
+            currencyRates = currencyRates,
+            managerCommissionPercent = managerCommissionPercent,
+        )
         val normalized = when (dealType) {
             DealType.BUY -> normalizePrice(
                 price = priceUsd,
@@ -397,19 +412,26 @@ class MapHelper {
         )
     }
 
-    private fun Property.toUsdPrice(currencyRates: Map<String, CurrencyRate>): Double {
+    private fun Property.toUsdPrice(
+        currencyRates: Map<String, CurrencyRate>,
+        managerCommissionPercent: Double,
+    ): Double {
+        val grossInListingCurrency = ManagerCommissionPricing.grossListingAmount(
+            listedPrice = price,
+            commissionPercent = managerCommissionPercent,
+        )
         if (currency == CurrencyType.USD) {
-            return price
+            return grossInListingCurrency
         }
 
         val hasUsdRate = currencyRates[CurrencyType.USD.name] != null
         val hasCurrentRate = currencyRates[currency.name] != null || currency == CurrencyType.BYN
         if (!hasUsdRate || !hasCurrentRate) {
-            return price
+            return grossInListingCurrency
         }
 
         return convertAmountBetweenCurrencies(
-            amount = price,
+            amount = grossInListingCurrency,
             from = currency,
             to = CurrencyType.USD,
             rates = currencyRates,

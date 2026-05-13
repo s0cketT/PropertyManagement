@@ -8,7 +8,7 @@ import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetCitiesByRegionUseCase
-import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
@@ -34,6 +34,7 @@ import com.example.propertymanagement.domain.use_case.UpdatePasswordUseCase
 import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import com.example.propertymanagement.domain.model.MyAdsListingFilter
+import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.favorites_screen.FavoriteViewModel
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
@@ -63,7 +64,8 @@ val uiModule = module {
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
             filterPropertiesUseCase = get<FilterPropertiesUseCase>(),
-            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+            getManagerCommissionPercentUseCase = get<GetManagerCommissionPercentUseCase>(),
         )
     }
 
@@ -99,7 +101,8 @@ val uiModule = module {
             toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
             getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
             filterPropertiesUseCase = get<FilterPropertiesUseCase>(),
-            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+            getManagerCommissionPercentUseCase = get<GetManagerCommissionPercentUseCase>(),
         )
     }
 
@@ -189,7 +192,8 @@ val uiModule = module {
             getPropertiesUseCase = get<GetPropertiesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
-            getTodayRatesUseCase = get<GetTodayRatesUseCase>()
+            getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+            getManagerCommissionPercentUseCase = get<GetManagerCommissionPercentUseCase>(),
         )
     }
 
@@ -214,7 +218,9 @@ val uiModule = module {
             getPropertyDetailPricesUseCase = get<GetPropertyDetailPricesUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             toggleFavoriteUseCase = get<ToggleFavoriteUseCase>(),
-            submitPropertyApplicationUseCase = get<SubmitPropertyApplicationUseCase>()
+            submitPropertyApplicationUseCase = get<SubmitPropertyApplicationUseCase>(),
+            getManagerCommissionPercentUseCase = get<GetManagerCommissionPercentUseCase>(),
+            getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
         )
     }
 }

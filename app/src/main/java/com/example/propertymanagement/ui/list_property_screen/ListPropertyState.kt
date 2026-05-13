@@ -14,5 +14,6 @@ data class ListPropertyState(
     val currentUserId: String? = null,
     val searchQuery: String = "",
 
-    val currencyRates: Map<String, CurrencyRate> = emptyMap()
+    val currencyRates: Map<String, CurrencyRate> = emptyMap(),
+    val managerCommissionPercent: Double = 0.0,
 )

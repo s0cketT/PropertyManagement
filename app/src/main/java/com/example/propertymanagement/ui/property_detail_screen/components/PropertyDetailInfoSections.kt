@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
@@ -30,13 +31,20 @@ import com.example.propertymanagement.ui.theme.SpacerTiny
 fun PropertyDetailInfoSections(
     property: Property,
     convertedPrices: PropertyDetailPrices?,
+    managerCommissionPercent: Double = 0.0,
+    showBuyerCommissionCaption: Boolean = true,
+    /** Каталог: ведущая валюта (фильтр / USD). `null` — сначала валюта объявления. */
+    cardPriceLeadCurrency: CurrencyType? = null,
     onOpenMapFullscreen: () -> Unit,
     onSubmitRequest: (() -> Unit)?,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         PropertyDetailPriceBlock(
             property = property,
-            convertedPrices = convertedPrices
+            convertedPrices = convertedPrices,
+            managerCommissionPercent = managerCommissionPercent,
+            showBuyerCommissionCaption = showBuyerCommissionCaption,
+            cardPriceLeadCurrency = cardPriceLeadCurrency,
         )
 
         Spacer(modifier = Modifier.height(SpacerTiny))

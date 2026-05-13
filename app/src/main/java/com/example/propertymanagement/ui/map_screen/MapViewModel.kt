@@ -8,6 +8,7 @@ import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
@@ -22,6 +23,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class MapViewModel(
     private val observeLocationUseCase: ObserveLocationUseCase,
@@ -30,6 +33,7 @@ class MapViewModel(
     private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
     private val filterPropertiesUseCase: FilterPropertiesUseCase,
     private val getTodayRatesUseCase: GetTodayRatesUseCase,
+    private val getManagerCommissionPercentUseCase: GetManagerCommissionPercentUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MapState())
@@ -174,31 +178,38 @@ class MapViewModel(
                 )
             }
 
-            val rates = when (val ratesResult = getTodayRatesUseCase()) {
-                is Resource.Success -> ratesResult.data
-                else -> emptyMap()
-            }
+            coroutineScope {
+                val commissionDeferred = async { getManagerCommissionPercentUseCase() }
 
-            when (val result = getPropertiesUseCase(userId)) {
-
-                is Resource.Success -> {
-                    val catalog = result.data.forMainCatalogDisplay()
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            markers = catalog,
-                            currencyRates = rates
-                        )
-                    }
-                    recomputeFilteredMarkers()
+                val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                    is Resource.Success -> ratesResult.data
+                    else -> emptyMap()
                 }
 
-                is Resource.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.exception
-                        )
+                val commissionPercent = commissionDeferred.await()
+
+                when (val result = getPropertiesUseCase(userId)) {
+
+                    is Resource.Success -> {
+                        val catalog = result.data.forMainCatalogDisplay()
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                markers = catalog,
+                                currencyRates = rates,
+                                managerCommissionPercent = commissionPercent,
+                            )
+                        }
+                        recomputeFilteredMarkers()
+                    }
+
+                    is Resource.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.exception
+                            )
+                        }
                     }
                 }
             }

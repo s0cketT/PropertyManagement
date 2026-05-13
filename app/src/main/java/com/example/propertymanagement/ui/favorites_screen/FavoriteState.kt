@@ -8,5 +8,6 @@ data class FavoriteState(
     val properties: List<Property> = emptyList(),
     val error: String? = null,
     val currentUserId: String? = null,
-    val currencyRates: Map<String, CurrencyRate> = emptyMap()
+    val currencyRates: Map<String, CurrencyRate> = emptyMap(),
+    val managerCommissionPercent: Double = 0.0,
 )

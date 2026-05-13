@@ -218,6 +218,9 @@ private fun MyAdPropertyDetailScrollableContent(
             PropertyDetailInfoSections(
                 property = property,
                 convertedPrices = convertedPrices,
+                managerCommissionPercent = 0.0,
+                showBuyerCommissionCaption = false,
+                cardPriceLeadCurrency = null,
                 onOpenMapFullscreen = {
                     intent(PropertyDetailIntent.SetMapFullscreen(true))
                 },

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.bottom_nav.Screens
@@ -162,6 +163,8 @@ private fun PropertyDetailUI(
                 PropertyDetailLoadedContent(
                     property = property,
                     convertedPrices = state.convertedPrices,
+                    managerCommissionPercent = state.managerCommissionPercent,
+                    cardPriceLeadCurrency = state.detailPriceLeadCurrency,
                     intent = intent,
                 )
             }
@@ -197,6 +200,8 @@ private fun PropertyDetailUI(
 private fun PropertyDetailLoadedContent(
     property: Property,
     convertedPrices: PropertyDetailPrices?,
+    managerCommissionPercent: Double,
+    cardPriceLeadCurrency: CurrencyType,
     intent: (PropertyDetailIntent) -> Unit,
 ) {
     Column(
@@ -218,6 +223,8 @@ private fun PropertyDetailLoadedContent(
             PropertyDetailInfoSections(
                 property = property,
                 convertedPrices = convertedPrices,
+                managerCommissionPercent = managerCommissionPercent,
+                cardPriceLeadCurrency = cardPriceLeadCurrency,
                 onOpenMapFullscreen = {
                     intent(PropertyDetailIntent.SetMapFullscreen(true))
                 },

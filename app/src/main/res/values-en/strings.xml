@@ -423,6 +423,9 @@
     <string name="property_detail_application_sent">Request submitted</string>
     <string name="property_detail_application_failed">Could not submit the request. Try again later.</string>
 
+    <string name="buyer_price_includes_manager_commission">Includes %1$s%% manager commission</string>
+    <string name="property_application_commission_notice">Manager commission is %1$s%% of the listed price. Manager fee: %2$s %3$s.</string>
+
     <string name="publish_location_section_title">Location</string>
     <string name="publish_location_not_set">Tap to set address</string>
     <string name="publish_address_sheet_title">Property address</string>

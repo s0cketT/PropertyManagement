@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.bottom_nav.Screens
+import com.example.propertymanagement.ui.list_property_screen.catalogCardPriceLeadCurrency
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyEvent
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyIntent
 import com.example.propertymanagement.ui.list_property_screen.ListPropertyState
@@ -88,6 +89,8 @@ private fun UI(
             else -> PropertyList(
                 list = state.propertiesFilter,
                 currencyRates = state.currencyRates,
+                managerCommissionPercent = state.managerCommissionPercent,
+                cardPriceLeadCurrency = catalogCardPriceLeadCurrency(state.activeFilters),
                 onFavoriteClick = { intent(ListPropertyIntent.ToggleFavorite(it)) },
                 onItemClick = { intent(ListPropertyIntent.OnPropertyClick(it)) },
                 showFavoriteButton = true,

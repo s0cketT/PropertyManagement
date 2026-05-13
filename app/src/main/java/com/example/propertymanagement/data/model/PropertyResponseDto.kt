@@ -27,8 +27,8 @@ data class PropertyResponseDto(
     @field:SerializedName(value = "moderation_status_id", alternate = ["moderationStatusId"])
     val moderation_status_id: Int? = null,
 
-    @field:SerializedName(value = "admin_comment", alternate = ["adminComment"])
-    val admin_comment: String? = null,
+    @field:SerializedName(value = "moderation_comment", alternate = ["moderationComment", "admin_comment", "adminComment"])
+    val moderation_comment: String? = null,
 
     val country: String?,
     val region: String?,

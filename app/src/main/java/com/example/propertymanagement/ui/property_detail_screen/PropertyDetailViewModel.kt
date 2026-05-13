@@ -3,8 +3,11 @@ package com.example.propertymanagement.ui.property_detail_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
@@ -12,11 +15,17 @@ import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.SubmitPropertyApplicationUseCase
 import com.example.propertymanagement.domain.use_case.ToggleFavoriteUseCase
 import com.example.propertymanagement.ui.SingleFlowEvent
+import com.example.propertymanagement.ui.list_property_screen.catalogCardPriceLeadCurrency
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class PropertyDetailViewModel(
     private val propertyId: Int,
@@ -28,7 +37,9 @@ class PropertyDetailViewModel(
     private val getPropertyDetailPricesUseCase: GetPropertyDetailPricesUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val submitPropertyApplicationUseCase: SubmitPropertyApplicationUseCase
+    private val submitPropertyApplicationUseCase: SubmitPropertyApplicationUseCase,
+    private val getManagerCommissionPercentUseCase: GetManagerCommissionPercentUseCase,
+    private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PropertyDetailState())
@@ -38,7 +49,21 @@ class PropertyDetailViewModel(
     val event = _event.flow
 
     init {
+        if (!useMyPropertiesForDetail) {
+            observeCatalogPriceLeadCurrency()
+        }
         loadProperty()
+    }
+
+    private fun observeCatalogPriceLeadCurrency() {
+        getFilterPropertyUseCase()
+            .distinctUntilChanged()
+            .onEach { filters ->
+                _state.update {
+                    it.copy(detailPriceLeadCurrency = catalogCardPriceLeadCurrency(filters))
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun processIntent(intent: PropertyDetailIntent) {
@@ -164,6 +189,9 @@ class PropertyDetailViewModel(
                     isMapFullscreen = false,
                     isImageViewerOpen = false,
                     convertedPrices = null,
+                    currencyRates = emptyMap(),
+                    detailPriceLeadCurrency = CurrencyType.USD,
+                    managerCommissionPercent = 0.0,
                     isApplicationSheetOpen = false,
                     applicationComment = "",
                     isSubmittingApplication = false,
@@ -171,68 +199,92 @@ class PropertyDetailViewModel(
             }
             val uid = userId.takeIf { it.isNotEmpty() }
 
-            val rates = when (val ratesResult = getTodayRatesUseCase()) {
-                is Resource.Success -> ratesResult.data
-                else -> emptyMap()
-            }
-
-            if (useMyPropertiesForDetail) {
-                val ownerId = uid
-                if (ownerId == null) {
-                    _state.update {
-                        it.copy(isLoading = false, notFound = true)
-                    }
-                    return@launch
-                }
-                when (val result = getMyPropertiesUseCase(ownerId)) {
-                    is Resource.Success -> {
-                        val property = result.data.find { it.id == propertyId }
-                        val converted = property?.let { p ->
-                            getPropertyDetailPricesUseCase(p, rates)
-                        }
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                property = property,
-                                notFound = property == null,
-                                convertedPrices = converted,
-                            )
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                error = result.exception,
-                            )
-                        }
+            coroutineScope {
+                val commissionDeferred = async {
+                    if (useMyPropertiesForDetail) {
+                        0.0
+                    } else {
+                        getManagerCommissionPercentUseCase()
                     }
                 }
-            } else {
-                when (val result = getPropertiesUseCase(uid)) {
-                    is Resource.Success -> {
-                        val catalog = result.data.forMainCatalogDisplay()
-                        val property = catalog.find { it.id == propertyId }
-                        val converted = property?.let { p ->
-                            getPropertyDetailPricesUseCase(p, rates)
-                        }
+
+                val rates = when (val ratesResult = getTodayRatesUseCase()) {
+                    is Resource.Success -> ratesResult.data
+                    else -> emptyMap()
+                }
+
+                val commissionPercent = commissionDeferred.await()
+
+                if (useMyPropertiesForDetail) {
+                    val ownerId = uid
+                    if (ownerId == null) {
                         _state.update {
-                            it.copy(
-                                isLoading = false,
-                                property = property,
-                                notFound = property == null,
-                                convertedPrices = converted
-                            )
+                            it.copy(isLoading = false, notFound = true)
+                        }
+                        return@coroutineScope
+                    }
+                    when (val result = getMyPropertiesUseCase(ownerId)) {
+                        is Resource.Success -> {
+                            val property = result.data.find { it.id == propertyId }
+                            val converted = property?.let { p ->
+                                getPropertyDetailPricesUseCase(
+                                    property = p,
+                                    rates = rates,
+                                    managerCommissionPercent = 0.0,
+                                )
+                            }
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    property = property,
+                                    notFound = property == null,
+                                    convertedPrices = converted,
+                                    currencyRates = rates,
+                                    managerCommissionPercent = 0.0,
+                                )
+                            }
+                        }
+
+                        is Resource.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = result.exception,
+                                )
+                            }
                         }
                     }
+                } else {
+                    when (val result = getPropertiesUseCase(uid)) {
+                        is Resource.Success -> {
+                            val catalog = result.data.forMainCatalogDisplay()
+                            val property = catalog.find { it.id == propertyId }
+                            val converted = property?.let { p ->
+                                getPropertyDetailPricesUseCase(
+                                    property = p,
+                                    rates = rates,
+                                    managerCommissionPercent = commissionPercent,
+                                )
+                            }
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    property = property,
+                                    notFound = property == null,
+                                    convertedPrices = converted,
+                                    currencyRates = rates,
+                                    managerCommissionPercent = commissionPercent,
+                                )
+                            }
+                        }
 
-                    is Resource.Error -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                error = result.exception
-                            )
+                        is Resource.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = result.exception
+                                )
+                            }
                         }
                     }
                 }

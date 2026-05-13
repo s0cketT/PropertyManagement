@@ -85,7 +85,12 @@ fun MainNavigation() {
             navController = navController,
             //startDestination = Screens.Advertisements.route,
             startDestination = Screens.SplashScreen.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = AppTransitions.instant.enter,
+            exitTransition = AppTransitions.instant.exit,
+            popEnterTransition = AppTransitions.instant.popEnter,
+            popExitTransition = AppTransitions.instant.popExit,
+            sizeTransform = { null },
         ) {
 
             composable(Screens.Advertisements.route) {
@@ -111,10 +116,10 @@ fun MainNavigation() {
                         type = NavType.IntType
                     },
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit,
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit,
             ) { backStackEntry ->
                 val propertyId = backStackEntry.arguments?.getInt("propertyId")
                 if (propertyId != null) {
@@ -131,30 +136,30 @@ fun MainNavigation() {
 
             composable(
                 route = Screens.Filters.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 FilterScreen(navController = navController)
             }
 
             composable(
                 route = Screens.CategorySelection.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 CategorySelectionScreen(navController = navController)
             }
 
             composable(
                 route = Screens.RegionSelection.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 RegionSelectionScreen(navController = navController)
             }
@@ -170,10 +175,10 @@ fun MainNavigation() {
                         defaultValue = ""
                     }
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { backStackEntry ->
                 val regionId = backStackEntry.arguments?.getLong("regionId") ?: 0L
                 val regionName = backStackEntry.arguments?.getString("regionName").orEmpty()
@@ -187,10 +192,10 @@ fun MainNavigation() {
 
             composable(
                 route = Screens.AuthRegister.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 AuthRegisterScreen(navController = navController)
             }
@@ -207,10 +212,10 @@ fun MainNavigation() {
                         defaultValue = AuthCheck.LOGIN.name
                     }
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { backStackEntry ->
 
                 val email = backStackEntry.arguments?.getString("email").orEmpty()
@@ -229,30 +234,30 @@ fun MainNavigation() {
 
             composable(
                 route = Screens.AuthLoginScreen.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 AuthLoginScreen(navController = navController)
             }
 
             composable(
                 route = Screens.SetNewPasswordScreen.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 SetNewPasswordScreen(navController = navController)
             }
 
             composable(
                 route = Screens.ChangeNewEmailScreen.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 ChangeNewEmailScreen(navController = navController)
             }
@@ -265,10 +270,10 @@ fun MainNavigation() {
                         defaultValue = ""
                     }
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { entry ->
                 val email = entry.arguments?.getString("email").orEmpty()
                 ChangeEmailLinkInstructionScreen(
@@ -283,10 +288,10 @@ fun MainNavigation() {
 
             composable(
                 route = Screens.SettingsScreen.route,
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) {
                 SettingsScreen(navController = navController)
             }
@@ -299,10 +304,10 @@ fun MainNavigation() {
                         defaultValue = MyAdsListingFilter.PUBLISHED.name
                     },
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { backStackEntry ->
                 val tabName = backStackEntry.arguments?.getString("initialTab")
                 val initialTab = try {
@@ -325,10 +330,10 @@ fun MainNavigation() {
                         defaultValue = ""
                     }
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { backStackEntry ->
 
                 val userJson = backStackEntry.arguments?.getString("user").orEmpty()
@@ -352,10 +357,10 @@ fun MainNavigation() {
                         defaultValue = ""
                     }
                 ),
-                enterTransition = AppTransitions.slideFromRight.enter,
-                exitTransition = AppTransitions.slideFromRight.exit,
-                popEnterTransition = AppTransitions.slideFromRight.popEnter,
-                popExitTransition = AppTransitions.slideFromRight.popExit
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit
             ) { backStackEntry ->
 
                 val propertyId = backStackEntry.arguments?.getInt("propertyId") ?: 0

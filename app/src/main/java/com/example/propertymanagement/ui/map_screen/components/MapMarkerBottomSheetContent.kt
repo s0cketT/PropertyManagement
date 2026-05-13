@@ -64,12 +64,19 @@ import com.example.propertymanagement.ui.list_property_screen.components.Propert
 fun MapMarkerBottomSheetContent(
     property: Property,
     currencyRates: Map<String, CurrencyRate>,
+    managerCommissionPercent: Double = 0.0,
     onDetailsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val priceUseCase = remember { GetPropertyDetailPricesUseCase() }
-    val convertedPrices = remember(property.id, property.price, property.currency, currencyRates) {
-        priceUseCase(property, currencyRates)
+    val convertedPrices = remember(
+        property.id,
+        property.price,
+        property.currency,
+        currencyRates,
+        managerCommissionPercent,
+    ) {
+        priceUseCase(property, currencyRates, managerCommissionPercent)
     }
 
     val addressLine = buildPropertyDetailAddressLine(property)
@@ -110,7 +117,8 @@ fun MapMarkerBottomSheetContent(
             property = property,
             convertedPrices = convertedPrices,
             compact = true,
-            primaryBold = true
+            primaryBold = true,
+            managerCommissionPercent = managerCommissionPercent,
         )
 
         if (area != null || property.rooms != null) {

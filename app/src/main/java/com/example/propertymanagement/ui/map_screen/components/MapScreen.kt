@@ -161,12 +161,13 @@ private fun UI(
     val markerDisplayCurrency = state.filtersProperty?.selectedCurrency ?: CurrencyType.USD
 
     // Метки объявлений перерисовываются только когда меняется набор/курс/выбранная валюта отображения.
-    LaunchedEffect(state.filteredMarkers, state.currencyRates, markerDisplayCurrency) {
+    LaunchedEffect(state.filteredMarkers, state.currencyRates, markerDisplayCurrency, state.managerCommissionPercent) {
         mapHelper.showPropertyMarkers(
             mapView = mapView,
             markers = state.filteredMarkers,
             currencyRates = state.currencyRates,
             displayCurrency = markerDisplayCurrency,
+            managerCommissionPercent = state.managerCommissionPercent,
         ) { property ->
             intent(MapIntent.MarkerTapped(property))
         }
@@ -284,6 +285,7 @@ private fun UI(
                 MapMarkerBottomSheetContent(
                     property = property,
                     currencyRates = state.currencyRates,
+                    managerCommissionPercent = state.managerCommissionPercent,
                     onDetailsClick = { intent(MapIntent.NavigateToSelectedPropertyDetail) }
                 )
             }

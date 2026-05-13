@@ -199,20 +199,21 @@ private fun MyAdsContent(
                         PropertyList(
                             list = state.visibleList,
                             currencyRates = state.currencyRates,
+                            managerCommissionPercent = 0.0,
                             onFavoriteClick = { },
                             onItemClick = { intent(MyAdsIntent.OnPropertyClick(it)) },
                             bottomTrailing = { property ->
                                 Column {
                                     ModerationStatusBadge(status = property.moderationStatus)
-                                    val adminComment = property.adminComment?.trim().orEmpty()
+                                    val moderationComment = property.moderationComment?.trim().orEmpty()
                                     if (
                                         property.moderationStatus == ModerationStatus.REJECTED &&
-                                        adminComment.isNotEmpty()
+                                        moderationComment.isNotEmpty()
                                     ) {
                                         Text(
                                             text = stringResource(
                                                 R.string.my_ads_rejection_comment,
-                                                adminComment,
+                                                moderationComment,
                                             ),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.error,

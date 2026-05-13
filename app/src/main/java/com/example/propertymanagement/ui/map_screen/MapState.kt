@@ -17,6 +17,8 @@ data class MapState(
     val userLocation: UserLocation? = null,
 
     val currencyRates: Map<String, CurrencyRate> = emptyMap(),
+    /** Комиссия покупателя для подписей на метках (каталог). */
+    val managerCommissionPercent: Double = 0.0,
     /** Сохранённые фильтры (тот же источник, что и список объявлений). */
     val filtersProperty: FiltersProperty? = null,
 

@@ -8,6 +8,7 @@ import com.example.propertymanagement.data.model.CreateImageRequestDto
 import com.example.propertymanagement.data.model.ExistsResult
 import com.example.propertymanagement.data.model.FavoriteDto
 import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
+import com.example.propertymanagement.data.model.PlatformManagerCommissionDto
 import com.example.propertymanagement.data.model.PropertyImageDto
 import com.example.propertymanagement.data.model.PropertyResponseDto
 import com.example.propertymanagement.data.model.RegionDto
@@ -68,6 +69,12 @@ interface ISupabaseApi {
     suspend fun deletePropertyImages(
         @Query("property_id") propertyId: String,
     )
+
+    @GET("platform_manager_commission_settings")
+    suspend fun getPlatformManagerCommissionSettings(
+        @Query("id") id: String = "eq.1",
+        @Query("select") select: String = "commission_percent",
+    ): List<PlatformManagerCommissionDto>
 
     @GET("property_images")
     suspend fun getImagesByPropertyId(

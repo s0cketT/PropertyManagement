@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyRate
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.ui.common.PropertyMultiCurrencyPriceColumn
@@ -28,7 +29,10 @@ import com.example.propertymanagement.ui.theme.SpacerTiny
 @Composable
 fun PropertyContent(
     property: Property,
-    currencyRates: Map<String, CurrencyRate>
+    currencyRates: Map<String, CurrencyRate>,
+    managerCommissionPercent: Double = 0.0,
+    /** `null` — сначала валюта объявления; иначе приоритетная валюта карточки каталога. */
+    cardPriceLeadCurrency: CurrencyType? = null,
 ) {
     val rooms = property.rooms
 
@@ -42,8 +46,14 @@ fun PropertyContent(
     ).joinToString(", ")
 
     val priceUseCase = remember { GetPropertyDetailPricesUseCase() }
-    val convertedPrices = remember(property.id, property.price, property.currency, currencyRates) {
-        priceUseCase(property, currencyRates)
+    val convertedPrices = remember(
+        property.id,
+        property.price,
+        property.currency,
+        currencyRates,
+        managerCommissionPercent,
+    ) {
+        priceUseCase(property, currencyRates, managerCommissionPercent)
     }
 
     val locale = LocalConfiguration.current.locales[0]
@@ -77,7 +87,9 @@ fun PropertyContent(
             property = property,
             convertedPrices = convertedPrices,
             compact = true,
-            primaryBold = false
+            primaryBold = false,
+            managerCommissionPercent = managerCommissionPercent,
+            priceLeadCurrency = cardPriceLeadCurrency,
         )
 
         Row(

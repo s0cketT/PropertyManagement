@@ -14,6 +14,7 @@ import com.example.propertymanagement.data.repository.FavoriteRepositoryImpl
 import com.example.propertymanagement.data.repository.FiltersRepositoryImpl
 import com.example.propertymanagement.data.repository.IUserRepositoryImpl
 import com.example.propertymanagement.data.repository.LocationRepositoryImpl
+import com.example.propertymanagement.data.repository.ManagerCommissionRepositoryImpl
 import com.example.propertymanagement.data.repository.PropertyRepositoryImpl
 import com.example.propertymanagement.data.repository.RegionCityRepositoryImpl
 import com.example.propertymanagement.data.repository.SettingsRepositoryImpl
@@ -24,6 +25,7 @@ import com.example.propertymanagement.domain.repository.ICurrencyRepository
 import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
+import com.example.propertymanagement.domain.repository.IManagerCommissionRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
 import com.example.propertymanagement.domain.repository.IRegionCityRepository
 import com.example.propertymanagement.domain.repository.ISettingsRepository
@@ -66,6 +68,10 @@ val dataModule = module {
             supabaseApi = get<ISupabaseApi>(),
             storageRepository = get<IStorageRepository>()
         )
+    }
+
+    single<IManagerCommissionRepository> {
+        ManagerCommissionRepositoryImpl(supabaseApi = get<ISupabaseApi>())
     }
 
     single<AuthService> {

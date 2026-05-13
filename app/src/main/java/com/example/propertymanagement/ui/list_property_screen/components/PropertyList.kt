@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyRate
+import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.ui.theme.ButtonCornerRadius
 import com.example.propertymanagement.ui.theme.CardElevationLow
@@ -37,6 +38,9 @@ import com.example.propertymanagement.ui.theme.PaddingSmall
 fun PropertyList(
     list: List<Property>,
     currencyRates: Map<String, CurrencyRate>,
+    managerCommissionPercent: Double = 0.0,
+    /** См. [PropertyContent]. */
+    cardPriceLeadCurrency: CurrencyType? = null,
     onFavoriteClick: (Int) -> Unit,
     onItemClick: (Property) -> Unit,
     bottomTrailing: (@Composable (Property) -> Unit)? = null,
@@ -55,6 +59,8 @@ fun PropertyList(
             PropertyListCard(
                 property = property,
                 currencyRates = currencyRates,
+                managerCommissionPercent = managerCommissionPercent,
+                cardPriceLeadCurrency = cardPriceLeadCurrency,
                 onFavoriteClick = onFavoriteClick,
                 onItemClick = onItemClick,
                 bottomTrailing = bottomTrailing,
@@ -72,6 +78,8 @@ fun PropertyList(
 fun PropertyListCard(
     property: Property,
     currencyRates: Map<String, CurrencyRate>,
+    managerCommissionPercent: Double = 0.0,
+    cardPriceLeadCurrency: CurrencyType? = null,
     onFavoriteClick: (Int) -> Unit,
     onItemClick: (Property) -> Unit,
     bottomTrailing: (@Composable (Property) -> Unit)? = null,
@@ -104,7 +112,12 @@ fun PropertyListCard(
                     .fillMaxWidth()
                     .clickable { onItemClick(property) }
             ) {
-                PropertyContent(property = property, currencyRates = currencyRates)
+                PropertyContent(
+                    property = property,
+                    currencyRates = currencyRates,
+                    managerCommissionPercent = managerCommissionPercent,
+                    cardPriceLeadCurrency = cardPriceLeadCurrency,
+                )
 
                 val canEdit = onEditClick != null && showEditFor(property)
                 val canDelete = onDeleteClick != null && showDeleteFor(property)
