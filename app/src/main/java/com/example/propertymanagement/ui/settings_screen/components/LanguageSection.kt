@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,13 +21,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.LanguageType
 import com.example.propertymanagement.ui.mapper.titleRes
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
-import com.example.propertymanagement.ui.theme.PaddingSmall
-import com.example.propertymanagement.ui.theme.UnselectedGray
+
+@Composable
+fun LanguagePickerRow(
+    selectedLanguage: LanguageType,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = PaddingMedium),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        Text(
+            text = stringResource(selectedLanguage.titleRes()),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
 
 @Composable
 fun LanguageSection(
@@ -35,50 +61,19 @@ fun LanguageSection(
     isVisible: Boolean,
     onClick: () -> Unit,
     onSelect: (LanguageType) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     Column {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick() }
-                .padding(horizontal = PaddingLarge, vertical = PaddingMedium)
-        ) {
-
-            Text(
-                text = stringResource(R.string.language),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(PaddingSmall))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = stringResource(selectedLanguage.titleRes()),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
+        LanguagePickerRow(
+            selectedLanguage = selectedLanguage,
+            onClick = onClick,
+        )
 
         if (isVisible) {
             LanguageBottomSheet(
                 selected = selectedLanguage,
                 onSelect = onSelect,
-                onDismiss = onDismiss
+                onDismiss = onDismiss,
             )
         }
     }
@@ -89,12 +84,13 @@ fun LanguageSection(
 private fun LanguageBottomSheet(
     selected: LanguageType,
     onSelect: (LanguageType) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         Column {
 
@@ -105,12 +101,13 @@ private fun LanguageBottomSheet(
                         .clickable { onSelect(lang) }
                         .padding(horizontal = PaddingLarge, vertical = PaddingMedium),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
 
                     Text(
                         text = stringResource(lang.titleRes()),
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
 
                     RadioButton(
@@ -118,11 +115,13 @@ private fun LanguageBottomSheet(
                         onClick = { onSelect(lang) },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.colorScheme.primary,
-                            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(PaddingMedium))
         }
     }
 }

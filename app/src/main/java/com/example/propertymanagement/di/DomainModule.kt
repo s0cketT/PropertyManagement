@@ -6,6 +6,7 @@ import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
 import com.example.propertymanagement.domain.repository.IManagerCommissionRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
+import com.example.propertymanagement.domain.repository.IOverpassPoiRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
 import com.example.propertymanagement.domain.repository.IRegionCityRepository
 import com.example.propertymanagement.domain.repository.ISettingsRepository
@@ -20,6 +21,7 @@ import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
+import com.example.propertymanagement.domain.use_case.GetNearbyMapPoisUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
@@ -151,6 +153,12 @@ val domainModule = module {
     factory {
         GetManagerCommissionPercentUseCase(
             repository = get<IManagerCommissionRepository>(),
+        )
+    }
+
+    factory {
+        GetNearbyMapPoisUseCase(
+            overpassPoiRepository = get<IOverpassPoiRepository>(),
         )
     }
 

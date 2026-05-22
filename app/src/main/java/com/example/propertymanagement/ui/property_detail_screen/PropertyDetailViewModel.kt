@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.CurrencyType
+import com.example.propertymanagement.domain.model.NearbyPoiCategory
 import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetNearbyMapPoisUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
@@ -40,6 +42,7 @@ class PropertyDetailViewModel(
     private val submitPropertyApplicationUseCase: SubmitPropertyApplicationUseCase,
     private val getManagerCommissionPercentUseCase: GetManagerCommissionPercentUseCase,
     private val getFilterPropertyUseCase: GetFilterPropertyUseCase,
+    private val getNearbyMapPoisUseCase: GetNearbyMapPoisUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PropertyDetailState())
@@ -73,6 +76,20 @@ class PropertyDetailViewModel(
 
             is PropertyDetailIntent.SetMapFullscreen ->
                 _state.update { it.copy(isMapFullscreen = intent.open) }
+
+            is PropertyDetailIntent.SetMapPoiCategoryVisible -> {
+                val category = intent.category
+                val visible = intent.visible
+                _state.update { s ->
+                    val next = s.visiblePoiCategories.toMutableSet()
+                    if (visible) {
+                        next.add(category)
+                    } else {
+                        next.remove(category)
+                    }
+                    s.copy(visiblePoiCategories = next)
+                }
+            }
 
             is PropertyDetailIntent.OpenImageViewer ->
                 _state.update {
@@ -195,6 +212,10 @@ class PropertyDetailViewModel(
                     isApplicationSheetOpen = false,
                     applicationComment = "",
                     isSubmittingApplication = false,
+                    nearbyMapPois = emptyList(),
+                    visiblePoiCategories = emptySet(),
+                    isNearbyPoisLoading = false,
+                    nearbyPoisLoadFailed = false,
                 )
             }
             val uid = userId.takeIf { it.isNotEmpty() }
@@ -243,6 +264,12 @@ class PropertyDetailViewModel(
                                     managerCommissionPercent = 0.0,
                                 )
                             }
+                            if (property != null) {
+                                fetchNearbyMapPois(
+                                    latitude = property.latitude,
+                                    longitude = property.longitude,
+                                )
+                            }
                         }
 
                         is Resource.Error -> {
@@ -276,6 +303,12 @@ class PropertyDetailViewModel(
                                     managerCommissionPercent = commissionPercent,
                                 )
                             }
+                            if (property != null) {
+                                fetchNearbyMapPois(
+                                    latitude = property.latitude,
+                                    longitude = property.longitude,
+                                )
+                            }
                         }
 
                         is Resource.Error -> {
@@ -288,6 +321,42 @@ class PropertyDetailViewModel(
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun fetchNearbyMapPois(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isNearbyPoisLoading = true,
+                    nearbyPoisLoadFailed = false,
+                )
+            }
+            when (
+                val result = getNearbyMapPoisUseCase(
+                    latitude = latitude,
+                    longitude = longitude,
+                    radiusMeters = GetNearbyMapPoisUseCase.DEFAULT_RADIUS_METERS,
+                )
+            ) {
+                is Resource.Success ->
+                    _state.update {
+                        it.copy(
+                            nearbyMapPois = result.data,
+                            isNearbyPoisLoading = false,
+                            nearbyPoisLoadFailed = false,
+                        )
+                    }
+
+                is Resource.Error ->
+                    _state.update {
+                        it.copy(
+                            nearbyMapPois = emptyList(),
+                            isNearbyPoisLoading = false,
+                            nearbyPoisLoadFailed = true,
+                        )
+                    }
             }
         }
     }

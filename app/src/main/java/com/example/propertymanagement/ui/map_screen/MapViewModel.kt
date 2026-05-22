@@ -99,6 +99,21 @@ class MapViewModel(
                 _event.emit(MapEvent.NavigateFilterScreen)
             }
 
+            is MapIntent.ToggleShowFavoritesOnly -> {
+                val wantOnly = !_state.value.showFavoritesOnly
+                if (wantOnly && _state.value.currentUserId == null) {
+                    _event.emit(MapEvent.ShowAuthRequiredForFavoritesOnly)
+                    return
+                }
+                _state.update {
+                    it.copy(
+                        showFavoritesOnly = wantOnly,
+                        selectedMarkerProperty = null,
+                    )
+                }
+                recomputeFilteredMarkers()
+            }
+
             is MapIntent.MarkerTapped -> {
                 _state.update { it.copy(selectedMarkerProperty = intent.property) }
             }
@@ -142,7 +157,9 @@ class MapViewModel(
                     current.selectedStatuses.isEmpty() || marker.status in current.selectedStatuses
                 val typeMatch =
                     current.selectedTypes.isEmpty() || marker.type in current.selectedTypes
-                statusMatch && typeMatch
+                val favoriteMatch =
+                    !current.showFavoritesOnly || marker.isFavorite
+                statusMatch && typeMatch && favoriteMatch
             }
 
             current.copy(filteredMarkers = filtered)

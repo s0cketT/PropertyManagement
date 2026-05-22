@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyType
+import com.example.propertymanagement.domain.model.NearbyMapPoi
+import com.example.propertymanagement.domain.model.NearbyPoiCategory
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.common.formatPropertyPublicationTime
@@ -35,6 +37,11 @@ fun PropertyDetailInfoSections(
     showBuyerCommissionCaption: Boolean = true,
     /** Каталог: ведущая валюта (фильтр / USD). `null` — сначала валюта объявления. */
     cardPriceLeadCurrency: CurrencyType? = null,
+    nearbyMapPois: List<NearbyMapPoi> = emptyList(),
+    visiblePoiCategories: Set<NearbyPoiCategory> = emptySet(),
+    onSetPoiCategoryVisible: (NearbyPoiCategory, Boolean) -> Unit = { _, _ -> },
+    isNearbyPoisLoading: Boolean = false,
+    nearbyPoisLoadFailed: Boolean = false,
     onOpenMapFullscreen: () -> Unit,
     onSubmitRequest: (() -> Unit)?,
 ) {
@@ -200,7 +207,12 @@ fun PropertyDetailInfoSections(
 
         PropertyDetailMapSection(
             property = property,
-            onOpenFullscreen = onOpenMapFullscreen
+            nearbyMapPois = nearbyMapPois,
+            visiblePoiCategories = visiblePoiCategories,
+            onSetPoiCategoryVisible = onSetPoiCategoryVisible,
+            isNearbyPoisLoading = isNearbyPoisLoading,
+            nearbyPoisLoadFailed = nearbyPoisLoadFailed,
+            onOpenFullscreen = onOpenMapFullscreen,
         )
 
         onSubmitRequest?.let { submit ->

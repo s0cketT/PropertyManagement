@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import com.example.propertymanagement.data.dao.FilterDao
 import com.example.propertymanagement.data.local.dataStore
 import com.example.propertymanagement.data.remote.INbrbApi
+import com.example.propertymanagement.data.remote.IOverpassApi
 import com.example.propertymanagement.data.remote.ISupabaseApi
 import com.example.propertymanagement.data.remote.auth.AuthService
 import com.example.propertymanagement.data.remote.auth.AuthServiceImpl
@@ -15,6 +16,7 @@ import com.example.propertymanagement.data.repository.FiltersRepositoryImpl
 import com.example.propertymanagement.data.repository.IUserRepositoryImpl
 import com.example.propertymanagement.data.repository.LocationRepositoryImpl
 import com.example.propertymanagement.data.repository.ManagerCommissionRepositoryImpl
+import com.example.propertymanagement.data.repository.OverpassPoiRepositoryImpl
 import com.example.propertymanagement.data.repository.PropertyRepositoryImpl
 import com.example.propertymanagement.data.repository.RegionCityRepositoryImpl
 import com.example.propertymanagement.data.repository.SettingsRepositoryImpl
@@ -26,6 +28,7 @@ import com.example.propertymanagement.domain.repository.IFavoriteRepository
 import com.example.propertymanagement.domain.repository.IFiltersRepository
 import com.example.propertymanagement.domain.repository.ILocationRepository
 import com.example.propertymanagement.domain.repository.IManagerCommissionRepository
+import com.example.propertymanagement.domain.repository.IOverpassPoiRepository
 import com.example.propertymanagement.domain.repository.IPropertyRepository
 import com.example.propertymanagement.domain.repository.IRegionCityRepository
 import com.example.propertymanagement.domain.repository.ISettingsRepository
@@ -103,6 +106,12 @@ val dataModule = module {
 
     single<IFavoriteRepository> {
         FavoriteRepositoryImpl(supabaseApi = get<ISupabaseApi>())
+    }
+
+    single<IOverpassPoiRepository> {
+        OverpassPoiRepositoryImpl(
+            overpassApi = get<IOverpassApi>(),
+        )
     }
 
 }

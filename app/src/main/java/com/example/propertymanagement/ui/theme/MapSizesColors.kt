@@ -11,12 +11,12 @@ object MapSizesColors {
     // Радиус круга вокруг пользователя (в метрах, для Yandex MapKit)
     const val USER_LOCATION_CIRCLE_RADIUS_METERS = 30f
 
-    // Цвета круга (alpha, r, g, b)
+    // Цвета круга (alpha, r, g, b) — в тон primary темы (teal)
     const val USER_CIRCLE_FILL_ALPHA = 30
     const val USER_CIRCLE_STROKE_ALPHA = 60
-    const val USER_CIRCLE_R = 30
-    const val USER_CIRCLE_G = 136
-    const val USER_CIRCLE_B = 229
+    const val USER_CIRCLE_R = 13
+    const val USER_CIRCLE_G = 92
+    const val USER_CIRCLE_B = 86
 
     // Толщина обводки круга (в пикселях на экране)
     const val USER_CIRCLE_STROKE_WIDTH = 2f
@@ -27,8 +27,30 @@ object MapSizesColors {
     /** Зум при показе одного объекта на карте (превью и полноэкранная карта) */
     const val PROPERTY_DETAIL_MAP_ZOOM = 16f
 
+    /** Ниже этого зума POI на карте объявления — точки; не ниже — значки по типу. */
+    const val POI_MARKER_DETAILED_ICON_MIN_ZOOM = 14f
+
+    /**
+     * Размер (dp) детальных иконок POI на карте объявления; совпадает с
+     * [com.example.propertymanagement.ui.theme.MapPoiCategoryCheckboxIconSize].
+     */
+    const val POI_CATEGORY_ICON_DP = 24f
+
     // Длительность анимации перемещения камеры (в секундах)
     const val CAMERA_MOVE_ANIMATION_DURATION_SEC = 1f
+
+    /** Ниже этого зума метки на карте каталога — компактные точки вместо цен. */
+    const val MAP_PRICE_LABEL_MIN_ZOOM = 13f
+
+    /** Шаг зума по кнопкам +/− на экране карты. */
+    const val MAP_ZOOM_BUTTON_STEP = 0.85f
+
+    /** Допустимый диапазон зума (MapKit). */
+    const val MAP_ZOOM_MIN = 2f
+    const val MAP_ZOOM_MAX = 21f
+
+    /** Длительность анимации при нажатии +/− зум (сек). */
+    const val MAP_ZOOM_BUTTON_ANIMATION_SEC = 0.25f
 
     // ----- Элементы стрелки-направления (в пикселях на bitmap) -----
 

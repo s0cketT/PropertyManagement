@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +36,7 @@ import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoState
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
 import com.example.propertymanagement.ui.theme.SpacerLarge
 import com.example.propertymanagement.ui.theme.SpacerMedium
+import com.example.propertymanagement.ui.theme.SurfaceTonalElevationLow
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
@@ -118,10 +123,18 @@ private fun UI(
 ) {
     val scroll = rememberScrollState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         AppTopBar(
             title = R.string.personal_info_title,
             onBackClick = { intent(PersonalInfoIntent.OnBackClick) },
+        )
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
         )
 
         Column(
@@ -144,10 +157,15 @@ private fun UI(
             Spacer(modifier = Modifier.height(SpacerLarge))
         }
 
-        PrimaryActionButton(
-            text = R.string.save,
-            onClick = { intent(PersonalInfoIntent.Save) },
-            enabled = !state.isLoading,
-        )
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            tonalElevation = SurfaceTonalElevationLow,
+        ) {
+            PrimaryActionButton(
+                text = R.string.save,
+                onClick = { intent(PersonalInfoIntent.Save) },
+                enabled = !state.isLoading,
+            )
+        }
     }
 }

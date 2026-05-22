@@ -11,6 +11,8 @@ sealed class MapIntent {
     data object NavigateBack : MapIntent()
     data object NavigateFilterScreen : MapIntent()
 
+    data object ToggleShowFavoritesOnly : MapIntent()
+
     data class ApplyStatusFilter(val status: PropertyStatus?) : MapIntent()
 
     data class ApplyTypeFilter(val type: PropertyType?) : MapIntent()

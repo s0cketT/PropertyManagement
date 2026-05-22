@@ -29,5 +29,8 @@ data class MapState(
     val selectedMarkerProperty: Property? = null,
 
     val selectedStatuses: Set<PropertyStatus> = emptySet(),
-    val selectedTypes: Set<PropertyType> = emptySet()
+    val selectedTypes: Set<PropertyType> = emptySet(),
+
+    /** Показывать на карте только объявления из избранного (требуется авторизация). */
+    val showFavoritesOnly: Boolean = false,
 )

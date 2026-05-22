@@ -46,7 +46,6 @@ import com.example.propertymanagement.ui.theme.IconSizeArrow
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingMedium
 import com.example.propertymanagement.ui.theme.PaddingSmall
-import com.example.propertymanagement.ui.theme.TextFieldBorderError
 import com.example.propertymanagement.ui.theme.TextLarge
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -253,7 +252,7 @@ private fun SellerTypeDropdown(
         error?.let {
             Text(
                 text = it.asString(),
-                color = TextFieldBorderError,
+                color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(start = PaddingSmall, top = PaddingSmall)
             )

@@ -123,14 +123,20 @@
     <string name="rent_chip">For Rent</string>
     <string name="filters_fab_content_description">Filters</string>
     <string name="map_my_location_content_description">My location</string>
+    <string name="map_zoom_in_content_description">Zoom in</string>
+    <string name="map_zoom_out_content_description">Zoom out</string>
     <string name="map_legend_sale">Sale</string>
     <string name="map_legend_rent">Rent</string>
+    <string name="map_favorites_only">Favorites only</string>
 
     <string name="screen_advertisements">Listings</string>
     <string name="screen_favorites">Favorites</string>
     <string name="screen_map">Map</string>
     <string name="screen_publish">Publish</string>
     <string name="screen_profile">Profile</string>
+    <string name="profile_guest_title">Your account</string>
+    <string name="profile_guest_message">Sign in to manage listings and profile settings.</string>
+    <string name="profile_avatar_hint">Tap to change photo</string>
 
     <string name="category_apartments">Apartments</string>
     <string name="category_houses">Houses</string>
@@ -304,6 +310,7 @@
     <string name="logout">Logout</string>
 
     <string name="settings_app">App settings</string>
+    <string name="settings_account_section_title">Account &amp; signing in</string>
     <string name="settings_change_password">Change password</string>
     <string name="change_password_new_password_title">New password</string>
     <string name="change_password_new_password_subtitle">Choose a new password and confirm it. At least 6 characters.</string>
@@ -412,6 +419,17 @@
     <string name="answer_no">No</string>
 
     <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
+    <string name="property_detail_nearby_pois_loading">Loading nearby places…</string>
+    <string name="property_detail_nearby_pois_shown">On map: %1$d of %2$d</string>
+    <string name="property_detail_nearby_pois_empty_area">No matching places in this radius</string>
+    <string name="property_detail_nearby_pois_error">Could not load nearby places. Try again later.</string>
+    <string name="property_detail_poi_layers_title">Map layers</string>
+    <string name="property_detail_poi_category_school">Schools</string>
+    <string name="property_detail_poi_category_clinic">Clinics</string>
+    <string name="property_detail_poi_category_grocery">Groceries</string>
+    <string name="property_detail_poi_unnamed_school">School (OSM %1$s)</string>
+    <string name="property_detail_poi_unnamed_clinic">Clinic (OSM %1$s)</string>
+    <string name="property_detail_poi_unnamed_grocery">Store (OSM %1$s)</string>
     <string name="property_detail_submit_request">Submit request</string>
     <string name="property_detail_request_requires_registration">You need to sign up to submit a request</string>
     <string name="property_detail_own_request_not_allowed">You cannot submit a request for your own listing</string>

@@ -3,6 +3,7 @@ package com.example.propertymanagement.di
 import com.example.propertymanagement.data.common.Constants.ANON_KEY
 import com.example.propertymanagement.data.common.Constants.BASE_URL_SUPABASE
 import com.example.propertymanagement.data.remote.INbrbApi
+import com.example.propertymanagement.data.remote.IOverpassApi
 import com.example.propertymanagement.data.remote.ISupabaseApi
 import com.example.propertymanagement.data.remote.SupabaseRestAuthInterceptor
 import io.github.jan.supabase.createSupabaseClient
@@ -55,5 +56,29 @@ val networkModule = module {
 
     single<ISupabaseApi> {
         get<Retrofit>(named("supabase")).create(ISupabaseApi::class.java)
+    }
+
+    single(named("overpass")) {
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                chain.proceed(
+                    chain.request().newBuilder()
+                        .header(
+                            "User-Agent",
+                            "PropertyManagement/1.0 (Android; school POI via Overpass)",
+                        )
+                        .build(),
+                )
+            }
+            .build()
+        Retrofit.Builder()
+            .baseUrl("https://overpass-api.de/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    single<IOverpassApi> {
+        get<Retrofit>(named("overpass")).create(IOverpassApi::class.java)
     }
 }

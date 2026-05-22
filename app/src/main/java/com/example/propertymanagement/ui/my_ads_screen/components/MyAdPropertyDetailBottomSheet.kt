@@ -27,6 +27,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.NearbyMapPoi
+import com.example.propertymanagement.domain.model.NearbyPoiCategory
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.list_property_screen.components.ErrorState
@@ -170,6 +172,10 @@ private fun MyAdPropertyDetailSheetBody(
                 MyAdPropertyDetailScrollableContent(
                     property = property,
                     convertedPrices = state.convertedPrices,
+                    nearbyMapPois = state.nearbyMapPois,
+                    visiblePoiCategories = state.visiblePoiCategories,
+                    isNearbyPoisLoading = state.isNearbyPoisLoading,
+                    nearbyPoisLoadFailed = state.nearbyPoisLoadFailed,
                     intent = intent,
                 )
             }
@@ -180,6 +186,13 @@ private fun MyAdPropertyDetailSheetBody(
     if (state.isMapFullscreen && property != null) {
         PropertyDetailFullscreenMapDialog(
             property = property,
+            nearbyMapPois = state.nearbyMapPois,
+            visiblePoiCategories = state.visiblePoiCategories,
+            onSetPoiCategoryVisible = { category, visible ->
+                intent(PropertyDetailIntent.SetMapPoiCategoryVisible(category, visible))
+            },
+            isNearbyPoisLoading = state.isNearbyPoisLoading,
+            nearbyPoisLoadFailed = state.nearbyPoisLoadFailed,
             onDismiss = { intent(PropertyDetailIntent.SetMapFullscreen(false)) },
         )
     }
@@ -197,6 +210,10 @@ private fun MyAdPropertyDetailSheetBody(
 private fun MyAdPropertyDetailScrollableContent(
     property: Property,
     convertedPrices: PropertyDetailPrices?,
+    nearbyMapPois: List<NearbyMapPoi>,
+    visiblePoiCategories: Set<NearbyPoiCategory>,
+    isNearbyPoisLoading: Boolean,
+    nearbyPoisLoadFailed: Boolean,
     intent: (PropertyDetailIntent) -> Unit,
 ) {
     Column(
@@ -221,6 +238,13 @@ private fun MyAdPropertyDetailScrollableContent(
                 managerCommissionPercent = 0.0,
                 showBuyerCommissionCaption = false,
                 cardPriceLeadCurrency = null,
+                nearbyMapPois = nearbyMapPois,
+                visiblePoiCategories = visiblePoiCategories,
+                onSetPoiCategoryVisible = { category, visible ->
+                    intent(PropertyDetailIntent.SetMapPoiCategoryVisible(category, visible))
+                },
+                isNearbyPoisLoading = isNearbyPoisLoading,
+                nearbyPoisLoadFailed = nearbyPoisLoadFailed,
                 onOpenMapFullscreen = {
                     intent(PropertyDetailIntent.SetMapFullscreen(true))
                 },

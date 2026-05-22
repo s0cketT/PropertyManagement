@@ -27,7 +27,6 @@ import com.example.propertymanagement.ui.theme.DpZero
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.PaddingSmall
 import com.example.propertymanagement.ui.theme.SpacerSmall
-import com.example.propertymanagement.ui.theme.TextFieldBorderError
 import com.example.propertymanagement.ui.theme.TextFieldBorderWidth
 
 @Composable
@@ -62,7 +61,11 @@ fun PriceSection(
                     .weight(1f)
                     .border(
                         width = if (isError) TextFieldBorderWidth else DpZero,
-                        color = if (isError) TextFieldBorderError else Color.Transparent,
+                        color = if (isError) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            Color.Transparent
+                        },
                         shape = RoundedCornerShape(ButtonCornerRadius)
                     )
             ) {

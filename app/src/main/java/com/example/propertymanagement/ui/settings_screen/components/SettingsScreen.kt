@@ -4,25 +4,29 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,10 +46,12 @@ import com.example.propertymanagement.ui.settings_screen.SettingsEvent
 import com.example.propertymanagement.ui.settings_screen.SettingsIntent
 import com.example.propertymanagement.ui.settings_screen.SettingsState
 import com.example.propertymanagement.ui.settings_screen.SettingsViewModel
-import com.example.propertymanagement.ui.theme.BoxGrayHeight
-import com.example.propertymanagement.ui.theme.BoxGrayHeightSettings
+import com.example.propertymanagement.ui.theme.CardElevationLow
 import com.example.propertymanagement.ui.theme.PaddingLarge
-import com.example.propertymanagement.ui.theme.TextRegular
+import com.example.propertymanagement.ui.theme.ProfileSectionCardElevation
+import com.example.propertymanagement.ui.theme.SpacerMedium
+import com.example.propertymanagement.ui.theme.SpacerSmall
+import com.example.propertymanagement.ui.theme.SurfaceTonalElevationLow
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
@@ -65,7 +71,9 @@ fun SettingsScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         event.collect { event ->
             when (event) {
-                is SettingsEvent.NavigateBack -> { navController.navigate(Screens.Profile.route) }
+                is SettingsEvent.NavigateBack -> {
+                    navController.navigate(Screens.Profile.route)
+                }
 
                 is SettingsEvent.ChangeLanguage -> {
                     LocaleManager.setLocale(state.selectedLanguage)
@@ -84,7 +92,7 @@ fun SettingsScreen(navController: NavController) {
 
                 is SettingsEvent.NavigateToPasswordResetOtp -> {
                     navController.navigate(
-                        Screens.AuthOtpScreen.createRoute(event.email, AuthCheck.RESET_PASSWORD)
+                        Screens.AuthOtpScreen.createRoute(event.email, AuthCheck.RESET_PASSWORD),
                     )
                 }
 
@@ -96,8 +104,8 @@ fun SettingsScreen(navController: NavController) {
                     navController.navigate(
                         Screens.AuthOtpScreen.createRoute(
                             event.email,
-                            AuthCheck.CHANGE_EMAIL_CONFIRM_OLD
-                        )
+                            AuthCheck.CHANGE_EMAIL_CONFIRM_OLD,
+                        ),
                     )
                 }
 
@@ -114,14 +122,14 @@ fun SettingsScreen(navController: NavController) {
 
     UI(
         state = state,
-        intent = intent
+        intent = intent,
     )
 
     if (state.showChangePasswordSheet) {
         ChangePasswordInfoBottomSheet(
             isSending = state.isSendingChangePasswordCode,
             onDismiss = { intent(SettingsIntent.DismissChangePasswordSheet) },
-            onContinue = { intent(SettingsIntent.ConfirmChangePasswordSendCode) }
+            onContinue = { intent(SettingsIntent.ConfirmChangePasswordSendCode) },
         )
     }
 
@@ -129,108 +137,183 @@ fun SettingsScreen(navController: NavController) {
         ChangeEmailInfoBottomSheet(
             isSending = state.isSendingChangeEmailCode,
             onDismiss = { intent(SettingsIntent.DismissChangeEmailSheet) },
-            onContinue = { intent(SettingsIntent.ConfirmChangeEmailSendOldOtp) }
+            onContinue = { intent(SettingsIntent.ConfirmChangeEmailSendOldOtp) },
         )
     }
 }
 
-
 @Composable
 private fun UI(
     state: SettingsState,
-    intent: (SettingsIntent) -> Unit
+    intent: (SettingsIntent) -> Unit,
 ) {
+    val scroll = rememberScrollState()
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
     ) {
 
-        Column {
-            AppTopBar(
-                title = R.string.settings_app,
-                onBackClick = { intent(SettingsIntent.NavigateBack) }
+        AppTopBar(
+            title = R.string.settings_app,
+            onBackClick = { intent(SettingsIntent.NavigateBack) },
+        )
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scroll),
+        ) {
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            SettingsAppearanceCard(state = state, intent = intent)
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
+
+            SettingsAccountCard(intent = intent)
+        }
+
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            tonalElevation = SurfaceTonalElevationLow,
+        ) {
+            PrimaryActionButton(
+                text = R.string.apply_text,
+                onClick = { intent(SettingsIntent.Save) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsAppearanceCard(
+    state: SettingsState,
+    intent: (SettingsIntent) -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingLarge),
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = ProfileSectionCardElevation),
+    ) {
+        Column(
+            modifier = Modifier.padding(PaddingLarge),
+        ) {
+
+            Text(
+                text = stringResource(R.string.language),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(BoxGrayHeightSettings)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            ) {
-                Text(
-                    text = stringResource(R.string.language),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = TextRegular,
-                    modifier = Modifier
-                        .padding(start = PaddingLarge)
-                        .align(Alignment.CenterStart)
-                )
-            }
+            Spacer(modifier = Modifier.height(SpacerSmall))
 
             LanguageSection(
                 selectedLanguage = state.selectedLanguage,
                 isVisible = state.showLanguageSheet,
                 onClick = { intent(SettingsIntent.ToggleLanguageSheet(true)) },
                 onSelect = { intent(SettingsIntent.SelectLanguage(it)) },
-                onDismiss = { intent(SettingsIntent.ToggleLanguageSheet(false)) }
+                onDismiss = { intent(SettingsIntent.ToggleLanguageSheet(false)) },
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(BoxGrayHeightSettings)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            ) {
-                Text(
-                    text = stringResource(R.string.app_theme),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = TextRegular,
-                    modifier = Modifier
-                        .padding(start = PaddingLarge)
-                        .align(Alignment.CenterStart)
-                )
-            }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = SpacerSmall),
+                color = MaterialTheme.colorScheme.outlineVariant,
+                thickness = CardElevationLow,
+            )
+
+            Text(
+                text = stringResource(R.string.app_theme),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = SpacerSmall),
+            )
 
             EnumRadioSection(
                 entries = ThemeType.entries.toTypedArray(),
                 selected = state.selectedTheme,
                 onSelected = { intent(SettingsIntent.ChangeTheme(it)) },
-                titleRes = { it.titleRes() }
+                titleRes = { it.titleRes() },
             )
+        }
+    }
+}
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(BoxGrayHeight)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+@Composable
+private fun SettingsAccountCard(
+    intent: (SettingsIntent) -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PaddingLarge),
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = ProfileSectionCardElevation),
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                bottom = PaddingLarge / 2,
+            ),
+        ) {
+            Text(
+                text = stringResource(R.string.settings_account_section_title),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(
+                    start = PaddingLarge,
+                    end = PaddingLarge,
+                    top = PaddingLarge,
+                    bottom = SpacerSmall,
+                ),
             )
 
             ProfileActionItem(
                 textRes = R.string.settings_change_password,
                 icon = Icons.Default.Lock,
-                onClick = { intent(SettingsIntent.ChangePassword) }
+                horizontalContentPadding = PaddingLarge,
+                onClick = { intent(SettingsIntent.ChangePassword) },
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = PaddingLarge),
+                thickness = CardElevationLow,
+                color = MaterialTheme.colorScheme.outlineVariant,
             )
 
             ProfileActionItem(
                 textRes = R.string.settings_change_email,
                 icon = Icons.Default.Email,
-                onClick = { intent(SettingsIntent.ChangeEmail) }
+                horizontalContentPadding = PaddingLarge,
+                onClick = { intent(SettingsIntent.ChangeEmail) },
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = PaddingLarge),
+                thickness = CardElevationLow,
+                color = MaterialTheme.colorScheme.outlineVariant,
             )
 
             ProfileActionItem(
                 textRes = R.string.logout,
                 icon = Icons.AutoMirrored.Filled.ExitToApp,
-                onClick = { intent(SettingsIntent.Logout) }
+                iconTint = MaterialTheme.colorScheme.error,
+                textTint = MaterialTheme.colorScheme.error,
+                horizontalContentPadding = PaddingLarge,
+                onClick = { intent(SettingsIntent.Logout) },
             )
         }
-
-        PrimaryActionButton(
-            text = R.string.apply_text,
-            onClick = { intent(SettingsIntent.Save) }
-        )
     }
 }
-
-
-

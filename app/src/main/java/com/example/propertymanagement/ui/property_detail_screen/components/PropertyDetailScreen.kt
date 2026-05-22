@@ -21,6 +21,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyType
+import com.example.propertymanagement.domain.model.NearbyMapPoi
+import com.example.propertymanagement.domain.model.NearbyPoiCategory
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyDetailPrices
 import com.example.propertymanagement.ui.bottom_nav.Screens
@@ -165,6 +167,10 @@ private fun PropertyDetailUI(
                     convertedPrices = state.convertedPrices,
                     managerCommissionPercent = state.managerCommissionPercent,
                     cardPriceLeadCurrency = state.detailPriceLeadCurrency,
+                    nearbyMapPois = state.nearbyMapPois,
+                    visiblePoiCategories = state.visiblePoiCategories,
+                    isNearbyPoisLoading = state.isNearbyPoisLoading,
+                    nearbyPoisLoadFailed = state.nearbyPoisLoadFailed,
                     intent = intent,
                 )
             }
@@ -175,7 +181,14 @@ private fun PropertyDetailUI(
     if (state.isMapFullscreen && property != null) {
         PropertyDetailFullscreenMapDialog(
             property = property,
-            onDismiss = { intent(PropertyDetailIntent.SetMapFullscreen(false)) }
+            nearbyMapPois = state.nearbyMapPois,
+            visiblePoiCategories = state.visiblePoiCategories,
+            onSetPoiCategoryVisible = { category, visible ->
+                intent(PropertyDetailIntent.SetMapPoiCategoryVisible(category, visible))
+            },
+            isNearbyPoisLoading = state.isNearbyPoisLoading,
+            nearbyPoisLoadFailed = state.nearbyPoisLoadFailed,
+            onDismiss = { intent(PropertyDetailIntent.SetMapFullscreen(false)) },
         )
     }
 
@@ -202,6 +215,10 @@ private fun PropertyDetailLoadedContent(
     convertedPrices: PropertyDetailPrices?,
     managerCommissionPercent: Double,
     cardPriceLeadCurrency: CurrencyType,
+    nearbyMapPois: List<NearbyMapPoi>,
+    visiblePoiCategories: Set<NearbyPoiCategory>,
+    isNearbyPoisLoading: Boolean,
+    nearbyPoisLoadFailed: Boolean,
     intent: (PropertyDetailIntent) -> Unit,
 ) {
     Column(
@@ -225,6 +242,13 @@ private fun PropertyDetailLoadedContent(
                 convertedPrices = convertedPrices,
                 managerCommissionPercent = managerCommissionPercent,
                 cardPriceLeadCurrency = cardPriceLeadCurrency,
+                nearbyMapPois = nearbyMapPois,
+                visiblePoiCategories = visiblePoiCategories,
+                onSetPoiCategoryVisible = { category, visible ->
+                    intent(PropertyDetailIntent.SetMapPoiCategoryVisible(category, visible))
+                },
+                isNearbyPoisLoading = isNearbyPoisLoading,
+                nearbyPoisLoadFailed = nearbyPoisLoadFailed,
                 onOpenMapFullscreen = {
                     intent(PropertyDetailIntent.SetMapFullscreen(true))
                 },

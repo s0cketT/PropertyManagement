@@ -2,25 +2,38 @@ package com.example.propertymanagement.ui.map_screen.components
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -47,9 +61,11 @@ import com.example.propertymanagement.ui.map_screen.MapEvent
 import com.example.propertymanagement.ui.map_screen.MapIntent
 import com.example.propertymanagement.ui.map_screen.MapState
 import com.example.propertymanagement.ui.theme.IconSizeActionSquare
-import com.example.propertymanagement.ui.theme.OnPrimary
+import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.example.propertymanagement.ui.theme.PaddingExtraLarge
 import com.example.propertymanagement.ui.theme.PaddingLarge
+import com.example.propertymanagement.ui.theme.SpacerHeightTight
+import com.example.propertymanagement.ui.theme.Spacing12
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -93,6 +109,13 @@ fun MapScreen(
             when (event) {
                 is MapEvent.NavigateBack -> navController.popBackStack()
                 is MapEvent.NavigateFilterScreen -> navController.navigate(Screens.Filters.route)
+                is MapEvent.ShowAuthRequiredForFavoritesOnly -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.auth_required),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
                 is MapEvent.NavigateToPropertyDetail -> {
                     navController.navigate(
                         Screens.PropertyDetailScreen.createRoute(
@@ -229,11 +252,83 @@ private fun UI(
             )
         }
 
-        MapDealTypeLegend(
+        Column(
             modifier = Modifier
                 .padding(PaddingLarge)
                 .align(Alignment.TopEnd),
-        )
+            horizontalAlignment = Alignment.End,
+        ) {
+            MapDealTypeLegend()
+            Spacer(modifier = Modifier.height(Spacing12))
+            FilterChip(
+                modifier = Modifier.width(170.dp),
+                selected = state.showFavoritesOnly,
+                onClick = { intent(MapIntent.ToggleShowFavoritesOnly) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.map_favorites_only),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = if (state.showFavoritesOnly) {
+                            Icons.Filled.Favorite
+                        } else {
+                            Icons.Filled.FavoriteBorder
+                        },
+                        contentDescription = null,
+                    )
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.Black.copy(alpha = 0.55f),
+                    labelColor = Color.White,
+                    iconColor = Color.White,
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(PaddingLarge)
+                .align(Alignment.CenterEnd),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SmallFloatingActionButton(
+                onClick = {
+                    mapHelper.zoomByDelta(
+                        mapView = mapView,
+                        delta = MapSizesColors.MAP_ZOOM_BUTTON_STEP,
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.map_zoom_in_content_description),
+                )
+            }
+            Spacer(modifier = Modifier.height(SpacerHeightTight))
+            SmallFloatingActionButton(
+                onClick = {
+                    mapHelper.zoomByDelta(
+                        mapView = mapView,
+                        delta = -MapSizesColors.MAP_ZOOM_BUTTON_STEP,
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = stringResource(R.string.map_zoom_out_content_description),
+                )
+            }
+        }
 
         FloatingActionButton(
             onClick = {
@@ -252,7 +347,7 @@ private fun UI(
                 .padding(PaddingExtraLarge)
                 .align(Alignment.BottomStart),
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = OnPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(
                 imageVector = Icons.Default.MyLocation,
@@ -268,7 +363,7 @@ private fun UI(
                 .padding(PaddingExtraLarge)
                 .align(Alignment.BottomEnd),
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = OnPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(
                 imageVector = Icons.Default.Tune,

@@ -76,8 +76,17 @@ val TypeLetterSpacingTight = 0.5.sp
 /** Имя на экране профиля */
 val ProfileDisplayNameFontSize = 28.sp
 
+val ProfileHeaderAvatarSize = 76.dp
+
+/** Карточки на экране профиля / личных данных */
+val ProfileSectionCardElevation = 2.dp
+
+/** Иконки в пунктах меню профиля */
+val ProfileMenuIconContainerSize = 44.dp
+
 // BottomBar
 val BottomBarIconSize = 28.dp
+
 val BottomBarVerticalPadding = 8.dp
 
 // Text
@@ -149,6 +158,9 @@ val PropertyDetailMapPreviewHeight = ImagePickerHeight
 
 /** Скругление превью карты */
 val PropertyDetailMapCornerRadius = 16.dp
+
+/** Иконка категории POI в строке чекбоксов на карте объекта (= [MapSizesColors.POI_CATEGORY_ICON_DP]). */
+val MapPoiCategoryCheckboxIconSize = MapSizesColors.POI_CATEGORY_ICON_DP.dp
 
 /** Соотношение сторон галереи фото на экране объекта */
 const val PropertyDetailHeroAspectRatio = 4f / 3f

@@ -4,6 +4,7 @@ import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.DeletePropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetNearbyMapPoisUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
@@ -221,6 +222,7 @@ val uiModule = module {
             submitPropertyApplicationUseCase = get<SubmitPropertyApplicationUseCase>(),
             getManagerCommissionPercentUseCase = get<GetManagerCommissionPercentUseCase>(),
             getFilterPropertyUseCase = get<GetFilterPropertyUseCase>(),
+            getNearbyMapPoisUseCase = get<GetNearbyMapPoisUseCase>(),
         )
     }
 }

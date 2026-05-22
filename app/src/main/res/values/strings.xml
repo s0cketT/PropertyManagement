@@ -7,14 +7,20 @@
     <string name="rent_chip">Аренда</string>
     <string name="filters_fab_content_description">Фильтры</string>
     <string name="map_my_location_content_description">Моё местоположение</string>
+    <string name="map_zoom_in_content_description">Приблизить карту</string>
+    <string name="map_zoom_out_content_description">Отдалить карту</string>
     <string name="map_legend_sale">Продажа</string>
     <string name="map_legend_rent">Аренда</string>
+    <string name="map_favorites_only">Только избранное</string>
 
     <string name="screen_advertisements">Объявления</string>
     <string name="screen_favorites">Избранное</string>
     <string name="screen_map">Карта</string>
     <string name="screen_publish">Опубликовать</string>
     <string name="screen_profile">Профиль</string>
+    <string name="profile_guest_title">Личный кабинет</string>
+    <string name="profile_guest_message">Войдите, чтобы управлять объявлениями и настройками профиля.</string>
+    <string name="profile_avatar_hint">Нажмите, чтобы изменить фото</string>
 
     <!-- Категории -->
     <string name="category_apartments">Квартиры</string>
@@ -306,6 +312,7 @@
     <string name="logout">Выйти</string>
 
     <string name="settings_app">Настройки приложения</string>
+    <string name="settings_account_section_title">Аккаунт и вход</string>
     <string name="settings_change_password">Сменить пароль</string>
     <string name="change_password_new_password_title">Новый пароль</string>
     <string name="change_password_new_password_subtitle">Придумайте новый пароль и подтвердите его. Минимум 6 символов.</string>
@@ -416,6 +423,17 @@
     <string name="answer_no">Нет</string>
 
     <string name="property_detail_map_fullscreen_cd">Открыть карту на весь экран</string>
+    <string name="property_detail_nearby_pois_loading">Загрузка объектов поблизости…</string>
+    <string name="property_detail_nearby_pois_shown">На карте: %1$d из %2$d</string>
+    <string name="property_detail_nearby_pois_empty_area">В радиусе не найдено объектов выбранных типов</string>
+    <string name="property_detail_nearby_pois_error">Не удалось загрузить объекты рядом. Попробуйте позже.</string>
+    <string name="property_detail_poi_layers_title">Слои карты</string>
+    <string name="property_detail_poi_category_school">Школы</string>
+    <string name="property_detail_poi_category_clinic">Поликлиники</string>
+    <string name="property_detail_poi_category_grocery">Продукты</string>
+    <string name="property_detail_poi_unnamed_school">Школа (OSM %1$s)</string>
+    <string name="property_detail_poi_unnamed_clinic">Поликлиника (OSM %1$s)</string>
+    <string name="property_detail_poi_unnamed_grocery">Магазин (OSM %1$s)</string>
     <string name="property_detail_submit_request">Оставить заявку</string>
     <string name="property_detail_request_requires_registration">Чтобы оставить заявку, необходимо зарегистрироваться</string>
     <string name="property_detail_own_request_not_allowed">Вы не можете Оставить заявку на свое объявление</string>

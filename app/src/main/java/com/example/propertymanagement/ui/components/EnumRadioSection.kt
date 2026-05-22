@@ -24,27 +24,29 @@ fun <T : Enum<T>> EnumRadioSection(
     entries: Array<T>,
     selected: T,
     onSelected: (T) -> Unit,
-    titleRes: (T) -> Int
+    titleRes: (T) -> Int,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
 
-        entries.forEach { item ->
+        entries.forEachIndexed { index, item ->
 
             EnumRadioItem(
                 text = stringResource(titleRes(item)),
                 selected = selected == item,
-                onClick = { onSelected(item) }
+                onClick = { onSelected(item) },
             )
 
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = PaddingLarge),
-                color = MaterialTheme.colorScheme.outlineVariant,
-                thickness = DividerThickness
-            )
+            if (index < entries.lastIndex) {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = PaddingLarge),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    thickness = DividerThickness,
+                )
+            }
         }
     }
 }

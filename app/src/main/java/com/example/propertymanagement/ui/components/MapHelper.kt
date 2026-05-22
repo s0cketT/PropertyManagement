@@ -23,8 +23,11 @@ import com.example.propertymanagement.ui.theme.MapSizesColors
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraListener
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.CameraUpdateReason
 import com.yandex.mapkit.map.CircleMapObject
+import com.yandex.mapkit.map.Map as YandexMap
 import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.MapObject
 import com.yandex.mapkit.map.MapObjectCollection
@@ -57,6 +60,41 @@ class MapHelper {
     private var detailPlacemark: PlacemarkMapObject? = null
     private val priceMarkerIconCache = mutableMapOf<String, ImageProvider>()
 
+    private var mapViewForCamera: MapView? = null
+    private var cameraListenerRegistered: Boolean = false
+    private var lastRenderedPriceLabelMode: Boolean? = null
+    private var cachedMarkerParams: MarkerParams? = null
+
+    private data class MarkerParams(
+        val markers: List<Property>,
+        val currencyRates: Map<String, CurrencyRate>,
+        val displayCurrency: CurrencyType,
+        val managerCommissionPercent: Double,
+        val onMarkerTap: (Property) -> Unit,
+    )
+
+    private val propertyMarkersCameraListener = object : CameraListener {
+        override fun onCameraPositionChanged(
+            map: YandexMap,
+            cameraPosition: CameraPosition,
+            cameraUpdateReason: CameraUpdateReason,
+            finished: Boolean,
+        ) {
+            val mapView = mapViewForCamera ?: return
+            val params = cachedMarkerParams ?: return
+            val showPriceLabels = cameraPosition.zoom >= MapSizesColors.MAP_PRICE_LABEL_MIN_ZOOM
+            if (showPriceLabels == lastRenderedPriceLabelMode) {
+                return
+            }
+            rebuildPropertyMarkersLayer(
+                mapView = mapView,
+                params = params,
+                showPriceLabels = showPriceLabels,
+                clearIconCache = false,
+            )
+        }
+    }
+
     fun updateUserLocation(
         mapView: MapView,
         location: UserLocation,
@@ -86,42 +124,139 @@ class MapHelper {
         currencyRates: Map<String, CurrencyRate>,
         displayCurrency: CurrencyType,
         managerCommissionPercent: Double = 0.0,
-        onMarkerTap: (Property) -> Unit
+        onMarkerTap: (Property) -> Unit,
     ) {
-        clearPropertyMarkersLayer(mapView)
-        if (markers.isEmpty()) return
+        if (markers.isEmpty()) {
+            cachedMarkerParams = null
+            lastRenderedPriceLabelMode = null
+            clearPropertyMarkersLayer(mapView, clearIconCache = true)
+            return
+        }
+
+        val params = MarkerParams(
+            markers = markers,
+            currencyRates = currencyRates,
+            displayCurrency = displayCurrency,
+            managerCommissionPercent = managerCommissionPercent,
+            onMarkerTap = onMarkerTap,
+        )
+        cachedMarkerParams = params
+        ensurePropertyMarkersCameraListener(mapView)
+
+        val showPriceLabels = mapView.map.cameraPosition.zoom >= MapSizesColors.MAP_PRICE_LABEL_MIN_ZOOM
+        rebuildPropertyMarkersLayer(
+            mapView = mapView,
+            params = params,
+            showPriceLabels = showPriceLabels,
+            clearIconCache = true,
+        )
+    }
+
+    fun zoomByDelta(mapView: MapView, delta: Float) {
+        val pos = mapView.map.cameraPosition
+        val newZoom = (pos.zoom + delta).coerceIn(
+            MapSizesColors.MAP_ZOOM_MIN,
+            MapSizesColors.MAP_ZOOM_MAX,
+        )
+        if (newZoom == pos.zoom) {
+            return
+        }
+
+        mapView.map.move(
+            CameraPosition(
+                pos.target,
+                newZoom,
+                pos.azimuth,
+                pos.tilt,
+            ),
+            Animation(Animation.Type.SMOOTH, MapSizesColors.MAP_ZOOM_BUTTON_ANIMATION_SEC),
+            null,
+        )
+    }
+
+    fun clearMarkers(mapView: MapView) {
+        cachedMarkerParams = null
+        lastRenderedPriceLabelMode = null
+        clearPropertyMarkersLayer(mapView, clearIconCache = true)
+    }
+
+    private fun ensurePropertyMarkersCameraListener(mapView: MapView) {
+        if (mapViewForCamera !== mapView) {
+            mapViewForCamera?.let { previousMapView ->
+                if (cameraListenerRegistered) {
+                    previousMapView.map.removeCameraListener(propertyMarkersCameraListener)
+                    cameraListenerRegistered = false
+                }
+            }
+            mapViewForCamera = mapView
+        }
+        if (!cameraListenerRegistered) {
+            mapView.map.addCameraListener(propertyMarkersCameraListener)
+            cameraListenerRegistered = true
+        }
+    }
+
+    private fun rebuildPropertyMarkersLayer(
+        mapView: MapView,
+        params: MarkerParams,
+        showPriceLabels: Boolean,
+        clearIconCache: Boolean,
+    ) {
+        clearPropertyMarkersLayer(mapView, clearIconCache = clearIconCache)
+        lastRenderedPriceLabelMode = showPriceLabels
 
         val layer = mapView.map.mapObjects.addCollection()
         propertyMarkersLayer = layer
-        // Выше круга/метки геолокации, иначе большой круг перехватывает все тапы по карте.
         layer.zIndex = PROPERTY_MARKERS_Z_INDEX
 
-        markers.forEach { marker ->
-            val priceLabel = marker.buildMarkerPriceLabel(
-                currencyRates = currencyRates,
-                displayCurrency = displayCurrency,
-                managerCommissionPercent = managerCommissionPercent,
-            )
+        val anchor = if (showPriceLabels) {
+            PointF(0.5f, 1f)
+        } else {
+            PointF(0.5f, 0.5f)
+        }
+
+        params.markers.forEach { marker ->
             val markerStyle = marker.toPriceMarkerStyle(
-                currencyRates = currencyRates,
-                managerCommissionPercent = managerCommissionPercent,
+                currencyRates = params.currencyRates,
+                managerCommissionPercent = params.managerCommissionPercent,
             )
-            val iconCacheKey = "${priceLabel}_${markerStyle.cacheKey}"
-            val icon = priceMarkerIconCache.getOrPut(iconCacheKey) {
-                createPriceMarkerIcon(
-                    context = mapView.context,
-                    text = priceLabel,
-                    backgroundColor = markerStyle.backgroundColor,
-                    borderColor = markerStyle.borderColor,
-                    textColor = markerStyle.textColor,
+            val priceLabel = if (showPriceLabels) {
+                marker.buildMarkerPriceLabel(
+                    currencyRates = params.currencyRates,
+                    displayCurrency = params.displayCurrency,
+                    managerCommissionPercent = params.managerCommissionPercent,
                 )
+            } else {
+                null
+            }
+            val iconCacheKey = if (showPriceLabels) {
+                "price_${checkNotNull(priceLabel)}_${markerStyle.cacheKey}"
+            } else {
+                "dot_${markerStyle.cacheKey}"
+            }
+            val icon = priceMarkerIconCache.getOrPut(iconCacheKey) {
+                if (showPriceLabels) {
+                    createPriceMarkerIcon(
+                        context = mapView.context,
+                        text = checkNotNull(priceLabel),
+                        backgroundColor = markerStyle.backgroundColor,
+                        borderColor = markerStyle.borderColor,
+                        textColor = markerStyle.textColor,
+                    )
+                } else {
+                    createCompactDotMarkerIcon(
+                        context = mapView.context,
+                        fillColor = markerStyle.backgroundColor,
+                        strokeColor = markerStyle.borderColor,
+                    )
+                }
             }
 
             val placemark = layer.addPlacemark(
                 Point(marker.latitude, marker.longitude),
                 icon,
                 IconStyle().apply {
-                    anchor = PointF(0.5f, 1f)
+                    this.anchor = anchor
                 },
             )
             placemark.zIndex = PROPERTY_MARKERS_Z_INDEX
@@ -130,7 +265,7 @@ class MapHelper {
                 object : MapObjectTapListener {
                     override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
                         mapView.post {
-                            onMarkerTap(marker)
+                            params.onMarkerTap(marker)
                         }
                         return true
                     }
@@ -139,16 +274,14 @@ class MapHelper {
         }
     }
 
-    fun clearMarkers(mapView: MapView) {
-        clearPropertyMarkersLayer(mapView)
-    }
-
-    private fun clearPropertyMarkersLayer(mapView: MapView) {
+    private fun clearPropertyMarkersLayer(mapView: MapView, clearIconCache: Boolean = true) {
         propertyMarkersLayer?.let { layer ->
             mapView.map.mapObjects.remove(layer)
             propertyMarkersLayer = null
         }
-        priceMarkerIconCache.clear()
+        if (clearIconCache) {
+            priceMarkerIconCache.clear()
+        }
     }
 
     /**
@@ -157,7 +290,9 @@ class MapHelper {
      */
     fun showSinglePropertyMarker(mapView: MapView, property: Property) {
         clearSinglePropertyMarker(mapView)
-        clearPropertyMarkersLayer(mapView)
+        cachedMarkerParams = null
+        lastRenderedPriceLabelMode = null
+        clearPropertyMarkersLayer(mapView, clearIconCache = true)
 
         val icon = createMarkerIcon(mapView.context)
         detailPlacemark = mapView.map.mapObjects.addPlacemark(
@@ -203,8 +338,16 @@ class MapHelper {
     }
 
     fun release(mapView: MapView) {
+        if (cameraListenerRegistered) {
+            mapView.map.removeCameraListener(propertyMarkersCameraListener)
+            cameraListenerRegistered = false
+        }
+        mapViewForCamera = null
+        cachedMarkerParams = null
+        lastRenderedPriceLabelMode = null
+
         clearSinglePropertyMarker(mapView)
-        clearPropertyMarkersLayer(mapView)
+        clearPropertyMarkersLayer(mapView, clearIconCache = true)
     }
 
     /** Иконка метки `point` для одиночных пинов (карта выбора адреса и т.п.). */
@@ -320,6 +463,34 @@ class MapHelper {
         val textX = (bubbleWidth - textWidth) / 2f
         val textY = bubbleHeight / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f
         canvas.drawText(text, textX, textY, textPaint)
+
+        return ImageProvider.fromBitmap(bitmap)
+    }
+
+    private fun createCompactDotMarkerIcon(
+        context: Context,
+        fillColor: Int,
+        strokeColor: Int,
+    ): ImageProvider {
+        val density = context.resources.displayMetrics.density
+        val sizePx = (12f * density).toInt().coerceAtLeast(8)
+        val strokeWidth = 1f * density
+        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val cx = sizePx / 2f
+        val cy = sizePx / 2f
+        val radius = (sizePx / 2f - strokeWidth / 2f).coerceAtLeast(2f)
+        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = fillColor
+            style = Paint.Style.FILL
+        }
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = strokeColor
+            style = Paint.Style.STROKE
+            this.strokeWidth = strokeWidth
+        }
+        canvas.drawCircle(cx, cy, radius, fillPaint)
+        canvas.drawCircle(cx, cy, radius, strokePaint)
 
         return ImageProvider.fromBitmap(bitmap)
     }
