@@ -24,9 +24,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.propertymanagement.ui.theme.BottomBarIconSize
+import com.example.propertymanagement.ui.theme.BottomBarSurfaceDark
+import com.example.propertymanagement.ui.theme.BottomBarSurfaceLight
 import com.example.propertymanagement.ui.theme.BottomBarTextLineHeight
 import com.example.propertymanagement.ui.theme.BottomBarTextSize
 import com.example.propertymanagement.ui.theme.BottomBarVerticalPadding
+import com.example.propertymanagement.ui.theme.LocalAppDarkTheme
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -42,10 +45,16 @@ fun BottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val bottomBarBackground = if (LocalAppDarkTheme.current) {
+        BottomBarSurfaceDark
+    } else {
+        BottomBarSurfaceLight
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(bottomBarBackground)
             .navigationBarsPadding()
             .padding(vertical = BottomBarVerticalPadding),
         horizontalArrangement = Arrangement.SpaceAround,

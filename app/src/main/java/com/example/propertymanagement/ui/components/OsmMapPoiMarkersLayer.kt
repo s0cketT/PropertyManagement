@@ -23,7 +23,7 @@ import com.yandex.runtime.image.ImageProvider
 import android.graphics.Color as AndroidColor
 
 /**
- * POI (OSM) на карте объявления: при отдалении — точки, при приближении — drawable-иконки.
+ * POI (OSM) на карте объявления: при отдалении — точки, при приближении — badge-иконки.
  */
 class OsmMapPoiMarkersLayer {
 
@@ -34,11 +34,23 @@ class OsmMapPoiMarkersLayer {
     private var lastPois: List<NearbyMapPoi> = emptyList()
     private var lastOnTap: ((NearbyMapPoi) -> Unit)? = null
     private var lastDetailedStyle: Boolean? = null
+    private var nightModeEnabled: Boolean = false
 
     fun clear(mapView: MapView) {
         collection?.let { layer ->
             mapView.map.mapObjects.remove(layer)
             collection = null
+        }
+    }
+
+    fun applyNightMode(mapView: MapView, enabled: Boolean) {
+        if (nightModeEnabled == enabled) {
+            return
+        }
+        nightModeEnabled = enabled
+        iconCache.clear()
+        if (lastPois.isNotEmpty()) {
+            rebuild(mapView)
         }
     }
 
@@ -110,27 +122,96 @@ class OsmMapPoiMarkersLayer {
         category: NearbyPoiCategory,
         detailed: Boolean,
     ): ImageProvider {
-        val key = IconCacheKey(category = category, detailed = detailed)
+        val key = IconCacheKey(
+            category = category,
+            detailed = detailed,
+            nightMode = nightModeEnabled,
+        )
         return iconCache.getOrPut(key) {
             if (detailed) {
-                detailedIconFromDrawable(context, category)
+                createDetailedBadgeIcon(
+                    context = context,
+                    category = category,
+                    nightMode = nightModeEnabled,
+                )
             } else {
-                createDotIcon(context, MapPoiLayerColors.fillArgb(category))
+                createDotIcon(
+                    context = context,
+                    fillArgb = MapPoiLayerColors.fillArgb(category),
+                    nightMode = nightModeEnabled,
+                )
             }
         }
     }
 
-    private fun detailedIconFromDrawable(context: Context, category: NearbyPoiCategory): ImageProvider {
+    private fun createDetailedBadgeIcon(
+        context: Context,
+        category: NearbyPoiCategory,
+        nightMode: Boolean,
+    ): ImageProvider {
+        val density = context.resources.displayMetrics.density
+        val sizePx = (BADGE_DP * density).toInt().coerceAtLeast(28)
+        val strokeWidth = 1.5f * density
+        val iconPx = (BADGE_ICON_DP * density).toInt().coerceAtLeast(16)
+
+        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val cx = sizePx / 2f
+        val cy = sizePx / 2f
+        val radius = (sizePx / 2f - strokeWidth).coerceAtLeast(8f)
+
+        val accent = MapPoiLayerColors.fillArgb(category)
+        val fillColor = if (nightMode) {
+            MapPoiLayerColors.markerBadgeBackgroundNightArgb(category)
+        } else {
+            MapPoiLayerColors.markerBadgeBackgroundDayArgb()
+        }
+        val iconTint = if (nightMode) {
+            AndroidColor.WHITE
+        } else {
+            accent
+        }
+
+        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = fillColor
+            style = Paint.Style.FILL
+        }
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = accent
+            style = Paint.Style.STROKE
+            this.strokeWidth = strokeWidth
+        }
+        canvas.drawCircle(cx, cy, radius, fillPaint)
+        canvas.drawCircle(cx, cy, radius, strokePaint)
+
+        drawCategoryIcon(
+            context = context,
+            category = category,
+            canvas = canvas,
+            centerX = cx,
+            centerY = cy,
+            targetPx = iconPx,
+            tint = iconTint,
+        )
+
+        return ImageProvider.fromBitmap(bitmap)
+    }
+
+    private fun drawCategoryIcon(
+        context: Context,
+        category: NearbyPoiCategory,
+        canvas: Canvas,
+        centerX: Float,
+        centerY: Float,
+        targetPx: Int,
+        tint: Int,
+    ) {
         val resId = when (category) {
             NearbyPoiCategory.SCHOOL -> R.drawable.school_icon
             NearbyPoiCategory.POLYCLINIC -> R.drawable.clinick_icon
             NearbyPoiCategory.GROCERY -> R.drawable.shop_icon
         }
-        val drawable = ContextCompat.getDrawable(context, resId)?.mutate()
-            ?: return createDotIcon(context, MapPoiLayerColors.fillArgb(category))
-
-        val density = context.resources.displayMetrics.density
-        val targetPx = (MapSizesColors.POI_CATEGORY_ICON_DP * density).toInt().coerceAtLeast(24)
+        val drawable = ContextCompat.getDrawable(context, resId)?.mutate() ?: return
 
         val sourceW = drawable.intrinsicWidth.takeIf { it > 0 } ?: targetPx
         val sourceH = drawable.intrinsicHeight.takeIf { it > 0 } ?: targetPx
@@ -145,20 +226,24 @@ class OsmMapPoiMarkersLayer {
         }
 
         val tinted = Bitmap.createBitmap(targetPx, targetPx, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(tinted)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            colorFilter = PorterDuffColorFilter(
-                MapPoiLayerColors.fillArgb(category),
-                PorterDuff.Mode.SRC_IN,
-            )
+        val tintCanvas = Canvas(tinted)
+        val tintPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            colorFilter = PorterDuffColorFilter(tint, PorterDuff.Mode.SRC_IN)
         }
-        canvas.drawBitmap(scaled, 0f, 0f, paint)
+        tintCanvas.drawBitmap(scaled, 0f, 0f, tintPaint)
         scaled.recycle()
 
-        return ImageProvider.fromBitmap(tinted)
+        val left = centerX - targetPx / 2f
+        val top = centerY - targetPx / 2f
+        canvas.drawBitmap(tinted, left, top, null)
+        tinted.recycle()
     }
 
-    private fun createDotIcon(context: Context, fillArgb: Int): ImageProvider {
+    private fun createDotIcon(
+        context: Context,
+        fillArgb: Int,
+        nightMode: Boolean,
+    ): ImageProvider {
         val density = context.resources.displayMetrics.density
         val sizePx = (DOT_DP * density).toInt().coerceAtLeast(8)
         val strokeWidth = 1f * density
@@ -167,12 +252,17 @@ class OsmMapPoiMarkersLayer {
         val cx = sizePx / 2f
         val cy = sizePx / 2f
         val radius = (sizePx / 2f - strokeWidth / 2f).coerceAtLeast(2.5f)
+        val strokeColor = if (nightMode) {
+            MapPoiLayerColors.markerDotStrokeNightArgb()
+        } else {
+            AndroidColor.WHITE
+        }
         val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = fillArgb
             style = Paint.Style.FILL
         }
         val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = AndroidColor.WHITE
+            color = strokeColor
             style = Paint.Style.STROKE
             this.strokeWidth = strokeWidth
         }
@@ -184,10 +274,13 @@ class OsmMapPoiMarkersLayer {
     private data class IconCacheKey(
         val category: NearbyPoiCategory,
         val detailed: Boolean,
+        val nightMode: Boolean,
     )
 
     companion object {
         private const val POI_LAYER_Z_INDEX = 2f
         private const val DOT_DP = 10.5f
+        private const val BADGE_DP = 34f
+        private const val BADGE_ICON_DP = 18f
     }
 }

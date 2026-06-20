@@ -39,8 +39,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +58,7 @@ import androidx.navigation.NavController
 import com.example.propertymanagement.R
 import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.ui.bottom_nav.Screens
+import com.example.propertymanagement.ui.components.ApplyMapNightModeEffect
 import com.example.propertymanagement.ui.components.MapHelper
 import com.example.propertymanagement.ui.map.MapViewModel
 import com.example.propertymanagement.ui.map_screen.MapEvent
@@ -66,6 +70,10 @@ import com.example.propertymanagement.ui.theme.PaddingExtraLarge
 import com.example.propertymanagement.ui.theme.PaddingLarge
 import com.example.propertymanagement.ui.theme.SpacerHeightTight
 import com.example.propertymanagement.ui.theme.Spacing12
+import com.yandex.mapkit.map.CameraListener
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.CameraUpdateReason
+import com.yandex.mapkit.map.Map as YandexMap
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -170,6 +178,8 @@ private fun UI(
 
     val hasRegionFilter = !state.filtersProperty?.selectedRegionName.isNullOrBlank()
 
+    ApplyMapNightModeEffect(mapView = mapView)
+
     // Геолокация обновляется часто, поэтому держим её отдельно, чтобы не трогать слой объявлений.
     LaunchedEffect(state.userLocation, hasRegionFilter) {
         state.userLocation?.let { userLocation ->
@@ -220,6 +230,39 @@ private fun UI(
                     )
                 }
             }
+        }
+    }
+
+    var visiblePropertyCount by remember { mutableIntStateOf(0) }
+    val filteredMarkers by rememberUpdatedState(state.filteredMarkers)
+
+    LaunchedEffect(state.filteredMarkers, mapView) {
+        visiblePropertyCount = mapHelper.countPropertiesInVisibleRegion(
+            mapView = mapView,
+            markers = state.filteredMarkers,
+        )
+    }
+
+    val visibleCountListener = remember(mapView, mapHelper) {
+        object : CameraListener {
+            override fun onCameraPositionChanged(
+                map: YandexMap,
+                cameraPosition: CameraPosition,
+                cameraUpdateReason: CameraUpdateReason,
+                finished: Boolean,
+            ) {
+                visiblePropertyCount = mapHelper.countPropertiesInVisibleRegion(
+                    mapView = mapView,
+                    markers = filteredMarkers,
+                )
+            }
+        }
+    }
+
+    DisposableEffect(mapView, visibleCountListener) {
+        mapView.map.addCameraListener(visibleCountListener)
+        onDispose {
+            mapView.map.removeCameraListener(visibleCountListener)
         }
     }
 
@@ -368,6 +411,15 @@ private fun UI(
             Icon(
                 imageVector = Icons.Default.Tune,
                 contentDescription = stringResource(R.string.filters_fab_content_description)
+            )
+        }
+
+        if (state.filteredMarkers.isNotEmpty()) {
+            MapVisiblePropertiesCountBanner(
+                visibleCount = visiblePropertyCount,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = PaddingExtraLarge),
             )
         }
 

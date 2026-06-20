@@ -17,6 +17,7 @@ data class Property(
     val isFavorite: Boolean,
 
     val moderationStatus: ModerationStatus,
+    val moderationStatusId: Int? = null,
     val moderationComment: String? = null,
 
     val price: Double,

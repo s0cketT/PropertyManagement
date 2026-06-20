@@ -29,6 +29,10 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+private fun Number.toStableIntOrNull(): Int? {
+    return runCatching { toInt() }.getOrNull()
+}
+
 private fun String?.parseCreatedAt(): Instant? {
     if (isNullOrBlank()) return null
     val s = trim()
@@ -110,7 +114,11 @@ fun PropertyResponseDto.toDomain(): Property {
 
         isFavorite = is_favorite,
 
-        moderationStatus = ModerationStatus.fromDb(moderation_status),
+        moderationStatus = ModerationStatus.resolve(
+            name = moderation_status,
+            statusId = moderation_status_id?.toStableIntOrNull(),
+        ),
+        moderationStatusId = moderation_status_id?.toStableIntOrNull(),
         moderationComment = moderation_comment,
 
         country = country,

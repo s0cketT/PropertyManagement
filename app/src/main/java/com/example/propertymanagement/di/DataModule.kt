@@ -22,6 +22,7 @@ import com.example.propertymanagement.data.repository.RegionCityRepositoryImpl
 import com.example.propertymanagement.data.repository.SettingsRepositoryImpl
 import com.example.propertymanagement.data.repository.StorageRepositoryImpl
 import com.example.propertymanagement.data.repository.ThemeRepositoryImpl
+import com.example.propertymanagement.data.repository.YandexGeosuggestRepositoryImpl
 import com.example.propertymanagement.domain.repository.AuthRepository
 import com.example.propertymanagement.domain.repository.ICurrencyRepository
 import com.example.propertymanagement.domain.repository.IFavoriteRepository
@@ -35,6 +36,7 @@ import com.example.propertymanagement.domain.repository.ISettingsRepository
 import com.example.propertymanagement.domain.repository.IStorageRepository
 import com.example.propertymanagement.domain.repository.IThemeRepository
 import com.example.propertymanagement.domain.repository.IUserRepository
+import com.example.propertymanagement.domain.repository.IYandexGeosuggestRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import io.github.jan.supabase.SupabaseClient
 import org.koin.android.ext.koin.androidContext
@@ -112,6 +114,10 @@ val dataModule = module {
         OverpassPoiRepositoryImpl(
             overpassApi = get<IOverpassApi>(),
         )
+    }
+
+    single<IYandexGeosuggestRepository> {
+        YandexGeosuggestRepositoryImpl()
     }
 
 }

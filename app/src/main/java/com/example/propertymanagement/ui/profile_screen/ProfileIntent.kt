@@ -4,6 +4,7 @@ sealed class ProfileIntent {
     object LoginClick : ProfileIntent()
     object NavToPublish : ProfileIntent()
     object MyAds : ProfileIntent()
+    object MyApplications : ProfileIntent()
     object RateApp : ProfileIntent()
     object DismissRateAppSheet : ProfileIntent()
     data class SubmitAppRating(val stars: Int) : ProfileIntent()

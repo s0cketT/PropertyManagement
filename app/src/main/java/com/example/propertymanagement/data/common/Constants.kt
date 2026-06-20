@@ -4,6 +4,7 @@ object Constants {
 
     const val API_KEY_MAPKIT = "e8dadba5-8abb-4655-b3a1-eb10a5085a55"
     const val API_KEY_GEOCODER = "84851e39-9a79-4d16-99d2-0f0ed0f6049f"
+    const val API_KEY_GEOSUGGEST = "84851e39-9a79-4d16-99d2-0f0ed0f6049f"
 
     /** Запасная точка карты (Минск), если нет геолокации. */
     const val MAP_PICKER_FALLBACK_LAT = 53.902284

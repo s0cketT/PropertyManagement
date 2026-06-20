@@ -3,6 +3,7 @@ package com.example.propertymanagement.domain.repository
 
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.Property
+import com.example.propertymanagement.domain.model.PropertyApplication
 
 interface IPropertyRepository {
 
@@ -33,4 +34,6 @@ interface IPropertyRepository {
         applicantUserId: String,
         comment: String?
     )
+
+    suspend fun getMyPropertyApplications(userId: String): List<PropertyApplication>
 }

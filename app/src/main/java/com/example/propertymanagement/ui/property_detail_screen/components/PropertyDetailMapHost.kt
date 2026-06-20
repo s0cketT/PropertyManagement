@@ -18,6 +18,8 @@ import com.example.propertymanagement.domain.model.NearbyPoiCategory
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.UserLocation
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
+import com.example.propertymanagement.ui.theme.LocalAppDarkTheme
+import com.example.propertymanagement.ui.components.ApplyMapNightModeEffect
 import com.example.propertymanagement.ui.components.MapHelper
 import com.example.propertymanagement.ui.components.OsmMapPoiMarkersLayer
 import com.example.propertymanagement.ui.map_screen.components.observeMapLifecycle
@@ -50,6 +52,13 @@ internal fun PropertyDetailMapHost(
     val mapReadyCallback by rememberUpdatedState(onMapReady)
     LaunchedEffect(mapView, mapHelper) {
         mapReadyCallback?.invoke(mapView, mapHelper)
+    }
+
+    ApplyMapNightModeEffect(mapView = mapView)
+
+    val nightModeEnabled = LocalAppDarkTheme.current
+    LaunchedEffect(mapView, poiLayer, nightModeEnabled) {
+        poiLayer.applyNightMode(mapView, nightModeEnabled)
     }
 
     val userLocationCallback by rememberUpdatedState(onUserLocationUpdate)

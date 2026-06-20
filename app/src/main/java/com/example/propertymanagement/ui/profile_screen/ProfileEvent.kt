@@ -4,6 +4,7 @@ sealed class ProfileEvent {
     object NavigateToAuth : ProfileEvent()
     object NavigateToPublishScreen : ProfileEvent()
     object NavigateToMyAds : ProfileEvent()
+    object NavigateToMyApplications : ProfileEvent()
     object NavigateToSettings : ProfileEvent()
 
     object NavigateToPersonalInfo : ProfileEvent()

@@ -20,5 +20,6 @@ fun AuthError.asString(): String {
         AuthError.InvalidCredentials -> stringResource(R.string.error_invalid_credentials)
         AuthError.NewEmailSameAsCurrent -> stringResource(R.string.error_new_email_same_as_current)
         AuthError.InvalidPhone -> stringResource(R.string.error_invalid_phone)
+        AuthError.PrivacyPolicyNotAccepted -> stringResource(R.string.error_privacy_policy_not_accepted)
     }
 }

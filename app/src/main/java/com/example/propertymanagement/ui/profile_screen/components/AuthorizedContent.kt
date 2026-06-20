@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.AddCircle
@@ -95,6 +96,27 @@ fun AuthorizedContent(
                     textRes = R.string.my_ads,
                     icon = Icons.AutoMirrored.Filled.List,
                     onClick = { intent(ProfileIntent.MyAds) },
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(SpacerMedium))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = PaddingLarge),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = ProfileSectionCardElevation),
+        ) {
+            Column {
+                ProfileActionItem(
+                    textRes = R.string.my_applications,
+                    icon = Icons.AutoMirrored.Filled.Assignment,
+                    onClick = { intent(ProfileIntent.MyApplications) },
                 )
             }
         }

@@ -162,6 +162,31 @@ val PropertyDetailMapCornerRadius = 16.dp
 /** Иконка категории POI в строке чекбоксов на карте объекта (= [MapSizesColors.POI_CATEGORY_ICON_DP]). */
 val MapPoiCategoryCheckboxIconSize = MapSizesColors.POI_CATEGORY_ICON_DP.dp
 
+/** Компактная иконка в чипе слоя POI на карте */
+val MapPoiLayerChipIconSize = 18.dp
+
+/** Высота чипа слоя POI */
+val MapPoiLayerChipHeight = 36.dp
+
+/** Скругление чипа слоя POI */
+val MapPoiLayerChipCornerRadius = 20.dp
+
+/** Круг под иконкой в плитке слоя POI */
+val MapPoiLayerTileIconCircleSize = 46.dp
+
+/** Иконка внутри круга плитки POI */
+val MapPoiLayerTileIconSize = 22.dp
+
+/** Индикатор выбранной плитки POI снизу */
+val MapPoiLayerTileAccentHeight = 3.dp
+
+/** Скругление панели слоёв / статуса POI */
+val MapPoiLayersPanelCornerRadius = 16.dp
+
+/** Отступ снизу для FAB «Моё местоположение» над панелью слоёв POI */
+val MapPoiFullscreenBottomPanelInset = 118.dp
+val MapRouteFullscreenBottomSheetInset = 220.dp
+
 /** Соотношение сторон галереи фото на экране объекта */
 const val PropertyDetailHeroAspectRatio = 4f / 3f
 

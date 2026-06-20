@@ -32,6 +32,7 @@ import com.example.propertymanagement.ui.filters_screen.components.RegionSelecti
 import com.example.propertymanagement.ui.list_property_screen.components.ListPropertyScreen
 import com.example.propertymanagement.ui.map_screen.components.MapScreen
 import com.example.propertymanagement.ui.my_ads_screen.components.MyAdsScreen
+import com.example.propertymanagement.ui.my_applications_screen.components.MyApplicationsScreen
 import com.example.propertymanagement.ui.personal_info_screen.components.PersonalInfoScreen
 import com.example.propertymanagement.ui.profile_screen.components.ProfileScreen
 import com.example.propertymanagement.ui.property_detail_screen.components.PropertyDetailScreen
@@ -320,6 +321,16 @@ fun MainNavigation() {
                     navController = navController,
                     initialListingFilter = initialTab,
                 )
+            }
+
+            composable(
+                route = Screens.MyApplicationsScreen.route,
+                enterTransition = AppTransitions.instant.enter,
+                exitTransition = AppTransitions.instant.exit,
+                popEnterTransition = AppTransitions.instant.popEnter,
+                popExitTransition = AppTransitions.instant.popExit,
+            ) {
+                MyApplicationsScreen(navController = navController)
             }
 
             composable(

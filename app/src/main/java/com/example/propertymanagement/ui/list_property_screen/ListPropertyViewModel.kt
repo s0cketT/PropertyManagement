@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.Property
-import com.example.propertymanagement.domain.model.forMainCatalogDisplay
+import com.example.propertymanagement.data.common.PropertyCatalogLog
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
@@ -181,17 +181,11 @@ class ListPropertyViewModel(
                 when (val result = getPropertiesUseCase(userId)) {
 
                     is Resource.Success -> {
-                        val raw = result.data
-                        val moderationCounts = raw.groupingBy { it.moderationStatus }.eachCount()
+                        val catalog = result.data
                         Log.d(
                             TAG,
                             "loadProperties success: userId=${userId ?: "null (guest)"} " +
-                                "rawCount=${raw.size} moderationCounts=$moderationCounts",
-                        )
-                        val approvedOnly = raw.forMainCatalogDisplay()
-                        Log.d(
-                            TAG,
-                            "loadProperties after forMainCatalogDisplay: count=${approvedOnly.size}",
+                                "catalogCount=${catalog.size}",
                         )
                         val savedFilters = getFilterPropertyUseCase().first()
                         Log.d(
@@ -204,21 +198,26 @@ class ListPropertyViewModel(
                             recomputePropertiesFilter(
                                 current.copy(
                                     isLoading = false,
-                                    properties = approvedOnly,
+                                    properties = catalog,
                                     currencyRates = rates,
                                     managerCommissionPercent = commissionPercent,
                                     activeFilters = savedFilters
                                 )
                             )
                         }
-                        Log.d(
-                            TAG,
-                            "loadProperties UI list: properties.size=${_state.value.properties.size} " +
-                                "propertiesFilter.size=${_state.value.propertiesFilter.size} " +
-                                "searchQuery=${_state.value.searchQuery}",
+                        PropertyCatalogLog.uiState(
+                            userId = userId,
+                            propertiesCount = _state.value.properties.size,
+                            propertiesFilterCount = _state.value.propertiesFilter.size,
+                            hasActiveFilters = savedFilters != null,
+                            searchQuery = _state.value.searchQuery,
                         )
                     }
                     is Resource.Error -> {
+                        PropertyCatalogLog.catalogError(
+                            userId = userId,
+                            message = result.exception,
+                        )
                         Log.e(TAG, "loadProperties error: ${result.exception}")
                         _state.update {
                             it.copy(

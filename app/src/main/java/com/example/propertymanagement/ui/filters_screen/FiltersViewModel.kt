@@ -9,7 +9,6 @@ import com.example.propertymanagement.domain.model.FiltersProperty
 import com.example.propertymanagement.domain.model.IntRangeFilter
 import com.example.propertymanagement.domain.model.Property
 import com.example.propertymanagement.domain.model.PropertyType
-import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
@@ -336,7 +335,7 @@ class FiltersViewModel(
             }
 
             sourceProperties = when (val propertiesResult = getPropertiesUseCase(userId = userId)) {
-                is Resource.Success -> propertiesResult.data.forMainCatalogDisplay()
+                is Resource.Success -> propertiesResult.data
                 is Resource.Error -> emptyList()
             }
 

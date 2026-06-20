@@ -4,13 +4,19 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.CreateProperty
 import com.example.propertymanagement.domain.model.GeocodedAddressParts
+import com.example.propertymanagement.domain.model.GeosuggestAddressContext
+import com.example.propertymanagement.domain.model.GeosuggestAddressField
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
+import com.example.propertymanagement.domain.use_case.GetGeosuggestUseCase
 import com.example.propertymanagement.R
 import com.example.propertymanagement.ui.SingleFlowEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +25,7 @@ import kotlinx.coroutines.launch
 class PublishViewModel(
     private val createFullPropertyUseCase: CreateFullPropertyUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getGeosuggestUseCase: GetGeosuggestUseCase,
 ) : ViewModel() {
 
     private sealed interface ValidationItem {
@@ -31,6 +38,8 @@ class PublishViewModel(
 
     private val _event = SingleFlowEvent<PublishEvent>(viewModelScope)
     val event = _event.flow
+
+    private var geosuggestJob: Job? = null
 
     fun processIntent(intent: PublishIntent) {
         when (intent) {
@@ -220,7 +229,21 @@ class PublishViewModel(
             }
 
             is PublishIntent.SetAddressBottomSheetOpen -> {
-                _state.update { it.copy(isAddressBottomSheetOpen = intent.open) }
+                _state.update {
+                    if (intent.open) {
+                        it.copy(isAddressBottomSheetOpen = true)
+                    } else {
+                        it.copy(
+                            isAddressBottomSheetOpen = false,
+                            activeGeosuggestField = null,
+                            geosuggestSuggestions = emptyList(),
+                            isGeosuggestLoading = false,
+                        )
+                    }
+                }
+                if (!intent.open) {
+                    geosuggestJob?.cancel()
+                }
             }
 
             is PublishIntent.SetMapPickerOpen -> {
@@ -229,18 +252,65 @@ class PublishViewModel(
 
             is PublishIntent.SetAddressCountry -> {
                 _state.update { it.copy(addressCountry = intent.value) }
+                loadGeosuggestSuggestions(
+                    field = GeosuggestAddressField.COUNTRY,
+                    query = intent.value,
+                )
+            }
+
+            is PublishIntent.SelectAddressSuggestion -> {
+                geosuggestJob?.cancel()
+                _state.update { current ->
+                    current.copy(
+                        addressCountry = if (intent.field == GeosuggestAddressField.COUNTRY) {
+                            intent.value
+                        } else {
+                            current.addressCountry
+                        },
+                        addressRegion = if (intent.field == GeosuggestAddressField.REGION) {
+                            intent.value
+                        } else {
+                            current.addressRegion
+                        },
+                        addressCity = if (intent.field == GeosuggestAddressField.CITY) {
+                            intent.value
+                        } else {
+                            current.addressCity
+                        },
+                        addressStreet = if (intent.field == GeosuggestAddressField.STREET) {
+                            intent.value
+                        } else {
+                            current.addressStreet
+                        },
+                        activeGeosuggestField = null,
+                        geosuggestSuggestions = emptyList(),
+                        isGeosuggestLoading = false,
+                    )
+                }
             }
 
             is PublishIntent.SetAddressRegion -> {
                 _state.update { it.copy(addressRegion = intent.value) }
+                loadGeosuggestSuggestions(
+                    field = GeosuggestAddressField.REGION,
+                    query = intent.value,
+                )
             }
 
             is PublishIntent.SetAddressCity -> {
                 _state.update { it.copy(addressCity = intent.value) }
+                loadGeosuggestSuggestions(
+                    field = GeosuggestAddressField.CITY,
+                    query = intent.value,
+                )
             }
 
             is PublishIntent.SetAddressStreet -> {
                 _state.update { it.copy(addressStreet = intent.value) }
+                loadGeosuggestSuggestions(
+                    field = GeosuggestAddressField.STREET,
+                    query = intent.value,
+                )
             }
 
             is PublishIntent.SetAddressHouse -> {
@@ -258,6 +328,69 @@ class PublishViewModel(
                 geocoded = intent.geocoded,
             )
         }
+    }
+
+    private fun loadGeosuggestSuggestions(
+        field: GeosuggestAddressField,
+        query: String,
+    ) {
+        geosuggestJob?.cancel()
+        val trimmed = query.trim()
+        if (trimmed.length < GEOSUGGEST_MIN_CHARS) {
+            _state.update {
+                it.copy(
+                    activeGeosuggestField = null,
+                    geosuggestSuggestions = emptyList(),
+                    isGeosuggestLoading = false,
+                )
+            }
+            return
+        }
+
+        geosuggestJob = viewModelScope.launch {
+            delay(GEOSUGGEST_DEBOUNCE_MS)
+            _state.update {
+                it.copy(
+                    activeGeosuggestField = field,
+                    isGeosuggestLoading = true,
+                )
+            }
+            val addressContext = _state.value.toGeosuggestAddressContext()
+            when (
+                val result = getGeosuggestUseCase(
+                    field = field,
+                    query = trimmed,
+                    addressContext = addressContext,
+                )
+            ) {
+                is Resource.Success -> {
+                    _state.update {
+                        it.copy(
+                            activeGeosuggestField = field,
+                            geosuggestSuggestions = result.data,
+                            isGeosuggestLoading = false,
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    _state.update {
+                        it.copy(
+                            activeGeosuggestField = field,
+                            geosuggestSuggestions = emptyList(),
+                            isGeosuggestLoading = false,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun PublishState.toGeosuggestAddressContext(): GeosuggestAddressContext {
+        return GeosuggestAddressContext(
+            country = addressCountry,
+            region = addressRegion,
+            city = addressCity,
+        )
     }
 
     private fun applyAddressSheetDone(latitude: Double?, longitude: Double?) {
@@ -394,6 +527,8 @@ class PublishViewModel(
     private companion object {
 
         private const val DEFAULT_COUNTRY = "Belarus"
+        private const val GEOSUGGEST_MIN_CHARS = 2
+        private const val GEOSUGGEST_DEBOUNCE_MS = 300L
     }
 
     private fun validateState(state: PublishState): Boolean {

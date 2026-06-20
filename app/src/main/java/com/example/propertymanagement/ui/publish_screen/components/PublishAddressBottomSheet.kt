@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.propertymanagement.R
+import com.example.propertymanagement.domain.model.GeosuggestAddressField
+import com.example.propertymanagement.domain.model.GeosuggestItem
 import com.example.propertymanagement.ui.edit_property_screen.EditPropertyIntent
 import com.example.propertymanagement.ui.edit_property_screen.EditPropertyState
 import com.example.propertymanagement.ui.publish_screen.PublishIntent
@@ -55,38 +57,82 @@ fun PublishAddressBottomSheet(
 
             Spacer(modifier = Modifier.height(SpacerMedium))
 
-            PropertyTitleTextField(
+            PublishGeosuggestAddressField(
+                field = GeosuggestAddressField.COUNTRY,
                 value = state.addressCountry,
                 placeholder = stringResource(R.string.publish_address_country),
+                activeField = state.activeGeosuggestField,
+                suggestions = state.geosuggestSuggestions,
+                isLoading = state.isGeosuggestLoading,
                 onValueChange = { intent(PublishIntent.SetAddressCountry(it)) },
-                modifier = Modifier.fillMaxWidth()
+                onSuggestionClick = {
+                    intent(
+                        PublishIntent.SelectAddressSuggestion(
+                            field = GeosuggestAddressField.COUNTRY,
+                            value = it,
+                        ),
+                    )
+                },
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))
 
-            PropertyTitleTextField(
+            PublishGeosuggestAddressField(
+                field = GeosuggestAddressField.REGION,
                 value = state.addressRegion,
                 placeholder = stringResource(R.string.publish_address_region),
+                activeField = state.activeGeosuggestField,
+                suggestions = state.geosuggestSuggestions,
+                isLoading = state.isGeosuggestLoading,
                 onValueChange = { intent(PublishIntent.SetAddressRegion(it)) },
-                modifier = Modifier.fillMaxWidth()
+                onSuggestionClick = {
+                    intent(
+                        PublishIntent.SelectAddressSuggestion(
+                            field = GeosuggestAddressField.REGION,
+                            value = it,
+                        ),
+                    )
+                },
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))
 
-            PropertyTitleTextField(
+            PublishGeosuggestAddressField(
+                field = GeosuggestAddressField.CITY,
                 value = state.addressCity,
                 placeholder = stringResource(R.string.publish_address_city),
+                activeField = state.activeGeosuggestField,
+                suggestions = state.geosuggestSuggestions,
+                isLoading = state.isGeosuggestLoading,
                 onValueChange = { intent(PublishIntent.SetAddressCity(it)) },
-                modifier = Modifier.fillMaxWidth()
+                onSuggestionClick = {
+                    intent(
+                        PublishIntent.SelectAddressSuggestion(
+                            field = GeosuggestAddressField.CITY,
+                            value = it,
+                        ),
+                    )
+                },
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))
 
-            PropertyTitleTextField(
+            PublishGeosuggestAddressField(
+                field = GeosuggestAddressField.STREET,
                 value = state.addressStreet,
                 placeholder = stringResource(R.string.publish_address_street),
+                activeField = state.activeGeosuggestField,
+                suggestions = state.geosuggestSuggestions,
+                isLoading = state.isGeosuggestLoading,
                 onValueChange = { intent(PublishIntent.SetAddressStreet(it)) },
-                modifier = Modifier.fillMaxWidth()
+                onSuggestionClick = {
+                    intent(
+                        PublishIntent.SelectAddressSuggestion(
+                            field = GeosuggestAddressField.STREET,
+                            value = it,
+                        ),
+                    )
+                },
             )
 
             Spacer(modifier = Modifier.height(SpacerMedium))
@@ -210,14 +256,30 @@ fun PublishAddressBottomSheet(
 
             Spacer(modifier = Modifier.height(SpacerMedium))
 
-            Button(
-                onClick = onConfirmAddress,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(text = stringResource(R.string.publish_address_done))
-            }
-
             Spacer(modifier = Modifier.height(SpacerMedium))
         }
     }
+}
+
+@Composable
+private fun PublishGeosuggestAddressField(
+    field: GeosuggestAddressField,
+    value: String,
+    placeholder: String,
+    activeField: GeosuggestAddressField?,
+    suggestions: List<GeosuggestItem>,
+    isLoading: Boolean,
+    onValueChange: (String) -> Unit,
+    onSuggestionClick: (String) -> Unit,
+) {
+    val isActiveField = activeField == field
+    GeosuggestTextField(
+        value = value,
+        placeholder = placeholder,
+        suggestions = if (isActiveField) suggestions else emptyList(),
+        isLoading = isActiveField && isLoading,
+        onValueChange = onValueChange,
+        onSuggestionClick = onSuggestionClick,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }

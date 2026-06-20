@@ -3,7 +3,6 @@ package com.example.propertymanagement.ui.profile_screen.components
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -84,6 +86,9 @@ fun ProfileScreen(
                 is ProfileEvent.NavigateToMyAds -> {
                     navController.navigate(Screens.MyAdsScreen.createRoute())
                 }
+                is ProfileEvent.NavigateToMyApplications -> {
+                    navController.navigate(Screens.MyApplicationsScreen.route)
+                }
                 is ProfileEvent.NavigateToSettings -> { navController.navigate(Screens.SettingsScreen.route) }
                 is ProfileEvent.NavigateToPersonalInfo -> {
                     navController.navigate(Screens.PersonalInfoScreen.createRoute(state.user!!))
@@ -148,6 +153,7 @@ private fun UI(
             else -> {
                 UnauthorizedContent(
                     onLogin = { intent(ProfileIntent.LoginClick) },
+                    onSettings = { intent(ProfileIntent.Settings) },
                 )
             }
         }
@@ -157,14 +163,17 @@ private fun UI(
 @Composable
 private fun UnauthorizedContent(
     onLogin: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = HorizontalPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
+        Spacer(modifier = Modifier.height(SpacerMedium))
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.extraLarge,
@@ -228,5 +237,25 @@ private fun UnauthorizedContent(
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(SpacerMedium))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = ProfileSectionCardElevation),
+        ) {
+            ProfileActionItem(
+                textRes = R.string.settings_app,
+                icon = Icons.Default.Settings,
+                horizontalContentPadding = PaddingLarge,
+                onClick = onSettings,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(SpacerMedium))
     }
 }

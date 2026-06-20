@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.data.common.OneSignalManager
 import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
+import com.example.propertymanagement.domain.use_case.LogoutUseCase
 import com.example.propertymanagement.domain.use_case.SendOtpUseCase
 import com.example.propertymanagement.domain.use_case.SignInUseCase
 import com.example.propertymanagement.domain.use_case.SignUpUseCase
@@ -23,7 +24,8 @@ class AuthViewModel(
     private val verifyOtpUseCase: VerifyOtpUseCase,
     private val checkUserExistsUseCase: CheckUserExistsUseCase,
     private val signUpUseCase: SignUpUseCase,
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -153,6 +155,8 @@ class AuthViewModel(
 
             is AuthIntent.ContinueAsGuest -> {
                 viewModelScope.launch {
+                    runCatching { logoutUseCase() }
+                    OneSignalManager.logout()
                     _event.emit(AuthEvent.NavigateAsGuest)
                 }
             }
@@ -171,6 +175,23 @@ class AuthViewModel(
                     )
                 }
             }
+
+            is AuthIntent.PrivacyPolicyAcceptedChanged -> {
+                _state.update {
+                    it.copy(
+                        privacyPolicyAccepted = intent.accepted,
+                        privacyPolicyError = null,
+                    )
+                }
+            }
+
+            AuthIntent.OpenPrivacyPolicy -> {
+                _state.update { it.copy(showPrivacyPolicySheet = true) }
+            }
+
+            AuthIntent.DismissPrivacyPolicy -> {
+                _state.update { it.copy(showPrivacyPolicySheet = false) }
+            }
         }
     }
     private fun signup(state: AuthState) {
@@ -181,6 +202,7 @@ class AuthViewModel(
         val passwordError = validatePassword(state.password)
         val confirmError = validateConfirmPassword(state.password, state.confirmPassword)
         val sellerTypeError = validateSellerType(state.sellerType)
+        val privacyPolicyError = validatePrivacyPolicyAccepted(state.privacyPolicyAccepted)
 
         if (
             firstNameError != null ||
@@ -188,7 +210,8 @@ class AuthViewModel(
             emailError != null ||
             passwordError != null ||
             confirmError != null ||
-            sellerTypeError != null
+            sellerTypeError != null ||
+            privacyPolicyError != null
         ) {
             _state.update {
                 it.copy(
@@ -197,7 +220,8 @@ class AuthViewModel(
                     emailError = emailError,
                     passwordError = passwordError,
                     confirmPasswordError = confirmError,
-                    sellerTypeError = sellerTypeError
+                    sellerTypeError = sellerTypeError,
+                    privacyPolicyError = privacyPolicyError,
                 )
             }
             return
@@ -369,5 +393,9 @@ class AuthViewModel(
 
     private fun validateSellerType(type: SellerType?): AuthError? {
         return if (type == null) AuthError.EmptyField else null
+    }
+
+    private fun validatePrivacyPolicyAccepted(accepted: Boolean): AuthError? {
+        return if (!accepted) AuthError.PrivacyPolicyNotAccepted else null
     }
 }

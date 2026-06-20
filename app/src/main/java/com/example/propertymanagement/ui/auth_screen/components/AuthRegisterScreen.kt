@@ -1,5 +1,7 @@
 package com.example.propertymanagement.ui.auth_screen.components
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -78,7 +80,12 @@ fun AuthRegisterScreen(navController: NavController) {
 
     UI(
         state = state,
-        onIntent = intent
+        onIntent = intent,
+    )
+
+    PrivacyPolicyBottomSheet(
+        visible = state.showPrivacyPolicySheet,
+        onDismiss = { intent(AuthIntent.DismissPrivacyPolicy) },
     )
 }
 
@@ -91,6 +98,7 @@ private fun UI(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(PaddingLarge),
         verticalArrangement = Arrangement.Center
     ) {
@@ -168,11 +176,21 @@ private fun UI(
             onValueChange = { onIntent(AuthIntent.ConfirmPasswordChanged(it)) }
         )
 
+        Spacer(modifier = Modifier.height(PaddingMedium))
+
+        PrivacyPolicyConsentRow(
+            isAccepted = state.privacyPolicyAccepted,
+            error = state.privacyPolicyError,
+            onAcceptedChange = { onIntent(AuthIntent.PrivacyPolicyAcceptedChanged(it)) },
+            onOpenPolicy = { onIntent(AuthIntent.OpenPrivacyPolicy) },
+        )
+
         Spacer(modifier = Modifier.height(PaddingLarge))
 
         Button(
             onClick = { onIntent(AuthIntent.Submit) },
             enabled = !state.isLoading &&
+                    state.privacyPolicyAccepted &&
                     state.emailError == null &&
                     state.passwordError == null &&
                     state.phoneError == null &&

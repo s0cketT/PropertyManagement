@@ -1,13 +1,12 @@
 package com.example.propertymanagement.data.repository
 
-import com.example.propertymanagement.data.mapper.toDomain
+import com.example.propertymanagement.data.mapper.toUserProfileDomain
 import com.example.propertymanagement.data.model.CheckEmailRequest
 import com.example.propertymanagement.data.model.SellerTypeIdRow
 import com.example.propertymanagement.data.model.UpdateAvatarPayload
 import com.example.propertymanagement.data.model.UpdateUserEmailPayload
 import com.example.propertymanagement.data.model.UpdateUserAppRatingPayload
 import com.example.propertymanagement.data.model.UpdateUserProfilePayload
-import com.example.propertymanagement.data.model.UserProfileDto
 import com.example.propertymanagement.domain.model.SellerType
 import com.example.propertymanagement.data.remote.ISupabaseApi
 import com.example.propertymanagement.domain.model.UserProfile
@@ -29,16 +28,11 @@ class IUserRepositoryImpl(
     }
 
     override suspend fun getUserProfile(userId: String): UserProfile {
-        val result = supabase
-            .from("users")
-            .select(
-                Columns.raw("id, name, email, phone, avatar_url, app_rating, seller_types(name)")
-            ) {
-                filter { eq("id", userId) }
-            }
-            .decodeSingle<UserProfileDto>()
+        val profile = supabaseApi.getMyUserProfile(userId)
+            .firstOrNull()
+            ?: throw IllegalStateException("Profile not found")
 
-        return result.toDomain()
+        return profile.toUserProfileDomain()
     }
 
     override suspend fun updateAvatar(url: String?) {

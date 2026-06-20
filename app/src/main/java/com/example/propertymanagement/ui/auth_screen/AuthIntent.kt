@@ -29,4 +29,10 @@ sealed class AuthIntent {
 
     data class SellerTypeChanged(val type: SellerType) : AuthIntent()
 
+    data class PrivacyPolicyAcceptedChanged(val accepted: Boolean) : AuthIntent()
+
+    object OpenPrivacyPolicy : AuthIntent()
+
+    object DismissPrivacyPolicy : AuthIntent()
+
 }

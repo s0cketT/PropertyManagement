@@ -5,8 +5,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.example.propertymanagement.domain.model.ThemeType
+
+val LocalAppDarkTheme = staticCompositionLocalOf { false }
+
+@Composable
+fun resolveAppDarkTheme(themeType: ThemeType): Boolean {
+    return when (themeType) {
+        ThemeType.LIGHT -> false
+        ThemeType.DARK -> true
+        ThemeType.SYSTEM -> isSystemInDarkTheme()
+    }
+}
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF5BD4CB),
@@ -66,23 +79,31 @@ private val LightColorScheme = lightColorScheme(
     tertiaryContainer = Color(0xFFD4EABC),
     onTertiaryContainer = Color(0xFF102000),
 
-    background = Color(0xFFF5F7F7),
-    onBackground = Color(0xFF1A1C1C),
+    background = Color(0xFFEAE3D8),
+    onBackground = Color(0xFF1F1C18),
 
-    surface = Color(0xFFFCFEFE),
-    onSurface = Color(0xFF1A1C1C),
+    surface = Color(0xFFF3EFE7),
+    onSurface = Color(0xFF1F1C18),
 
-    surfaceVariant = Color(0xFFDAE5E4),
-    onSurfaceVariant = Color(0xFF3F4948),
+    surfaceVariant = Color(0xFFDAD2C4),
+    onSurfaceVariant = Color(0xFF4A4540),
+
+    surfaceDim = Color(0xFFE2DBD0),
+    surfaceBright = Color(0xFFF8F4ED),
+    surfaceContainerLowest = Color(0xFFDFDBD3),
+    surfaceContainerLow = Color(0xFFEAE3D8),
+    surfaceContainer = Color(0xFFEFEBE3),
+    surfaceContainerHigh = Color(0xFFF3EFE7),
+    surfaceContainerHighest = Color(0xFFF8F4ED),
 
     surfaceTint = Color(0xFF0D5C56),
 
     inverseSurface = Color(0xFF2A3235),
-    inverseOnSurface = Color(0xFFE8F5F5),
+    inverseOnSurface = Color(0xFFF2EDE5),
     inversePrimary = Color(0xFF5BD4CB),
 
-    outline = Color(0xFF6F7978),
-    outlineVariant = Color(0xFFBFC9CA),
+    outline = Color(0xFF7D756A),
+    outlineVariant = Color(0xFFC8BFB2),
 
     scrim = Color.Black.copy(alpha = 0.32f),
 
@@ -97,21 +118,19 @@ fun PropertyManagementTheme(
     themeType: ThemeType,
     content: @Composable () -> Unit,
 ) {
-    val darkTheme = when (themeType) {
-        ThemeType.LIGHT -> false
-        ThemeType.DARK -> true
-        ThemeType.SYSTEM -> isSystemInDarkTheme()
-    }
+    val darkTheme = resolveAppDarkTheme(themeType)
 
     val colorScheme = when {
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        shapes = AppShapes,
-        content = content,
-    )
+    CompositionLocalProvider(LocalAppDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            shapes = AppShapes,
+            content = content,
+        )
+    }
 }

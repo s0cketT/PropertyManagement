@@ -7,9 +7,12 @@ import com.example.propertymanagement.data.model.UpdateFullPropertyDto
 import com.example.propertymanagement.data.model.CreateImageRequestDto
 import com.example.propertymanagement.data.model.ExistsResult
 import com.example.propertymanagement.data.model.FavoriteDto
+import com.example.propertymanagement.data.model.MyUserProfileResponseDto
 import com.example.propertymanagement.data.model.PropertyApplicationInsertDto
+import com.example.propertymanagement.data.model.PropertyApplicationResponseDto
 import com.example.propertymanagement.data.model.PlatformManagerCommissionDto
 import com.example.propertymanagement.data.model.PropertyImageDto
+import com.example.propertymanagement.data.model.PropertyIdOnlyDto
 import com.example.propertymanagement.data.model.PropertyResponseDto
 import com.example.propertymanagement.data.model.RegionDto
 import com.example.propertymanagement.data.model.ToggleFavoriteBody
@@ -39,6 +42,11 @@ interface ISupabaseApi {
 
     @POST("rpc/check_email_exists")
     suspend fun checkEmailExists(@Body body: CheckEmailRequest): List<ExistsResult>
+
+    @GET("rpc/get_my_user_profile")
+    suspend fun getMyUserProfile(
+        @Query("p_user_uuid") userId: String,
+    ): List<MyUserProfileResponseDto>
 
     @POST("property_images")
     suspend fun createImage(
@@ -97,8 +105,20 @@ interface ISupabaseApi {
         @Body body: JsonObject,
     ): List<PropertyResponseDto>
 
+    /** Id одобренных объявлений для гостя (RLS «Public read approved properties for catalog»). */
+    @GET("properties")
+    suspend fun getApprovedCatalogPropertyIds(
+        @Query("select") select: String = "id",
+        @Query("moderation_status_id") moderationStatusId: String = "eq.3",
+    ): List<PropertyIdOnlyDto>
+
     @GET("rpc/get_my_properties_with_favorite")
     suspend fun getMyProperties(
         @Query("p_user_uuid") userId: String
     ): List<PropertyResponseDto>
+
+    @GET("rpc/get_my_property_applications")
+    suspend fun getMyPropertyApplications(
+        @Query("p_user_uuid") userId: String,
+    ): List<PropertyApplicationResponseDto>
 }

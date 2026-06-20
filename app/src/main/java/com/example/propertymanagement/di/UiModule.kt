@@ -4,6 +4,7 @@ import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.DeletePropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertyApplicationsUseCase
 import com.example.propertymanagement.domain.use_case.GetNearbyMapPoisUseCase
 import com.example.propertymanagement.domain.use_case.UpdateFullPropertyUseCase
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
@@ -36,6 +37,7 @@ import com.example.propertymanagement.domain.use_case.UpdateUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.VerifyOtpUseCase
 import com.example.propertymanagement.domain.model.MyAdsListingFilter
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetGeosuggestUseCase
 import com.example.propertymanagement.ui.auth_screen.AuthViewModel
 import com.example.propertymanagement.ui.favorites_screen.FavoriteViewModel
 import com.example.propertymanagement.ui.filters_screen.FiltersViewModel
@@ -43,6 +45,7 @@ import com.example.propertymanagement.ui.filters_screen.city_selection.CitySelec
 import com.example.propertymanagement.ui.filters_screen.region_selection.RegionSelectionViewModel
 import com.example.propertymanagement.ui.map.MapViewModel
 import com.example.propertymanagement.ui.my_ads_screen.MyAdsViewModel
+import com.example.propertymanagement.ui.my_applications_screen.MyApplicationsViewModel
 import com.example.propertymanagement.ui.personal_info_screen.PersonalInfoViewModel
 import com.example.propertymanagement.ui.profile_screen.ProfileViewModel
 import com.example.propertymanagement.ui.property.ListPropertyViewModel
@@ -111,6 +114,7 @@ val uiModule = module {
         PublishViewModel(
             createFullPropertyUseCase = get<CreateFullPropertyUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
+            getGeosuggestUseCase = get<GetGeosuggestUseCase>(),
         )
     }
 
@@ -129,7 +133,8 @@ val uiModule = module {
             verifyOtpUseCase = get<VerifyOtpUseCase>(),
             checkUserExistsUseCase = get<CheckUserExistsUseCase>(),
             signUpUseCase = get<SignUpUseCase>(),
-            signInUseCase = get<SignInUseCase>()
+            signInUseCase = get<SignInUseCase>(),
+            logoutUseCase = get(),
         )
     }
 
@@ -205,6 +210,13 @@ val uiModule = module {
             deletePropertyUseCase = get<DeletePropertyUseCase>(),
             getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
             getTodayRatesUseCase = get<GetTodayRatesUseCase>(),
+        )
+    }
+
+    viewModel {
+        MyApplicationsViewModel(
+            getMyPropertyApplicationsUseCase = get<GetMyPropertyApplicationsUseCase>(),
+            getCurrentUserUseCase = get<GetCurrentUserUseCase>(),
         )
     }
 

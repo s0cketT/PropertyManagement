@@ -152,6 +152,46 @@ class MapHelper {
         )
     }
 
+    fun countPropertiesInVisibleRegion(
+        mapView: MapView,
+        markers: List<Property>,
+    ): Int {
+        if (markers.isEmpty()) {
+            return 0
+        }
+
+        val region = mapView.map.visibleRegion
+        val minLat = minOf(
+            region.topLeft.latitude,
+            region.topRight.latitude,
+            region.bottomLeft.latitude,
+            region.bottomRight.latitude,
+        )
+        val maxLat = maxOf(
+            region.topLeft.latitude,
+            region.topRight.latitude,
+            region.bottomLeft.latitude,
+            region.bottomRight.latitude,
+        )
+        val minLon = minOf(
+            region.topLeft.longitude,
+            region.topRight.longitude,
+            region.bottomLeft.longitude,
+            region.bottomRight.longitude,
+        )
+        val maxLon = maxOf(
+            region.topLeft.longitude,
+            region.topRight.longitude,
+            region.bottomLeft.longitude,
+            region.bottomRight.longitude,
+        )
+
+        return markers.count { marker ->
+            marker.latitude in minLat..maxLat &&
+                marker.longitude in minLon..maxLon
+        }
+    }
+
     fun zoomByDelta(mapView: MapView, delta: Float) {
         val pos = mapView.map.cameraPosition
         val newZoom = (pos.zoom + delta).coerceIn(

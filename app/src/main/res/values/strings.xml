@@ -13,6 +13,13 @@
     <string name="map_legend_rent">Аренда</string>
     <string name="map_favorites_only">Только избранное</string>
 
+    <plurals name="map_visible_properties_count">
+        <item quantity="one">На экране %1$d объявление</item>
+        <item quantity="few">На экране %1$d объявления</item>
+        <item quantity="many">На экране %1$d объявлений</item>
+        <item quantity="other">На экране %1$d объявлений</item>
+    </plurals>
+
     <string name="screen_advertisements">Объявления</string>
     <string name="screen_favorites">Избранное</string>
     <string name="screen_map">Карта</string>
@@ -290,6 +297,26 @@
 
     <string name="registration_success">Регистрация прошла успешно</string>
     <string name="auth_required">Вам необходимо авторизоваться</string>
+
+    <string name="privacy_policy_title">Политика конфиденциальности</string>
+    <string name="privacy_policy_consent_prefix">Я согласен с </string>
+    <string name="privacy_policy_link">политикой конфиденциальности</string>
+    <string name="error_privacy_policy_not_accepted">Необходимо принять политику конфиденциальности</string>
+    <string name="privacy_policy_got_it">Понятно</string>
+    <string name="privacy_policy_trust_no_sale">Не продаём и не передаём данные третьим лицам</string>
+    <string name="privacy_policy_trust_purpose">Используем данные только для работы сервиса</string>
+    <string name="privacy_policy_trust_secure">Передаём информацию по защищённым каналам</string>
+    <string name="privacy_policy_intro">Мы заботимся о вашей конфиденциальности. В PropertyManagement ваши персональные данные используются только для работы сервиса и защищены современными мерами безопасности.</string>
+    <string name="privacy_policy_section_data_title">Какие данные мы собираем</string>
+    <string name="privacy_policy_section_data_body">Имя, адрес электронной почты, номер телефона, данные профиля, сведения об объявлениях, фотографии недвижимости и информация о заявках на покупку или аренду. Эти данные нужны для создания аккаунта и полноценной работы приложения.</string>
+    <string name="privacy_policy_section_purpose_title">Для чего используются данные</string>
+    <string name="privacy_policy_section_purpose_body">Ваши данные применяются только для конкретных целей: регистрация и вход в аккаунт, публикация и модерация объявлений, обработка заявок менеджерами агентства, отправка уведомлений о статусе объявлений и заявок, улучшение качества сервиса. Мы не используем ваши данные для посторонних целей и не продаём их третьим лицам.</string>
+    <string name="privacy_policy_section_storage_title">Хранение и защита</string>
+    <string name="privacy_policy_section_storage_body">Данные хранятся на защищённых серверах с ограниченным доступом. Передача информации выполняется по зашифрованным каналам. Доступ к персональным данным имеют только уполномоченные сотрудники и системы, необходимые для работы сервиса.</string>
+    <string name="privacy_policy_section_rights_title">Ваши права</string>
+    <string name="privacy_policy_section_rights_body">Вы можете просматривать и обновлять данные профиля в приложении, изменять адрес почты и пароль, а также обратиться в поддержку агентства для уточнения или удаления данных в рамках действующего законодательства.</string>
+    <string name="privacy_policy_section_contact_title">Контакты</string>
+    <string name="privacy_policy_section_contact_body">Если у вас есть вопросы о политике конфиденциальности или обработке данных, свяжитесь с нами через раздел профиля или обратитесь в агентство недвижимости, предоставляющее сервис PropertyManagement.</string>
     <string name="continue_as_guest">Войти как гость</string>
 
     <string name="apply_request">Подать объявление</string>
@@ -306,6 +333,22 @@
     <string name="my_ads_delete_dialog_cancel">Отмена</string>
     <string name="my_ads_delete_dialog_deleting">Удаление...</string>
     <string name="my_ads_delete_failed">Не удалось удалить объявление</string>
+    <string name="profile_applications_section">Заявки</string>
+    <string name="my_applications">Мои заявки</string>
+    <string name="my_applications_empty">У вас пока нет заявок</string>
+    <string name="my_applications_sign_in">Войдите, чтобы увидеть заявки</string>
+    <string name="my_applications_created_at">Подана: %1$s</string>
+    <string name="my_applications_manager_section">Менеджер</string>
+    <string name="my_applications_manager_name">Имя</string>
+    <string name="my_applications_manager_email">E-mail</string>
+    <string name="my_applications_manager_phone">Телефон</string>
+    <string name="my_applications_manager_contact_line">%1$s: %2$s</string>
+    <string name="my_applications_manager_not_assigned">Менеджер ещё не назначен</string>
+    <string name="application_status_processing">В обработке</string>
+    <string name="application_status_in_progress">В работе</string>
+    <string name="application_status_rejected">Отклонена</string>
+    <string name="application_status_completed">Выполнена</string>
+    <string name="application_status_unknown">Неизвестно</string>
     <string name="moderation_chip_pending">На модерации</string>
     <string name="moderation_chip_rejected">Отклонено</string>
     <string name="moderation_chip_approved">Опубликовано</string>
@@ -423,6 +466,59 @@
     <string name="answer_no">Нет</string>
 
     <string name="property_detail_map_fullscreen_cd">Открыть карту на весь экран</string>
+    <string name="property_detail_map_open_route_panel_cd">Маршрут до объекта</string>
+    <string name="property_detail_map_close_route_panel_cd">Закрыть маршрут</string>
+    <string name="property_detail_map_minimize_poi_layers_cd">Свернуть панель мест поблизости</string>
+    <string name="property_detail_map_restore_poi_layers_cd">Развернуть панель мест поблизости</string>
+    <string name="property_detail_map_open_poi_layers_cd">Слои карты: школы, поликлиники, продукты</string>
+    <string name="property_detail_map_close_poi_layers_cd">Закрыть слои карты</string>
+    <string name="property_detail_map_minimize_route_sheet_cd">Свернуть панель маршрута</string>
+    <string name="property_detail_map_restore_route_sheet_cd">Развернуть панель маршрута</string>
+    <string name="property_detail_map_route_title">Маршрут</string>
+    <string name="property_detail_map_route_endpoint_my_location">Моё местоположение</string>
+    <string name="property_detail_map_route_endpoint_custom">Указанная точка</string>
+    <string name="property_detail_map_route_origin_use_my_location">Моё местоположение</string>
+    <string name="property_detail_map_route_origin_pick_on_map">Указать на карте</string>
+    <string name="property_detail_map_route_origin_pick_hint">Нажмите на карту, чтобы указать начало маршрута</string>
+    <string name="property_detail_map_route_origin_pick_cancel">Отмена</string>
+    <string name="property_detail_map_route_no_origin">Укажите начало маршрута: включите геолокацию или выберите точку на карте</string>
+    <string name="property_detail_map_route_live_traffic">С учётом пробок</string>
+    <string name="property_detail_map_route_live_schedule">По актуальному расписанию</string>
+    <string name="property_detail_map_route_fastest_summary">Самый быстрый · %1$s</string>
+    <string name="property_detail_map_route_mode_pedestrian">Пешком</string>
+    <string name="property_detail_map_route_mode_driving">Авто</string>
+    <string name="property_detail_map_route_mode_bicycle">Велосипед</string>
+    <string name="property_detail_map_route_mode_transit">Транспорт</string>
+    <string name="property_detail_map_route_step_walk">Пешком</string>
+    <string name="property_detail_map_route_step_ride">На транспорте</string>
+    <string name="property_detail_map_route_step_transfer">Пересадка</string>
+    <string name="property_detail_map_route_transit_arrives_in">Через %1$s</string>
+    <string name="property_detail_map_route_transit_arrives_at">в %1$s</string>
+    <string name="property_detail_map_route_step_wait">Ожидание</string>
+    <string name="property_detail_map_route_hint">Выберите способ, чтобы построить маршрут</string>
+    <string name="property_detail_map_route_loading">Построение маршрута…</string>
+    <string name="property_detail_map_route_error">Не удалось построить маршрут. Попробуйте позже.</string>
+    <string name="property_detail_map_route_no_location">Дождитесь определения местоположения или включите доступ к геолокации.</string>
+    <string name="property_detail_map_route_summary">%1$s · %2$s</string>
+    <plurals name="property_detail_map_route_transfers">
+        <item quantity="one">%d пересадка</item>
+        <item quantity="few">%d пересадки</item>
+        <item quantity="many">%d пересадок</item>
+        <item quantity="other">%d пересадок</item>
+    </plurals>
+    <string name="property_detail_map_transit_timeline_title">Пошаговый маршрут</string>
+    <string name="property_detail_map_route_duration_in_transit">в пути</string>
+    <string name="property_detail_map_route_distance_label">расстояние</string>
+    <string name="property_detail_map_route_walking_part">пешком</string>
+    <string name="property_detail_map_transit_walk_to_stop">Дойти до «%1$s»</string>
+    <string name="property_detail_map_transit_walk_from_stop">Пешком от «%1$s»</string>
+    <string name="property_detail_map_transit_walk_to_destination">Пешком до объекта</string>
+    <string name="property_detail_map_transit_transfer_to_stop">Пересадка · до «%1$s»</string>
+    <string name="property_detail_map_transit_board_at">Сесть на</string>
+    <string name="property_detail_map_transit_get_off_at">Выйти на</string>
+    <string name="property_detail_map_transit_details_title">Детали маршрута</string>
+    <string name="property_detail_map_transit_details_show">Показать детали маршрута</string>
+    <string name="property_detail_map_transit_details_hide">Скрыть детали маршрута</string>
     <string name="property_detail_nearby_pois_loading">Загрузка объектов поблизости…</string>
     <string name="property_detail_nearby_pois_shown">На карте: %1$d из %2$d</string>
     <string name="property_detail_nearby_pois_empty_area">В радиусе не найдено объектов выбранных типов</string>

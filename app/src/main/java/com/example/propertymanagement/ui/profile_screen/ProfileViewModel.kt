@@ -46,6 +46,11 @@ class ProfileViewModel(
                     _event.emit(ProfileEvent.NavigateToMyAds)
                 }
             }
+            ProfileIntent.MyApplications -> {
+                viewModelScope.launch {
+                    _event.emit(ProfileEvent.NavigateToMyApplications)
+                }
+            }
             ProfileIntent.RateApp -> {
                 _state.update { it.copy(isRateAppSheetOpen = true) }
             }

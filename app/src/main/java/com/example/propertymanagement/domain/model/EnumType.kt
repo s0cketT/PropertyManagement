@@ -82,6 +82,10 @@ enum class ModerationStatus(val dbNameRu: String) {
     UNKNOWN("");
 
     companion object {
+        const val PENDING_STATUS_ID = 1
+        const val REJECTED_STATUS_ID = 2
+        const val APPROVED_STATUS_ID = 3
+
         fun fromDb(name: String?): ModerationStatus {
             if (name.isNullOrBlank()) {
                 return UNKNOWN
@@ -94,6 +98,60 @@ enum class ModerationStatus(val dbNameRu: String) {
                 java.lang.Enum.valueOf(ModerationStatus::class.java, trimmed.uppercase())
             }.getOrNull()?.let { return it }
             return UNKNOWN
+        }
+
+        /** ID из `moderation_statuses` (1 — на модерации, 2 — отклонено, 3 — одобрено). */
+        fun fromStatusId(id: Int?): ModerationStatus {
+            return when (id) {
+                PENDING_STATUS_ID -> PENDING
+                REJECTED_STATUS_ID -> REJECTED
+                APPROVED_STATUS_ID -> APPROVED
+                else -> UNKNOWN
+            }
+        }
+
+        fun resolve(name: String?, statusId: Int?): ModerationStatus {
+            val fromName = fromDb(name)
+            if (fromName != UNKNOWN) {
+                return fromName
+            }
+            return fromStatusId(statusId)
+        }
+    }
+}
+
+/** Статус заявки на объявление (имена как в `application_statuses.name` в БД). */
+enum class ApplicationStatus(val dbNameRu: String) {
+    PROCESSING("В обработке"),
+    IN_PROGRESS("В работе"),
+    REJECTED("Отклонена"),
+    COMPLETED("Выполнена"),
+    UNKNOWN("");
+
+    companion object {
+        const val PROCESSING_STATUS_ID = 1
+        const val IN_PROGRESS_STATUS_ID = 2
+        const val REJECTED_STATUS_ID = 3
+        const val COMPLETED_STATUS_ID = 4
+
+        fun fromDb(name: String?, statusId: Int?): ApplicationStatus {
+            if (!name.isNullOrBlank()) {
+                val trimmed = name.trim()
+                entries.firstOrNull { it.dbNameRu.isNotEmpty() && it.dbNameRu == trimmed }?.let {
+                    return it
+                }
+            }
+            return fromStatusId(statusId)
+        }
+
+        fun fromStatusId(id: Int?): ApplicationStatus {
+            return when (id) {
+                PROCESSING_STATUS_ID -> PROCESSING
+                IN_PROGRESS_STATUS_ID -> IN_PROGRESS
+                REJECTED_STATUS_ID -> REJECTED
+                COMPLETED_STATUS_ID -> COMPLETED
+                else -> UNKNOWN
+            }
         }
     }
 }

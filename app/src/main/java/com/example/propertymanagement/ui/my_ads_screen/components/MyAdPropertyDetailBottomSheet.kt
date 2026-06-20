@@ -62,6 +62,7 @@ fun MyAdPropertyDetailBottomSheet(
     ) {
         key(propertyId, userId) {
             val viewModel: PropertyDetailViewModel = koinViewModel(
+                key = "my_ad_property_detail_$propertyId",
                 parameters = { parametersOf(propertyId, userId, true) },
             )
             val state by viewModel.state.collectAsStateWithLifecycle()

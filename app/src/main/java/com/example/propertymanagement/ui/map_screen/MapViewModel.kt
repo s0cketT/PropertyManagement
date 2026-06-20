@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.UserLocation
-import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.FilterPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
@@ -208,7 +207,7 @@ class MapViewModel(
                 when (val result = getPropertiesUseCase(userId)) {
 
                     is Resource.Success -> {
-                        val catalog = result.data.forMainCatalogDisplay()
+                        val catalog = result.data
                         _state.update {
                             it.copy(
                                 isLoading = false,

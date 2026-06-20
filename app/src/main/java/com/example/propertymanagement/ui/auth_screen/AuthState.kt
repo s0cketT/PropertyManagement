@@ -24,6 +24,9 @@ data class AuthState(
     val isOtpLogin: Boolean = false,
 
     val emailInfo: AuthInfo? = null,
+    val privacyPolicyAccepted: Boolean = false,
+    val privacyPolicyError: AuthError? = null,
+    val showPrivacyPolicySheet: Boolean = false,
     val isLoading: Boolean = false,
     val otpSent: Boolean = false,
     val isRegistered: Boolean = false

@@ -38,6 +38,14 @@ class SettingsViewModel(
     init {
         observeLanguage()
         observeTheme()
+        loadAccountSectionVisibility()
+    }
+
+    private fun loadAccountSectionVisibility() {
+        viewModelScope.launch {
+            val isAuthorized = getCurrentUserUseCase() != null
+            _state.update { it.copy(isAccountSectionVisible = isAuthorized) }
+        }
     }
 
     private fun observeLanguage() {

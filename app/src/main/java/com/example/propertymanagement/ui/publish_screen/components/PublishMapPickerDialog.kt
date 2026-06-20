@@ -39,6 +39,7 @@ import com.example.propertymanagement.R
 import com.example.propertymanagement.data.common.Constants
 import com.example.propertymanagement.domain.model.UserLocation
 import com.example.propertymanagement.domain.use_case.ObserveLocationUseCase
+import com.example.propertymanagement.ui.components.ApplyMapNightModeEffect
 import com.example.propertymanagement.ui.components.MapHelper
 import com.example.propertymanagement.ui.map_screen.components.observeMapLifecycle
 import com.example.propertymanagement.ui.theme.MapControlsIconOnDark
@@ -72,6 +73,8 @@ fun PublishMapPickerDialog(
     val mapHelper = remember { MapHelper() }
     var selectedPoint by remember { mutableStateOf<Point?>(null) }
     var placemark by remember { mutableStateOf<PlacemarkMapObject?>(null) }
+
+    ApplyMapNightModeEffect(mapView = mapView)
 
     val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
 

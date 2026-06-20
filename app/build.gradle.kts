@@ -67,7 +67,7 @@ dependencies {
     implementation("com.andretietz.retrofit:cache-extension:1.0.0")
 
     //YandexMaps
-    implementation("com.yandex.android:maps.mobile:4.30.0-lite")
+    implementation("com.yandex.android:maps.mobile:4.30.0-full")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")

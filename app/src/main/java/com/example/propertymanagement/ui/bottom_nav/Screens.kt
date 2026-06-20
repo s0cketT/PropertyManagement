@@ -103,6 +103,8 @@ sealed class Screens(
         fun createRoute(initialTab: MyAdsListingFilter = MyAdsListingFilter.PUBLISHED): String =
             "my_ads?initialTab=${initialTab.name}"
     }
+
+    object MyApplicationsScreen : Screens("my_applications")
     object PersonalInfoScreen : Screens("personal_info?user={user}") {
 
         fun createRoute(user: UserProfile): String {

@@ -15,6 +15,8 @@ import com.example.propertymanagement.domain.model.HeatingType
 import com.example.propertymanagement.domain.model.HouseAmenity
 import com.example.propertymanagement.domain.model.HouseType
 import com.example.propertymanagement.domain.model.ParkingType
+import com.example.propertymanagement.domain.model.GeosuggestAddressField
+import com.example.propertymanagement.domain.model.GeosuggestItem
 import com.example.propertymanagement.domain.model.PropertyType
 import com.example.propertymanagement.domain.model.RoofType
 import com.example.propertymanagement.domain.model.RoomsType
@@ -42,6 +44,9 @@ data class PublishState(
     val addressRegion: String = "",
     val addressCity: String = "",
     val addressStreet: String = "",
+    val activeGeosuggestField: GeosuggestAddressField? = null,
+    val geosuggestSuggestions: List<GeosuggestItem> = emptyList(),
+    val isGeosuggestLoading: Boolean = false,
     val addressHouse: String = "",
     val latitude: Double? = null,
     val longitude: Double? = null,

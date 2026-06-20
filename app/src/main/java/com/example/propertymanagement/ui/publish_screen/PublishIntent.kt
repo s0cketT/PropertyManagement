@@ -1,6 +1,7 @@
 package com.example.propertymanagement.ui.publish_screen
 
 import com.example.propertymanagement.domain.model.GeocodedAddressParts
+import com.example.propertymanagement.domain.model.GeosuggestAddressField
 import com.example.propertymanagement.domain.model.ApartmentRepairType
 import com.example.propertymanagement.domain.model.BalconyType
 import com.example.propertymanagement.domain.model.BathroomType
@@ -85,6 +86,10 @@ sealed class PublishIntent {
     data class SetAddressRegion(val value: String) : PublishIntent()
     data class SetAddressCity(val value: String) : PublishIntent()
     data class SetAddressStreet(val value: String) : PublishIntent()
+    data class SelectAddressSuggestion(
+        val field: GeosuggestAddressField,
+        val value: String,
+    ) : PublishIntent()
     data class SetAddressHouse(val value: String) : PublishIntent()
 
     data class AddressSheetDone(

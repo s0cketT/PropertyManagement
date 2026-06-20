@@ -129,6 +129,11 @@
     <string name="map_legend_rent">Rent</string>
     <string name="map_favorites_only">Favorites only</string>
 
+    <plurals name="map_visible_properties_count">
+        <item quantity="one">%1$d listing on screen</item>
+        <item quantity="other">%1$d listings on screen</item>
+    </plurals>
+
     <string name="screen_advertisements">Listings</string>
     <string name="screen_favorites">Favorites</string>
     <string name="screen_map">Map</string>
@@ -288,6 +293,26 @@
 
     <string name="registration_success">Registration successful</string>
     <string name="auth_required">Authorization required</string>
+
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_consent_prefix">I agree to the </string>
+    <string name="privacy_policy_link">privacy policy</string>
+    <string name="error_privacy_policy_not_accepted">You must accept the privacy policy</string>
+    <string name="privacy_policy_got_it">Got it</string>
+    <string name="privacy_policy_trust_no_sale">We do not sell or share data with third parties</string>
+    <string name="privacy_policy_trust_purpose">Data is used only to operate the service</string>
+    <string name="privacy_policy_trust_secure">Information is transmitted over secure channels</string>
+    <string name="privacy_policy_intro">We care about your privacy. In PropertyManagement, your personal data is used only to operate the service and is protected with modern security measures.</string>
+    <string name="privacy_policy_section_data_title">What data we collect</string>
+    <string name="privacy_policy_section_data_body">Name, email address, phone number, profile details, listing information, property photos, and purchase or rental application data. This information is required to create an account and use the app fully.</string>
+    <string name="privacy_policy_section_purpose_title">How we use your data</string>
+    <string name="privacy_policy_section_purpose_body">Your data is used only for specific purposes: account registration and sign-in, publishing and moderating listings, processing applications by agency managers, sending notifications about listing and application status, and improving service quality. We do not use your data for unrelated purposes and do not sell it to third parties.</string>
+    <string name="privacy_policy_section_storage_title">Storage and protection</string>
+    <string name="privacy_policy_section_storage_body">Data is stored on secure servers with restricted access. Information is transmitted over encrypted channels. Only authorized staff and systems required to operate the service can access personal data.</string>
+    <string name="privacy_policy_section_rights_title">Your rights</string>
+    <string name="privacy_policy_section_rights_body">You can view and update your profile data in the app, change your email and password, and contact agency support to clarify or delete data in accordance with applicable law.</string>
+    <string name="privacy_policy_section_contact_title">Contact</string>
+    <string name="privacy_policy_section_contact_body">If you have questions about this privacy policy or data processing, contact us through the profile section or reach out to the real estate agency providing the PropertyManagement service.</string>
     <string name="continue_as_guest">Continue as guest</string>
 
     <string name="apply_request">Submit listing</string>
@@ -304,6 +329,22 @@
     <string name="my_ads_delete_dialog_cancel">Cancel</string>
     <string name="my_ads_delete_dialog_deleting">Deleting...</string>
     <string name="my_ads_delete_failed">Failed to delete listing</string>
+    <string name="profile_applications_section">Applications</string>
+    <string name="my_applications">My applications</string>
+    <string name="my_applications_empty">You have no applications yet</string>
+    <string name="my_applications_sign_in">Sign in to see your applications</string>
+    <string name="my_applications_created_at">Submitted: %1$s</string>
+    <string name="my_applications_manager_section">Manager</string>
+    <string name="my_applications_manager_name">Name</string>
+    <string name="my_applications_manager_email">Email</string>
+    <string name="my_applications_manager_phone">Phone</string>
+    <string name="my_applications_manager_contact_line">%1$s: %2$s</string>
+    <string name="my_applications_manager_not_assigned">No manager assigned yet</string>
+    <string name="application_status_processing">Pending</string>
+    <string name="application_status_in_progress">In progress</string>
+    <string name="application_status_rejected">Rejected</string>
+    <string name="application_status_completed">Completed</string>
+    <string name="application_status_unknown">Unknown</string>
     <string name="moderation_chip_pending">Under review</string>
     <string name="moderation_chip_rejected">Rejected</string>
     <string name="moderation_chip_approved">Published</string>
@@ -419,6 +460,57 @@
     <string name="answer_no">No</string>
 
     <string name="property_detail_map_fullscreen_cd">Open map fullscreen</string>
+    <string name="property_detail_map_open_route_panel_cd">Route to property</string>
+    <string name="property_detail_map_close_route_panel_cd">Close route</string>
+    <string name="property_detail_map_minimize_poi_layers_cd">Minimize nearby places panel</string>
+    <string name="property_detail_map_restore_poi_layers_cd">Expand nearby places panel</string>
+    <string name="property_detail_map_open_poi_layers_cd">Map layers: schools, clinics, groceries</string>
+    <string name="property_detail_map_close_poi_layers_cd">Close map layers</string>
+    <string name="property_detail_map_minimize_route_sheet_cd">Minimize route panel</string>
+    <string name="property_detail_map_restore_route_sheet_cd">Expand route panel</string>
+    <string name="property_detail_map_route_title">Route</string>
+    <string name="property_detail_map_route_endpoint_my_location">My location</string>
+    <string name="property_detail_map_route_endpoint_custom">Selected point</string>
+    <string name="property_detail_map_route_origin_use_my_location">My location</string>
+    <string name="property_detail_map_route_origin_pick_on_map">Pick on map</string>
+    <string name="property_detail_map_route_origin_pick_hint">Tap the map to set the route start point</string>
+    <string name="property_detail_map_route_origin_pick_cancel">Cancel</string>
+    <string name="property_detail_map_route_no_origin">Set the route start: enable location or pick a point on the map</string>
+    <string name="property_detail_map_route_live_traffic">With live traffic</string>
+    <string name="property_detail_map_route_live_schedule">Based on current schedule</string>
+    <string name="property_detail_map_route_fastest_summary">Fastest · %1$s</string>
+    <string name="property_detail_map_route_mode_pedestrian">Walk</string>
+    <string name="property_detail_map_route_mode_driving">Car</string>
+    <string name="property_detail_map_route_mode_bicycle">Bike</string>
+    <string name="property_detail_map_route_mode_transit">Transit</string>
+    <string name="property_detail_map_route_step_walk">Walk</string>
+    <string name="property_detail_map_route_step_ride">Ride</string>
+    <string name="property_detail_map_route_step_transfer">Transfer</string>
+    <string name="property_detail_map_route_transit_arrives_in">In %1$s</string>
+    <string name="property_detail_map_route_transit_arrives_at">at %1$s</string>
+    <string name="property_detail_map_route_step_wait">Wait</string>
+    <string name="property_detail_map_route_hint">Choose a travel mode to build a route</string>
+    <string name="property_detail_map_route_loading">Building route…</string>
+    <string name="property_detail_map_route_error">Could not build the route. Try again later.</string>
+    <string name="property_detail_map_route_no_location">Wait for your location or enable location access.</string>
+    <string name="property_detail_map_route_summary">%1$s · %2$s</string>
+    <plurals name="property_detail_map_route_transfers">
+        <item quantity="one">%d transfer</item>
+        <item quantity="other">%d transfers</item>
+    </plurals>
+    <string name="property_detail_map_transit_timeline_title">Step-by-step route</string>
+    <string name="property_detail_map_route_duration_in_transit">in transit</string>
+    <string name="property_detail_map_route_distance_label">distance</string>
+    <string name="property_detail_map_route_walking_part">walking</string>
+    <string name="property_detail_map_transit_walk_to_stop">Walk to «%1$s»</string>
+    <string name="property_detail_map_transit_walk_from_stop">Walk from «%1$s»</string>
+    <string name="property_detail_map_transit_walk_to_destination">Walk to destination</string>
+    <string name="property_detail_map_transit_transfer_to_stop">Transfer · to «%1$s»</string>
+    <string name="property_detail_map_transit_board_at">Board at</string>
+    <string name="property_detail_map_transit_get_off_at">Get off at</string>
+    <string name="property_detail_map_transit_details_title">Route details</string>
+    <string name="property_detail_map_transit_details_show">Show route details</string>
+    <string name="property_detail_map_transit_details_hide">Hide route details</string>
     <string name="property_detail_nearby_pois_loading">Loading nearby places…</string>
     <string name="property_detail_nearby_pois_shown">On map: %1$d of %2$d</string>
     <string name="property_detail_nearby_pois_empty_area">No matching places in this radius</string>

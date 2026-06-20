@@ -1,6 +1,7 @@
 package com.example.propertymanagement.data.remote
 
 import com.example.propertymanagement.data.common.Constants.ANON_KEY
+import com.example.propertymanagement.data.common.PropertyCatalogLog
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import okhttp3.Interceptor
@@ -15,8 +16,13 @@ class SupabaseRestAuthInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val bearer = supabase.auth.currentSessionOrNull()?.accessToken ?: ANON_KEY
+        val session = supabase.auth.currentSessionOrNull()
+        val bearer = session?.accessToken ?: ANON_KEY
         val original = chain.request()
+        PropertyCatalogLog.restRequest(
+            path = original.url.encodedPath,
+            isGuestSession = session == null,
+        )
         val builder = original.newBuilder()
             .header("apikey", ANON_KEY)
             .header("Authorization", "Bearer $bearer")

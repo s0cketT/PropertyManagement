@@ -13,6 +13,7 @@ import com.example.propertymanagement.domain.repository.ISettingsRepository
 import com.example.propertymanagement.domain.repository.IStorageRepository
 import com.example.propertymanagement.domain.repository.IThemeRepository
 import com.example.propertymanagement.domain.repository.IUserRepository
+import com.example.propertymanagement.domain.repository.IYandexGeosuggestRepository
 import com.example.propertymanagement.domain.use_case.CheckUserExistsUseCase
 import com.example.propertymanagement.domain.use_case.ClearSelectedFiltersMarkerUseCase
 import com.example.propertymanagement.domain.use_case.CreateFullPropertyUseCase
@@ -23,11 +24,13 @@ import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
 import com.example.propertymanagement.domain.use_case.GetNearbyMapPoisUseCase
 import com.example.propertymanagement.domain.use_case.GetMyPropertiesUseCase
+import com.example.propertymanagement.domain.use_case.GetMyPropertyApplicationsUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertiesUseCase
 import com.example.propertymanagement.domain.use_case.GetPropertyDetailPricesUseCase
 import com.example.propertymanagement.domain.use_case.GetTodayRatesUseCase
 import com.example.propertymanagement.domain.use_case.GetCitiesByRegionUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
+import com.example.propertymanagement.domain.use_case.GetGeosuggestUseCase
 import com.example.propertymanagement.domain.use_case.GetRegionsUseCase
 import com.example.propertymanagement.domain.use_case.GetUserProfileUseCase
 import com.example.propertymanagement.domain.use_case.LogoutUseCase
@@ -88,6 +91,8 @@ val domainModule = module {
     factory { GetPropertiesUseCase(propertyRepository = get<IPropertyRepository>()) }
 
     factory { GetMyPropertiesUseCase(propertyRepository = get<IPropertyRepository>()) }
+
+    factory { GetMyPropertyApplicationsUseCase(propertyRepository = get<IPropertyRepository>()) }
 
     factory { DeletePropertyUseCase(propertyRepository = get<IPropertyRepository>()) }
 
@@ -159,6 +164,12 @@ val domainModule = module {
     factory {
         GetNearbyMapPoisUseCase(
             overpassPoiRepository = get<IOverpassPoiRepository>(),
+        )
+    }
+
+    factory {
+        GetGeosuggestUseCase(
+            yandexGeosuggestRepository = get<IYandexGeosuggestRepository>(),
         )
     }
 

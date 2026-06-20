@@ -104,4 +104,3 @@ internal fun PropertyDetailFullscreenMapMyLocationFab(
         )
     }
 }
-

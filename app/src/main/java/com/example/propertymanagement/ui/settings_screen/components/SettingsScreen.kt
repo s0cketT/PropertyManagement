@@ -174,9 +174,13 @@ private fun UI(
 
             SettingsAppearanceCard(state = state, intent = intent)
 
-            Spacer(modifier = Modifier.height(SpacerMedium))
+            if (state.isAccountSectionVisible) {
+                Spacer(modifier = Modifier.height(SpacerMedium))
 
-            SettingsAccountCard(intent = intent)
+                SettingsAccountCard(intent = intent)
+            }
+
+            Spacer(modifier = Modifier.height(SpacerMedium))
         }
 
         Surface(

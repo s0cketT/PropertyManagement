@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.propertymanagement.domain.common.Resource
 import com.example.propertymanagement.domain.model.CurrencyType
 import com.example.propertymanagement.domain.model.NearbyPoiCategory
-import com.example.propertymanagement.domain.model.forMainCatalogDisplay
 import com.example.propertymanagement.domain.use_case.GetCurrentUserUseCase
 import com.example.propertymanagement.domain.use_case.GetFilterPropertyUseCase
 import com.example.propertymanagement.domain.use_case.GetManagerCommissionPercentUseCase
@@ -284,7 +283,7 @@ class PropertyDetailViewModel(
                 } else {
                     when (val result = getPropertiesUseCase(uid)) {
                         is Resource.Success -> {
-                            val catalog = result.data.forMainCatalogDisplay()
+                            val catalog = result.data
                             val property = catalog.find { it.id == propertyId }
                             val converted = property?.let { p ->
                                 getPropertyDetailPricesUseCase(
